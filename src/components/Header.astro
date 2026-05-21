@@ -1,0 +1,150 @@
+---
+
+---
+
+<header>
+  <a href="/" class="logo">
+    <img src="/src/assets/logohorizontaal.png" alt="Stichting Mensenkenners" class="logo-desktop" />
+    <img src="/src/assets/logovierkant.png" alt="Stichting Mensenkenners" class="logo-mobile" />
+  </a>
+
+  <button class="hamburger" aria-label="Menu" aria-expanded="false" aria-controls="nav">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+
+  <nav>
+    <a href="/over">Over Stichting Mensenkenners</a>
+    <a href="/profiel">Mijn Profiel</a>
+    <a href="/contact">Contact</a>
+  </nav>
+</header>
+
+<style>
+  body{
+    margin: 0;
+  }
+
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 2rem;
+    background-color: #b1f2d9;
+    border-bottom: 1px solid #e5e5e5;
+    position: relative;
+  }
+
+  .logo img {
+    height: 40px;
+    width: auto;
+    display: block;
+  }
+
+  .logo img.logo-mobile {
+    display: none;
+  }
+
+  nav {
+    display: flex;
+    gap: 2rem;
+  }
+
+  nav a {
+    color: #333;
+    text-decoration: none;
+    font-size: 0.95rem;
+  }
+
+  nav a:hover {
+    color: #000;
+    text-decoration: underline;
+  }
+
+  /* Hamburger button Dicht */
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 28px;
+    height: 22px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    z-index: 10;
+  }
+
+  .hamburger span {
+    display: block;
+    height: 3px;
+    width: 100%;
+    background-color: #333;
+    border-radius: 2px;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+
+  /* Open */
+  .hamburger.open span:nth-child(1) {
+    transform: translateY(9.5px) rotate(45deg);
+  }
+  .hamburger.open span:nth-child(2) {
+    opacity: 0;
+  }
+  .hamburger.open span:nth-child(3) {
+    transform: translateY(-9.5px) rotate(-45deg);
+  }
+
+  /* Mobile styles */
+  @media (max-width: 768px) {
+    .hamburger {
+      display: flex;
+    }
+
+    /* Swap logos on mobile */
+    .logo img.logo-desktop {
+      display: none;
+    }
+    .logo img.logo-mobile {
+      display: block;
+    }
+
+    nav {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      flex-direction: column;
+      gap: 0;
+      background-color: #b1f2d9;
+      border-top: 1px solid #e5e5e5;
+      padding: 1rem 2rem;
+    }
+
+    nav.open {
+      display: flex;
+    }
+
+    nav a {
+      padding: 0.75rem 0;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    }
+
+    nav a:last-child {
+      border-bottom: none;
+    }
+  }
+</style>
+
+<script>
+  const hamburger = document.querySelector('.hamburger');
+  const nav = document.querySelector('nav');
+
+  hamburger?.addEventListener('click', () => {
+    const isOpen = nav?.classList.toggle('open');
+    hamburger.classList.toggle('open');
+    hamburger.setAttribute('aria-expanded', String(isOpen));
+  });
+</script>
