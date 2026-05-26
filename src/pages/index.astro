@@ -2,10 +2,86 @@
 // @ts-nocheck
 export const prerender = false;
 import MainLayout from '../layouts/Layout.astro';
+import CourseCard from '../components/CourseCard.astro';
 
-
+const courses = [
+  {
+    title: 'Algemeen',
+    image: '',
+    progress: 20,
+    href: '',
+    color: '#2241DD',
+  },
+  {
+    title: 'Visueel',
+    image: '',
+    progress: 40,
+    href: '',
+    color: '#FF94E1',
+  },
+  {
+    title: 'Auditief',
+    image: '',
+    progress: 60,
+    href: '',
+    color: '#FF6631',
+  },
+  {
+    title: 'Motoriek',
+    image: '',
+    progress: 80,
+    href: '',
+    color: '#E9F279',
+  },
+  {
+    title: 'Uiterlijk',
+    image: '',
+    progress: 100,
+    href: '',
+    color: '#B1F2D9',
+  },
+];
 ---
 
-<MainLayout title="homepage">
-	
+<MainLayout>
+  <section class="dashboard">
+    <h1>Mijn Cursussen</h1>
+
+    <ul>
+      {courses.map((course) => (
+        <li>
+          <CourseCard
+            title={course.title}
+            image={course.image}
+            progress={course.progress}
+            href={course.href}
+            color={course.color}
+          />
+        </li>
+      ))}
+    </ul>
+  </section>
 </MainLayout>
+
+<style>
+  .dashboard {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  h1 {
+    margin: 0 0 1.5rem;
+    font-size: 2rem;
+    color: #333;
+  }
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+</style>

@@ -15,8 +15,9 @@
   </button>
 
   <nav>
-    <a href="/over">Over Stichting Mensenkenners</a>
     <a href="/profiel">Mijn Profiel</a>
+    <a href="/over">Over Stichting Mensenkenners</a>
+    <a href="/meer">Meer Acties van Gemeente Amsterdam</a>
     <a href="/contact">Contact</a>
   </nav>
 </header>
@@ -31,9 +32,11 @@
     align-items: center;
     justify-content: space-between;
     padding: 1rem 2rem;
-    background-color: #b1f2d9;
+    background-color: var(--color-green);
     border-bottom: 1px solid #e5e5e5;
-    position: relative;
+    position: sticky;
+    top: 0;
+    z-index: 999;
   }
 
   .logo img {
@@ -52,9 +55,10 @@
   }
 
   nav a {
-    color: #333;
+    color: var(--color-text);
     text-decoration: none;
     font-size: 0.95rem;
+    font-family: 'Plus Jakarta Sans Bold';
   }
 
   nav a:hover {
@@ -80,7 +84,7 @@
     display: block;
     height: 3px;
     width: 100%;
-    background-color: #333;
+    background-color: var(--color-text);
     border-radius: 2px;
     transition: transform 0.3s ease, opacity 0.3s ease;
   }
@@ -102,7 +106,7 @@
       display: flex;
     }
 
-    /* Swap logos on mobile */
+    /* Verandert logos on mobile */
     .logo img.logo-desktop {
       display: none;
     }
@@ -118,8 +122,7 @@
       right: 0;
       flex-direction: column;
       gap: 0;
-      background-color: #b1f2d9;
-      border-top: 1px solid #e5e5e5;
+      background-color: var(--color-cyan);
       padding: 1rem 2rem;
     }
 
