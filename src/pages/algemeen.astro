@@ -1,25 +1,27 @@
 ---
 // @ts-nocheck
 export const prerender = false;
-import MainLayout from '../layouts/Layout.astro';
+import Vragen from '../components/Vragen.astro';
+
+const { title } = Astro.props;
 
 
 ---
-<!-- <MainLayout title="homepage">
-</MainLayout> -->
-
 <html lang="nl">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Algemeen</title>
-    <link rel="stylesheet" href="/styles/vragen.css"/>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{title}</title>
+    <link rel="stylesheet" href="/styles/global.css">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon.svg?v=2">
+
   </head>
-
+  
   <body>
-    <main>
-        
-    </main>
-  </body>
+    <Vragen />
+    <!-- <main class="container">
+      <slot />
+    </main> -->
 
+  </body>
 </html>
