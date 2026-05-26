@@ -21,11 +21,9 @@ const { title, image, progress, href = '#', color } = Astro.props;
     border-radius: 12px;
     overflow: hidden;
     text-decoration: none;
-    color: #fff;
-    background-color: var(--bg-color);
-    background-image: var(--bg-image);
-    background-size: cover;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    color: #000;
+    background: #fff;
+    border: 4px solid var(--bg-color);
   }
 
   .course-card:hover {
@@ -45,7 +43,7 @@ const { title, image, progress, href = '#', color } = Astro.props;
     border: none;
     border-radius: 999px;
     overflow: hidden;
-    background-color: rgba(255, 255, 255, 0.25);
+    background-color: #000;
   }
 
   progress::-webkit-progress-bar {
@@ -54,9 +52,8 @@ const { title, image, progress, href = '#', color } = Astro.props;
   }
 
   progress::-webkit-progress-value {
-    background-color: #fff;
+    background-color: var(--bg-color);
     border-radius: 999px;
-    transition: width 0.3s ease;
   }
 
 </style>
