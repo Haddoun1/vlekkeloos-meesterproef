@@ -79,7 +79,7 @@
 html {
 	scroll-behavior: smooth;
 
-	color-scheme: light dark;
+	color-scheme: light;
 	--color-text: #000000;
 	--color-background: #ffffff;
 	--color-green: #37B086;

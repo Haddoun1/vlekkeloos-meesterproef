@@ -1,0 +1,155 @@
+---
+const { title, nextHref = "/", headingText = "Welkom!", bodyText = "...", step = 1, totalSteps = 5 } = Astro.props;
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <link rel="stylesheet" href="/styles/global.css" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon.svg?v=2" />
+  </head>
+
+  <body>
+    <main class="container">
+      <div class="logo">
+        <img
+          src="../../public/images/Mensenkenners-logo-hori.png"
+          alt="Mensenkenners logo"
+        />
+      </div>
+
+      <div class="div-container-content">
+        <slot />
+
+        <div class="questionnaire">
+          <h1>{headingText}</h1>
+          <p>{bodyText}</p>
+        </div>
+
+        <div class="progress-bar">
+          {Array.from({ length: totalSteps }, (_, i) => (
+            <div class={`progress ${i < step - 1 ? "done-small" : ""} ${i === step - 1 ? "done" : ""}`}></div>
+          ))}
+        </div>
+      </div>
+
+      <a class="button-next" href={nextHref}>
+        <button>Ga verder</button>
+      </a>
+    </main>
+  </body>
+</html>
+
+<style>
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    background-color: var(--color-background);
+    height: 100vh;
+    padding: var(--size-base) var(--size-2xl);
+
+    background-image: radial-gradient(
+      circle at 0% 0%,
+      rgb(181 219 206 / 0.4) 0%,
+      transparent
+    );
+
+    background-size: 100% 100%;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%,
+    100% {
+      background-size: 100% 100%;
+    }
+    50% {
+      background-size: 120% 120%;
+    }
+  }
+
+  .logo {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding: var(--size-xl) 0;
+
+    & img {
+      width: 60%;
+    }
+  }
+
+  .progress-bar {
+    display: flex;
+    gap: var(--size-xxs);
+    /* margin-bottom: var(--size-base); */
+    width: 100%;
+    padding: var(--size-xxs) 0;
+    justify-content: center;
+  }
+
+  .progress {
+    width: var(--size-xxs);
+    height: var(--size-xxs);
+    background-color: #cbc6c6;
+    border-radius: 50px;
+  }
+
+  .progress.done-small {
+    /* width: 15%; */
+    width: var(--size-xxs);
+    height: var(--size-xxs);
+    background-color: var(--color-cyan);
+  }
+
+  .progress.done {
+    width: 15%;
+    background-color: var(--color-cyan);
+  }
+
+  .button-next {
+    width: 100%;
+    /* margin-top: auto; */
+
+    & button {
+      background-color: var(--color-cyan);
+      color: var(--color-background);
+      /* color: var(--color-text); */
+      font-weight: 600;
+      border: none;
+      padding: var(--size-xs) var(--size-2xl);
+      border-radius: 25px;
+      cursor: pointer;
+      width: 100%;
+    }
+  }
+
+  .questionnaire {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--size-xxs);
+    text-align: center;
+    color: var(--color-text);
+    margin-bottom: var(--size-2xl);
+
+    & h1 {
+      font-family: "Plus Jakarta Sans", sans-serif;
+      font-size: var(--size-2xl);
+      font-weight: 800;
+      color: var(--color-text);
+    }
+
+    & p {
+      font-size: var(--size-sm);
+      font-weight: 400;
+      /* width: 80%; */
+      color: #7e7676;
+      line-height: 1.2;
+    }
+  }
+</style>
