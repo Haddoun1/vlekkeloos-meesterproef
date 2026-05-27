@@ -1,32 +1,6 @@
 ---
 // @ts-nocheck
 export const prerender = false;
-<<<<<<< Updated upstream
-import Vragen from '../components/Vragen.astro';
-
-const { title } = Astro.props;
-
-
----
-<html lang="nl">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{title}</title>
-    <link rel="stylesheet" href="/styles/global.css">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon.svg?v=2">
-
-  </head>
-  
-  <body>
-    <Vragen />
-    <!-- <main class="container">
-      <slot />
-    </main> -->
-
-  </body>
-</html>
-=======
 import VragenLayout from '../layouts/Vragen.astro';
 ---
 
@@ -34,4 +8,3 @@ import VragenLayout from '../layouts/Vragen.astro';
 <VragenLayout title="Vragen">
 	
 </VragenLayout>
->>>>>>> Stashed changes
