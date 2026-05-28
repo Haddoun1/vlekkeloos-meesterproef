@@ -23,6 +23,7 @@ const { title } = Astro.props;
 
 <style>
   :global(body) {
+    color: var(--color-text);
     background-color: var(--color-green);
   }
 
@@ -36,20 +37,17 @@ const { title } = Astro.props;
   }
 
   :global(h1) {
-    color: var(--color-background);
     font-size: var(--size-4xl);
     font-family: var(--font-bold);
     margin:clamp(6rem, 1vw, 1rem) 0rem clamp(1rem, 1vw, 3rem) 1rem; 
   }
 
   :global(h2) {
-    color: var(--color-background);
     font-family: var(--font-semi-bold);
       margin: 1rem 0rem 3rem 1rem; 
   }
 
   :global(p) {
-    color: var(--color-background);
     font-family: var(--font-light);
       margin: 3rem 0rem 3rem 1rem; 
   }
