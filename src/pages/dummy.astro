@@ -1,22 +1,37 @@
 ---
 // @ts-nocheck
 export const prerender = false;
-import NextButton from '../components/NextButton.astro';
-import DetailLayout from '../layouts/DetailLayout.astro';
-
-
+import NextButton from "../components/NextButton.astro";
+import MultipleButtonA from "../components/MultipleButtonA.astro";
+import MultipleButtonB from "../components/MultipleButtonB.astro";
+import MultipleButtonC from "../components/MultipleButtonC.astro";
+import MultipleButtonD from "../components/MultipleButtonD.astro";
+import DetailLayout from "../layouts/DetailLayout.astro";
 ---
 
 <DetailLayout title="dummy">
-    <main>
-<h1>Dummy page</h1>
-<h2>Vraag 1</h2>
-<p> Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloremque qui velit exercitationem placeat autem, adipisci magnam! Quisquam explicabo vero dignissimos ipsam, a libero odio assumenda, porro iusto mollitia voluptatibus dicta?
-</p>
+  <main>
+    <h1>Dummy page</h1>
+    <h2>Vraag 1</h2>
+    <p></p>
+    <p>
+      Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloremque qui
+      velit exercitationem placeat autem, adipisci magnam! Quisquam explicabo
+      vero dignissimos ipsam, a libero odio assumenda, porro iusto mollitia
+      voluptatibus dicta?
+    </p>
 
-<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Placeat repellendus molestiae odio mollitia porro ducimus doloremque omnis nam praesentium id a, ipsam beatae saepe eligendi harum quisquam! Odio, corporis aspernatur?</p>
+    <p>
+      Lorem ipsum dolor sit amet consectetur adipisicing elit. Placeat
+      repellendus molestiae odio mollitia porro ducimus doloremque omnis nam
+      praesentium id a, ipsam beatae saepe eligendi harum quisquam! Odio,
+      corporis aspernatur?
+    </p>
 
-<NextButton />
-</main>
-
+    <NextButton />
+    <MultipleButtonA />
+    <MultipleButtonB />
+    <MultipleButtonC />
+    <MultipleButtonD />
+  </main>
 </DetailLayout>
