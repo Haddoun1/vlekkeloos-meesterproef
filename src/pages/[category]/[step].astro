@@ -1,40 +1,34 @@
 ---
 // @ts-nocheck
-import data from "../../data/mensenkennersvragen.json";
+import data from "../../data/mensenkennersvragen.json"; // Importeren JSON bestand met data
+import { slugify } from "../../utils/slugify"; // Importeren slugify functie voor maken van URL's
 
-export async function getStaticPaths() {
+// Functie genereren pagina's
+export async function getStaticPaths() { 
 
-  const slugify = (value) =>
-    value
-      ?.toLowerCase()
-      .trim()
-      .replaceAll(" ", "-")
-      .replaceAll("ë", "e")
-      .replaceAll("é", "e");
-
-  const items = data.flow.filter(
+  const items = data.flow.filter( // Alle items in de JSON worden gefilterd op categorie
     (item) =>
       item.category &&
       ["Content", "Video", "Question"].includes(item.type)
   );
 
-  return items.map((item) => {
+  return items.map((item) => { // Voor elke item wordt een pagina gegenereerd
     const categorySlug = slugify(item.category);
 
-    const categoryItems = items.filter(
+    const categoryItems = items.filter( // Alle items in dezelfde categorie worden verzameld
       (x) => slugify(x.category) === categorySlug
     );
 
-    const stepIndex = categoryItems.findIndex(
+    const stepIndex = categoryItems.findIndex( // Vind de juiste index van het item binnen de categorie
       (x) => x.id === item.id
     );
 
-    return {
+    return { // Bepaalt de URL
       params: {
         category: categorySlug,
         step: String(stepIndex + 1),
       },
-      props: {
+      props: { // Bepaalt data die je meestuurt naar de pagina
         item,
         currentStep: stepIndex + 1,
         totalSteps: categoryItems.length,
@@ -44,31 +38,23 @@ export async function getStaticPaths() {
   });
 }
 
-const slugify = (value) =>
-  value
-    ?.toLowerCase()
-    .trim()
-    .replaceAll(" ", "-")
-    .replaceAll("ë", "e")
-    .replaceAll("é", "e");
-
-const { item, currentStep, totalSteps, category } = Astro.props;
+const { item, currentStep, totalSteps, category } = Astro.props; // Data die naar de pagina wordt gestuurd ophalen
 
 const categorySlug = slugify(category);
 
-const previousPage =
+const previousPage = // Als er een vorige stap is, genereer de URL voor de vorige pagina, anders null
   currentStep > 1
     ? `/${categorySlug}/${currentStep - 1}`
     : null;
 
-const nextPage =
+const nextPage = // Als er een volgende stap is, genereer de URL voor de volgende pagina, anders null
   currentStep < totalSteps
     ? `/${categorySlug}/${currentStep + 1}`
     : null;
 
-let embedUrl = item.url;
+let embedUrl = item.url; // Standaard embed URL is de URL van het item
 
-if (item.url?.includes("vimeo.com")) {
+if (item.url?.includes("vimeo.com")) { // Als het een Vimeo URL is, genereer de juiste embed URL
   const id = item.url
     .split("/")
     .filter(Boolean)
@@ -78,7 +64,7 @@ if (item.url?.includes("vimeo.com")) {
   embedUrl = `https://player.vimeo.com/video/${id}`;
 }
 
-if (item.url?.includes("youtube.com/watch?v=")) {
+if (item.url?.includes("youtube.com/watch?v=")) { // Als het een YouTube URL is, genereer de juiste embed URL
   const id = item.url
     .split("v=")[1]
     ?.split("&")[0];
@@ -109,25 +95,67 @@ if (item.url?.includes("youtube.com/watch?v=")) {
     ></iframe>
   )}
 
-  {item.type === "Question" && (
-    <>
-      {item.question && <h3>{item.question}</h3>}
+{item.type === "Question" && (
+  <>
+    {item.question && <h3>{item.question}</h3>}
 
-      {item.description && <p>{item.description}</p>}
+    {item.description && <p>{item.description}</p>}
 
-      {item.options?.length > 0 && (
-        <ul>
-          {item.options.map((option) => (
-            <li>
-              <button type="button">
-                {option.text}
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
-    </>
-  )}
+    {item.input_type === "text" && (
+      <input
+        type="text"
+        placeholder="Typ hier je antwoord"
+      />
+    )}
+
+    {item.input_type === "long_text" && (
+      <textarea
+        rows="6"
+        placeholder="Typ hier je antwoord"
+      ></textarea>
+    )}
+
+{item.input_type === "multiple_choice" && (
+  <ul>
+    {item.options.map((option) => (
+      <li>
+        <button>{option.text}</button>
+      </li>
+    ))}
+  </ul>
+)}
+  </>
+)}
+
+{item.input_type === "rating" && ( // genereert 10 radio buttons, met min en max labels
+  <div>
+    {item.min_label && (<span>{item.min_label}</span>)}
+
+    {[1,2,3,4,5,6,7,8,9,10].map((ratingValue) => (
+      <div>
+        <input
+          type="radio"
+          id={ratingValue}
+          name="rating"
+          value={ratingValue}
+        />
+
+        <label for={ratingValue}>
+          {ratingValue}
+        </label>
+      </div>
+    ))}
+
+    {item.max_label && (<span>{item.max_label}</span>)}
+  </div>
+)}
+
+{item.input_type === "email" && (
+  <input
+    type="email"
+    placeholder="Typ hier je e-mailadres"
+  />
+)}
 
 </section>
 
