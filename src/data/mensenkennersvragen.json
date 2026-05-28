@@ -169,7 +169,7 @@
       "title": "Sector",
       "content": null,
       "question": "Voordat we beginnen, wil je aangeven wat het meest op jou van toepassing is?",
-      "input_type": "single_choice",
+      "input_type": "multiple_choice",
       "max_selections": 1,
       "options": [
         {
@@ -271,7 +271,7 @@
       "title": "Updates",
       "content": null,
       "question": "Wil je per mail op de hoogte gehouden worden van Mensenkenners inclusiviteit updates?",
-      "input_type": "single_choice",
+      "input_type": "multiple_choice",
       "max_selections": 1,
       "options": [
         {
@@ -704,7 +704,7 @@
       "title": "Motorische beperking - goede vraag",
       "content": null,
       "question": "Wat is een goede vraag om te stellen aan iemand die motorisch beperkt is?",
-      "input_type": "single_choice",
+      "input_type": "multiple_choice",
       "max_selections": 1,
       "options": [
         {
@@ -839,7 +839,7 @@
       "title": "Bijzonder uiterlijk - goede vraag",
       "content": null,
       "question": "Wat is een goede vraag om te stellen aan iemand die een bijzonder uiterlijk heeft?",
-      "input_type": "single_choice",
+      "input_type": "multiple_choice",
       "max_selections": 1,
       "options": [
         {
@@ -1471,6 +1471,8 @@
       "content": null,
       "question": "Hoe toegankelijk denk je dat jouw werkplek is?",
       "input_type": "rating",
+      "min_label": "Niet toegankelijk",
+      "max_label": "Zeer toegankelijk",
       "max_selections": null,
       "options": [],
       "explanation": null,
@@ -1545,6 +1547,8 @@
       "content": null,
       "question": "Hoe toegankelijk vond je de informatie op de website van jullie organisatie?",
       "input_type": "rating",
+      "min_label": "Niet toegankelijk",
+      "max_label": "Zeer toegankelijk",
       "max_selections": null,
       "options": [],
       "explanation": null,
@@ -1716,6 +1720,8 @@
       "content": null,
       "question": "Had je de neiging om de zin van de persoon in de video af te maken?",
       "input_type": "rating",
+      "min_label": "Helemaal niet",
+      "max_label": "Heel erg",
       "max_selections": null,
       "options": [],
       "explanation": null,
@@ -1923,7 +1929,7 @@
       "category": "Auditief",
       "title": "Oefening auditieve klanten",
       "content": null,
-      "question": "Neem met je collega's de tips door. Bedenk samen één actie waarmee jullie je werkplek inclusiever kunnen maken voor auditief beperkte klanten. Wat hebben jullie bedacht?",
+      "question": "Neem met je collega's de tips door. Bedenk samen een actie waarmee jullie je werkplek inclusiever kunnen maken voor auditief beperkte klanten. Wat hebben jullie bedacht?",
       "input_type": "long_text",
       "max_selections": null,
       "options": [],
@@ -1939,7 +1945,7 @@
       "deel": 3,
       "order": 91,
       "type": "Content",
-      "category": "Algemeen",
+      "category": "Auditief",
       "title": "Korte quiz",
       "content": "Wat heb je geleerd? Kies steeds het beste antwoord voor de meeste punten.",
       "question": null,
@@ -1962,7 +1968,7 @@
       "title": "Auditief - hulp aanbieden",
       "content": null,
       "question": "Wat doe je als je vermoedt dat iemand misschien doof is en je je afvraagt of je die persoon moet helpen?",
-      "input_type": "single_choice",
+      "input_type": "multiple_choice",
       "max_selections": 1,
       "options": [
         {
@@ -1997,7 +2003,7 @@
       "title": "Auditief - gehoorimplantaat",
       "content": null,
       "question": "Wat doe je als een klant met een zichtbaar gehoorimplantaat je aanspreekt, en het lijkt alsof ze je niet begrijpen?",
-      "input_type": "single_choice",
+      "input_type": "multiple_choice",
       "max_selections": 1,
       "options": [
         {
@@ -2032,7 +2038,7 @@
       "title": "Auditief - bestelling checken",
       "content": null,
       "question": "Wat doe je als een klant met een auditieve beperking iets bij je bestelt maar je weet niet zeker of je het goed hebt begrepen?",
-      "input_type": "single_choice",
+      "input_type": "multiple_choice",
       "max_selections": 1,
       "options": [
         {
@@ -2124,7 +2130,7 @@
       "title": "Visueel - gebouw binnenstappen",
       "content": null,
       "question": "Wat doe je als een blind persoon alleen het gebouw binnen stapt?",
-      "input_type": "single_choice",
+      "input_type": "multiple_choice",
       "max_selections": 1,
       "options": [
         {
@@ -2159,7 +2165,7 @@
       "title": "Visueel - toilet uitleggen",
       "content": null,
       "question": "Wat doe je als een klant die zichtbaar visueel beperkt is vraagt waar het toilet is?",
-      "input_type": "single_choice",
+      "input_type": "multiple_choice",
       "max_selections": 1,
       "options": [
         {
@@ -2320,7 +2326,7 @@
       "title": "Motorisch - kwetsend woord",
       "content": null,
       "question": "Welk woord kan over het algemeen als kwetsend worden ervaren door mensen in een rolstoel?",
-      "input_type": "single_choice",
+      "input_type": "multiple_choice",
       "max_selections": 1,
       "options": [
         {
@@ -2452,7 +2458,7 @@
       "title": "Bijzonder uiterlijk - nieuwsgierigheid",
       "content": null,
       "question": "Stel, je bent nieuwsgierig naar iemands uiterlijk. Wat is dan de beste manier van handelen?",
-      "input_type": "single_choice",
+      "input_type": "multiple_choice",
       "max_selections": 1,
       "options": [
         {
@@ -2530,7 +2536,7 @@
       "title": "Spraak - stotteren",
       "content": null,
       "question": "Wat doe je als iemand de hele tijd stottert terwijl ze iets willen zeggen?",
-      "input_type": "single_choice",
+      "input_type": "multiple_choice",
       "max_selections": 1,
       "options": [
         {
