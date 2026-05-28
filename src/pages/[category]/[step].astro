@@ -1,0 +1,142 @@
+---
+// @ts-nocheck
+import data from "../../data/mensenkennersvragen.json";
+
+export async function getStaticPaths() {
+
+  const slugify = (value) =>
+    value
+      ?.toLowerCase()
+      .trim()
+      .replaceAll(" ", "-")
+      .replaceAll("ë", "e")
+      .replaceAll("é", "e");
+
+  const items = data.flow.filter(
+    (item) =>
+      item.category &&
+      ["Content", "Video", "Question"].includes(item.type)
+  );
+
+  return items.map((item) => {
+    const categorySlug = slugify(item.category);
+
+    const categoryItems = items.filter(
+      (x) => slugify(x.category) === categorySlug
+    );
+
+    const stepIndex = categoryItems.findIndex(
+      (x) => x.id === item.id
+    );
+
+    return {
+      params: {
+        category: categorySlug,
+        step: String(stepIndex + 1),
+      },
+      props: {
+        item,
+        currentStep: stepIndex + 1,
+        totalSteps: categoryItems.length,
+        category: item.category,
+      },
+    };
+  });
+}
+
+const slugify = (value) =>
+  value
+    ?.toLowerCase()
+    .trim()
+    .replaceAll(" ", "-")
+    .replaceAll("ë", "e")
+    .replaceAll("é", "e");
+
+const { item, currentStep, totalSteps, category } = Astro.props;
+
+const categorySlug = slugify(category);
+
+const previousPage =
+  currentStep > 1
+    ? `/${categorySlug}/${currentStep - 1}`
+    : null;
+
+const nextPage =
+  currentStep < totalSteps
+    ? `/${categorySlug}/${currentStep + 1}`
+    : null;
+
+let embedUrl = item.url;
+
+if (item.url?.includes("vimeo.com")) {
+  const id = item.url
+    .split("/")
+    .filter(Boolean)
+    .pop()
+    ?.split("?")[0];
+
+  embedUrl = `https://player.vimeo.com/video/${id}`;
+}
+
+if (item.url?.includes("youtube.com/watch?v=")) {
+  const id = item.url
+    .split("v=")[1]
+    ?.split("&")[0];
+
+  embedUrl = `https://www.youtube.com/embed/${id}`;
+}
+---
+
+<h1>
+  {category} - Stap {currentStep} van {totalSteps}
+</h1>
+
+<section>
+
+  {item.title && <h2>{item.title}</h2>}
+
+  {item.content && <p>{item.content}</p>}
+
+  {item.type === "Video" && embedUrl && (
+    <iframe
+      width="100%"
+      height="500"
+      src={embedUrl}
+      title={item.video_title || item.title}
+      frameborder="0"
+      allow="autoplay; fullscreen; picture-in-picture"
+      allowfullscreen
+    ></iframe>
+  )}
+
+  {item.type === "Question" && (
+    <>
+      {item.question && <h3>{item.question}</h3>}
+
+      {item.description && <p>{item.description}</p>}
+
+      {item.options?.length > 0 && (
+        <ul>
+          {item.options.map((option) => (
+            <li>
+              <button type="button">
+                {option.text}
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </>
+  )}
+
+</section>
+
+<nav>
+  {previousPage && (
+    <a href={previousPage}>Vorige</a>
+  )}
+
+  {nextPage && (
+    <a href={nextPage}>Volgende</a>
+  )}
+</nav>
