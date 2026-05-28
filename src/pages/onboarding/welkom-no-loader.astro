@@ -13,12 +13,6 @@ import MainLayout from "../../layouts/Layout-onboarding.astro";
   showBack={false}
   showProgress={false}
 >
-  <div class="loader">
-    <img
-      src="../../public/images/Mensenkenners-horizontaal-w.png"
-      alt="Mensenkenners logo"
-    />
-  </div>
 
   <img class="mockup"
     src="../../public/images/mockupmensenkenners.png"
@@ -84,17 +78,6 @@ import MainLayout from "../../layouts/Layout-onboarding.astro";
   .loader.hidden-mobile {
     transform: translateY(-100%);
   }
-
-  @media (min-width: 768px) {
-  .loader {
-    display: flex;
-    justify-content: center;
-    
-    & img {
-      width: 30%;
-    }
-  }
-}
 </style>
 
 <script>

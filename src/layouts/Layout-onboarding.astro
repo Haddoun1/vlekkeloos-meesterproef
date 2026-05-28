@@ -1,5 +1,52 @@
 ---
-const { title, nextHref = "/", headingText = "Welkom!", bodyText = "...", step = 1, totalSteps = 5 } = Astro.props;
+import { ClientRouter } from "astro:transitions";
+
+const bounceTransition = {
+  forwards: {
+    old: {
+      name: "bounceOut",
+      duration: "0.3s",
+      easing: "ease-in",
+      fillMode: "forwards",
+    },
+    new: {
+      name: "bounceIn",
+      duration: "0.4s",
+      easing: "cubic-bezier(0.34, 1.56, 0.64, 1)",
+      fillMode: "backwards",
+      delay: "0.3s",
+    },
+  },
+  backwards: {
+  old: {
+    name: "bounceOutRight",
+    duration: "0.3s",
+    easing: "ease-in",
+    fillMode: "forwards",
+  },
+  new: {
+    name: "bounceInLeft",
+    duration: "0.4s",
+    easing: "cubic-bezier(0.34, 1.56, 0.64, 1)",
+    fillMode: "backwards",
+    delay: "0.3s",
+  },
+},
+};
+
+const {
+  title,
+  nextHref = "/",
+  backHref = "/",
+  headingText = "Welkom!",
+  bodyText = "...",
+  step = 1,
+  totalSteps = 5,
+  showBack = true,
+  showProgress = true,
+} = Astro.props;
+
+// https://claude.ai/chat/8789b362-5b69-4d5c-9b16-a4b157d09820 button back niet op welkompagina, wel op rest van stappen
 ---
 
 <html lang="en">
@@ -9,6 +56,8 @@ const { title, nextHref = "/", headingText = "Welkom!", bodyText = "...", step =
     <title>{title}</title>
     <link rel="stylesheet" href="/styles/global.css" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon.svg?v=2" />
+
+    <ClientRouter />
   </head>
 
   <body>
@@ -20,7 +69,7 @@ const { title, nextHref = "/", headingText = "Welkom!", bodyText = "...", step =
         />
       </div>
 
-      <div class="div-container-content">
+      <div class="div-container-content" transition:animate={bounceTransition}>
         <slot />
 
         <div class="questionnaire">
@@ -28,30 +77,37 @@ const { title, nextHref = "/", headingText = "Welkom!", bodyText = "...", step =
           <p>{bodyText}</p>
         </div>
 
-        <div class="progress-bar">
-          {Array.from({ length: totalSteps }, (_, i) => (
-            <div class={`progress ${i < step - 1 ? "done-small" : ""} ${i === step - 1 ? "done" : ""}`}></div>
-          ))}
-        </div>
+        {showProgress && (
+  <div class="progress-bar">
+    {
+      Array.from({ length: totalSteps }, (_, i) => (
+        <div
+          class={`progress ${i < step - 1 ? "done-small" : ""} ${i === step - 1 ? "done" : ""}`}
+        />
+      ))
+    }
+  </div>
+)}
       </div>
 
-      <a class="button-next" href={nextHref}>
-        <button>Ga verder</button>
-      </a>
+      <div class="buttons-onboarding">
+        {
+          showBack && (
+            <a class="button-back" href={backHref} id="back-btn">
+              <button>Ga terug</button>
+            </a>
+          )
+        }
+        <a class="button-next" href={nextHref}>
+          <button>Ga verder</button>
+        </a>
+      </div>
     </main>
   </body>
 </html>
 
 <style>
-  .container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-    background-color: var(--color-background);
-    height: 100vh;
-    padding: var(--size-base) var(--size-2xl);
-
+  html{
     background-image: radial-gradient(
       circle at 0% 0%,
       rgb(181 219 206 / 0.4) 0%,
@@ -60,6 +116,16 @@ const { title, nextHref = "/", headingText = "Welkom!", bodyText = "...", step =
 
     background-size: 100% 100%;
     animation: pulse 2s ease-in-out infinite;
+  }
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    /* background-color: var(--color-background); */
+    height: 100vh;
+    overflow: hidden;
+    padding: var(--size-base) var(--size-2xl);
   }
 
   @keyframes pulse {
@@ -76,7 +142,7 @@ const { title, nextHref = "/", headingText = "Welkom!", bodyText = "...", step =
     display: flex;
     justify-content: center;
     width: 100%;
-    padding: var(--size-xl) 0;
+    padding: var(--size-xl) 0 0 0;
 
     & img {
       width: 60%;
@@ -111,7 +177,17 @@ const { title, nextHref = "/", headingText = "Welkom!", bodyText = "...", step =
     background-color: var(--color-cyan);
   }
 
-  .button-next {
+  .buttons-onboarding {
+    display: flex;
+    flex-direction: column;
+    gap: var(--size-xxs);
+    width: 100%;
+    padding: var(--size-base) 0;
+    justify-content: center;
+  }
+
+  .button-next,
+  .button-back {
     width: 100%;
     /* margin-top: auto; */
 
@@ -126,6 +202,12 @@ const { title, nextHref = "/", headingText = "Welkom!", bodyText = "...", step =
       cursor: pointer;
       width: 100%;
     }
+  }
+
+  .button-back button {
+    background-color: var(--color-background);
+    color: var(--color-cyan);
+    border: 2px solid var(--color-cyan);
   }
 
   .questionnaire {
@@ -152,4 +234,60 @@ const { title, nextHref = "/", headingText = "Welkom!", bodyText = "...", step =
       line-height: 1.2;
     }
   }
+
+  @keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes bounceOut {
+  0% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes bounceInLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes bounceOutRight {
+  0% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+
+
 </style>
+
+<script>
+  const backBtn = document.getElementById("back-btn");
+  if (backBtn) {
+    backBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      history.back();
+    });
+  }
+</script>
