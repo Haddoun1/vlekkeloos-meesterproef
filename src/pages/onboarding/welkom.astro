@@ -85,6 +85,10 @@ import MainLayout from "../../layouts/Layout-onboarding.astro";
     transform: translateY(-100%);
   }
 
+  .mockup {
+    margin-top: 4rem;
+  }
+
   @media (min-width: 768px) {
   .loader {
     display: flex;
@@ -94,7 +98,13 @@ import MainLayout from "../../layouts/Layout-onboarding.astro";
       width: 30%;
     }
   }
+
+  .mockup {
+    margin-top: 0;
+    width: 60% !important;
+  }
 }
+
 </style>
 
 <script>
