@@ -1,0 +1,54 @@
+---
+
+---
+
+<label class="option-card">
+  <input type="checkbox" name="answer" value="D" />
+  <span class="option">D</span>
+  <span>Vraag</span>
+</label>
+
+<style>
+  .option-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background-color: rgba(0, 0, 0, 0.081);
+    color: var(--color-text);
+    border: 1px solid rgba(0, 0, 0, 0.062);
+    border-radius: 8px;
+    padding: 0.5rem;
+    font-size: var(--size-base);
+    font-family: var(--font-semi-bold);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: left;
+    margin: 0 1rem 0.5rem 1rem;
+  }
+
+  .option-card input {
+    display: none;
+  }
+
+  .option-card:hover {
+    transform: scale(1.01);
+  }
+
+  .option {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2rem;
+    height: 2rem;
+    border-radius: 6px;
+    background-color: rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    font-size: var(--size-sm);
+  }
+
+  .option-card input:checked + .option {
+    background-color: var(--color-text);
+    color: white;
+    border-color: var(--color-text);
+  }
+</style>

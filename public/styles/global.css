@@ -76,51 +76,52 @@
 }
 
 html {
-  scroll-behavior: smooth;
+	scroll-behavior: smooth;
 
-  color-scheme: light;
-  --color-text: #000000;
-  --color-background: #ffffff;
-  --color-green: #2ab789;
-  --color-cyan: #b1f2d9;
-  --color-pink: #ff94e1;
-  --color-blue: #2241dd;
-  --color-red: #ff6631;
-  --color-yellow: #e9f279;
+	color-scheme: light;
+	--color-text: #000000;
+	--color-background: #ffffff;
+	--color-green: #2AB789;
+	--color-cyan: #B1F2D9;
+	--color-pink: #FF94E1;
+	--color-blue: #2241dd;
+	--color-red: #0a0a0a;
+	--color-yellow: #E9F279;
 
-  --font-bold: "Plus Jakarta Sans Bold", sans-serif;
-  --font-bold-italic: "Plus Jakarta Sans Bold Italic", sans-serif;
-  --font-extra-bold: "Plus Jakarta Sans Extra Bold", sans-serif;
-  --font-extra-bold-italic: "Plus Jakarta Sans Extra Bold Italic", sans-serif;
-  --font-extra-light: "Plus Jakarta Sans Extra Light", sans-serif;
-  --font-extra-light-italic: "Plus Jakarta Sans Extra Light Italic", sans-serif;
-  --font-italic: "Plus Jakarta Sans Italic", sans-serif;
-  --font-light: "Plus Jakarta Sans Light", sans-serif;
-  --font-light-italic: "Plus Jakarta Sans Light Italic", sans-serif;
-  --font-medium: "Plus Jakarta Sans Medium", sans-serif;
-  --font-medium-italic: "Plus Jakarta Sans Medium Italic", sans-serif;
-  --font-regular: "Plus Jakarta Sans Regular", sans-serif;
-  --font-semi-bold: "Plus Jakarta Sans Semi Bold", sans-serif;
+	--font-bold: 'Plus Jakarta Sans Bold', sans-serif;
+	--font-bold-italic: 'Plus Jakarta Sans Bold Italic', sans-serif;
+	--font-extra-bold: 'Plus Jakarta Sans Extra Bold', sans-serif;
+	--font-extra-bold-italic: 'Plus Jakarta Sans Extra Bold Italic', sans-serif;
+	--font-extra-light: 'Plus Jakarta Sans Extra Light', sans-serif;
+	--font-extra-light-italic: 'Plus Jakarta Sans Extra Light Italic', sans-serif;
+	--font-italic: 'Plus Jakarta Sans Italic', sans-serif;
+	--font-light: 'Plus Jakarta Sans Light', sans-serif;
+	--font-light-italic: 'Plus Jakarta Sans Light Italic', sans-serif;
+	--font-medium: 'Plus Jakarta Sans Medium', sans-serif;
+	--font-medium-italic: 'Plus Jakarta Sans Medium Italic', sans-serif;
+	--font-regular: 'Plus Jakarta Sans Regular', sans-serif;
+	--font-semi-bold: 'Plus Jakarta Sans Semi Bold', sans-serif;
 
-  --size-xxs: 0.5rem;
-  --size-xs: 0.75rem;
-  --size-sm: 0.875rem;
-  --size-base: 1rem;
-  --size-lg: 1.125rem;
-  --size-xl: 1.25rem;
-  --size-2xl: 1.5rem;
-  --size-3xl: 1.875rem;
-  --size-4xl: 2.25rem;
-  --size-5xl: 3rem;
-  --size-6xl: 3.75rem;
-  --size-7xl: 4.5rem;
-  --size-8xl: 6rem;
-  --size-9xl: 8rem;
-  --size-10xl: 10rem;
+	--size-xxs: 0.5rem;
+	--size-xs: 0.75rem;
+	--size-sm: 0.875rem;
+	--size-base: 1rem;
+	--size-lg: 1.125rem;
+	--size-xl: 1.25rem;
+	--size-2xl: 1.5rem;
+	--size-3xl: 1.875rem;
+	--size-4xl: 2.25rem;
+	--size-5xl: 3rem;
+	--size-6xl: 3.75rem;
+	--size-7xl: 4.5rem;
+	--size-8xl: 6rem;
+	--size-9xl: 8rem;
+	--size-10xl: 10rem;
 
-  font-family: "Plus Jakarta Sans", sans-serif;
-  color: var(--color-text);
-  background-color: var(--color-background);
+
+	font-family: 'Plus Jakarta Sans', sans-serif;
+	color: var(--colour-text);
+	background-color: var(--colour-background);
 }
 
 img,
