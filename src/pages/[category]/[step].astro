@@ -88,7 +88,7 @@ if (item.id?.endsWith("_submit")) {
 
 
 ---
-
+<main>
 <h1>{category} - Stap {currentStep} van {totalSteps}</h1>
 
 <section>
@@ -216,97 +216,7 @@ if (item.id?.endsWith("_submit")) {
   {nextPage && <a href={nextPage}>Volgende</a>}
 </nav>
 <link rel="stylesheet" href="/styles/global.css" />
-
-<body>
-  <main>
-    <h1>
-      {category} - Stap {currentStep} van {totalSteps}
-    </h1>
-
-    <section>
-      {item.title && <h2>{item.title}</h2>}
-
-      {item.content && <p>{item.content}</p>}
-
-      {
-        item.type === "Video" && embedUrl && (
-          <iframe
-            width="100%"
-            height="500"
-            src={embedUrl}
-            title={item.video_title || item.title}
-            frameborder="0"
-            allow="autoplay; fullscreen; picture-in-picture"
-            allowfullscreen
-          />
-        )
-      }
-
-      {
-        item.type === "Question" && (
-          <>
-            {item.question && <h3>{item.question}</h3>}
-
-            {item.description && <p>{item.description}</p>}
-
-            {item.input_type === "text" && (
-              <input type="text" placeholder="Typ hier je antwoord" />
-            )}
-
-            {item.input_type === "long_text" && (
-              <textarea rows="6" placeholder="Typ hier je antwoord" />
-            )}
-
-            {item.input_type === "multiple_choice" && (
-              <ul>
-                {item.options.map((option) => (
-                  <li>
-                    <button>{option.text}</button>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </>
-        )
-      }
-
-      {
-        item.input_type === "rating" && ( // genereert 10 radio buttons, met min en max labels
-          <div>
-            {item.min_label && <span>{item.min_label}</span>}
-
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((ratingValue) => (
-              <div>
-                <input
-                  type="radio"
-                  id={ratingValue}
-                  name="rating"
-                  value={ratingValue}
-                />
-
-                <label for={ratingValue}>{ratingValue}</label>
-              </div>
-            ))}
-
-            {item.max_label && <span>{item.max_label}</span>}
-          </div>
-        )
-      }
-
-      {
-        item.input_type === "email" && (
-          <input type="email" placeholder="Typ hier je e-mailadres" />
-        )
-      }
-    </section>
-
-    <nav>
-      {previousPage && <a href={previousPage}>Vorige</a>}
-
-      {nextPage && <a href={nextPage}>Volgende</a>}
-    </nav>
-  </main>
-</body>
+</main>
 
 <style>
   :global(body) {
