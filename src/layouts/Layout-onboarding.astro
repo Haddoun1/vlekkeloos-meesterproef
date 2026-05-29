@@ -44,6 +44,7 @@ const {
   totalSteps = 5,
   showBack = true,
   showProgress = true,
+  showNext = true,
 } = Astro.props;
 
 // https://claude.ai/chat/8789b362-5b69-4d5c-9b16-a4b157d09820 button back niet op welkompagina, wel op rest van stappen
@@ -115,9 +116,13 @@ const {
                 </a>
               )
             }
-            <a class="button-next" href={nextHref} data-direction="forward">
-              <button>Ga verder</button>
-            </a>
+            {
+              showNext && (
+                <a class="button-next" href={nextHref} data-direction="forward">
+                  <button>Ga verder</button>
+                </a>
+              )
+            }
           </div>
         </div>
       </div>
@@ -133,7 +138,7 @@ const {
       transparent
     ); */
 
-    background: var(--gradient-bg-cyan);
+    background-image: var(--gradient-bg-cyan);
     animation: pulse 2s ease-in-out infinite;
   }
 
@@ -224,7 +229,7 @@ const {
 
     & p {
       font-size: var(--size-sm);
-      font-weight: 400;
+      font-family: var(--font-regular);
       color: #7e7676;
       line-height: 1.2;
     }

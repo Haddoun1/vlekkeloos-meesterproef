@@ -33,16 +33,14 @@
       "section": "intro",
       "title": "Intro Mensenkenners",
       "text": "In deze training ga je (samen met je team) werken aan toegankelijkheid in de openbare ruimte voor mensen met een beperking. Want de openbare ruimte, dat ben jij! Omdat jij het gezicht bent van jouw werkplek naar klanten en bezoekers toe, kun jij er eigenhandig voor zorgen dat de plek waar je werkt fijner wordt voor mensen met een beperking. Je gaat je inclusiviteitsspier trainen.",
-      "subtitle": "Hoe toegankelijk ben jij? Weet jij wat je moet doen om een blind of slechtziend persoon te helpen als ze jouw werkplek bezoeken?",
-      "Category": "Intro"
+      "subtitle": "Hoe toegankelijk ben jij? Weet jij wat je moet doen om een blind of slechtziend persoon te helpen als ze jouw werkplek bezoeken?"
     },
     {
       "id": "intro_02",
       "type": "content",
       "section": "intro",
       "title": "Opbouw training",
-      "text": "De Mensenkenners training bestaat uit 3 delen. Deel 1: Bewustwording en vooroordelen (45 min). Deel 2: Leren door te ervaren (40 min). Benodigdheden: blinddoek, koptelefoon en een collega of ander persoon. Deel 3: Vertaling naar jouw werk (35 min). Deel 1 en 2 zijn voor leren. In deel 3 wordt je kennis getest.",
-      "Category": "Intro"
+      "text": "De Mensenkenners training bestaat uit 3 delen. Deel 1: Bewustwording en vooroordelen (45 min). Deel 2: Leren door te ervaren (40 min). Benodigdheden: blinddoek, koptelefoon en een collega of ander persoon. Deel 3: Vertaling naar jouw werk (35 min). Deel 1 en 2 zijn voor leren. In deel 3 wordt je kennis getest."
     },
     {
       "id": "intro_03",
@@ -50,32 +48,28 @@
       "section": "intro",
       "title": "Waarom Mensenkenners?",
       "text": "8 op de 10 interacties in de openbare ruimte verloopt ongemakkelijk voor iemand met een beperking. Sociale inclusiviteit verbeteren is dus erg nodig. We moeten niet alleen de omgeving aanpassen, we moeten vooral onszelf aanpassen.",
-      "source": "HandicapNL",
-      "Category": "Intro"
+      "source": "HandicapNL"
     },
     {
       "id": "intro_04",
       "type": "content",
       "section": "intro",
       "title": "Inclusiviteitsspier trainen",
-      "text": "Door ons bewust te worden over bepaalde handelingen en situaties kunnen wij met een kleine inspanning een inclusievere maatschappij inrichten. Mensen met een beperking passen zich al dagelijks aan aan hoe de publieke ruimte is ingericht.",
-      "Category": "Intro"
+      "text": "Door ons bewust te worden over bepaalde handelingen en situaties kunnen wij met een kleine inspanning een inclusievere maatschappij inrichten. Mensen met een beperking passen zich al dagelijks aan aan hoe de publieke ruimte is ingericht."
     },
     {
       "id": "intro_05",
       "type": "content",
       "section": "intro",
       "title": "Wat als ik me onwennig voel?",
-      "text": "Het is normaal dat je niet meteen weet hoe je een persoon met een beperking moet helpen. Contact is heel belangrijk om interacties te bevorderen; daarom is Mensenkenners hier om je wegwijs te maken in deze situaties.",
-      "Category": "Intro"
+      "text": "Het is normaal dat je niet meteen weet hoe je een persoon met een beperking moet helpen. Contact is heel belangrijk om interacties te bevorderen; daarom is Mensenkenners hier om je wegwijs te maken in deze situaties."
     },
     {
       "id": "intro_06",
       "type": "content",
       "section": "intro",
       "title": "Bewoording",
-      "text": "In deze cursus gebruiken we de term 'mensen met een beperking'. Woorden als invalide en gehandicapt worden minder op prijs gesteld.",
-      "Category": "Intro"
+      "text": "In deze cursus gebruiken we de term 'mensen met een beperking'. Woorden als invalide en gehandicapt worden minder op prijs gesteld."
     },
     {
       "id": "intro_q01",
@@ -92,8 +86,7 @@
         "Onderwijs",
         "Overige"
       ],
-      "label": "Ik werk in deze sector",
-      "Category": "Intro"
+      "label": "Ik werk in deze sector"
     },
     {
       "id": "intro_q02",
@@ -103,8 +96,7 @@
       "question": "Wat is je naam?",
       "input_type": "text",
       "required": true,
-      "description": "Graag voor- en achternaam invullen.",
-      "Category": "Intro"
+      "description": "Graag voor- en achternaam invullen."
     },
     {
       "id": "intro_q03",
@@ -113,8 +105,7 @@
       "title": "E-mail",
       "question": "Wat is je email?",
       "input_type": "email",
-      "required": true,
-      "Category": "Intro"
+      "required": true
     },
     {
       "id": "intro_q04",
@@ -123,8 +114,7 @@
       "title": "Bevestig e-mail",
       "question": "Bevestig nogmaals je email!",
       "input_type": "email",
-      "required": true,
-      "Category": "Intro"
+      "required": true
     },
     {
       "id": "intro_q05",
@@ -137,8 +127,7 @@
       "options": [
         "Ja",
         "Nee"
-      ],
-      "Category": "Intro"
+      ]
     },
     {
       "id": "intro_q06",
@@ -147,8 +136,7 @@
       "title": "Organisatie",
       "question": "Via welke organisatie ben je hier gekomen?",
       "input_type": "text",
-      "required": true,
-      "Category": "Intro"
+      "required": true
     },
     {
       "id": "intro_q07",
@@ -158,16 +146,14 @@
       "question": "Wat zou je willen leren over mensen met een beperking?",
       "input_type": "long_text",
       "required": true,
-      "placeholder": "Bijvoorbeeld: Ik wil weten wat mensen als negatief ervaren in de openbare ruimte.",
-      "Category": "Intro"
+      "placeholder": "Bijvoorbeeld: Ik wil weten wat mensen als negatief ervaren in de openbare ruimte."
     },
     {
       "id": "intro_submit",
       "type": "content",
       "section": "intro",
       "title": "Overgang",
-      "text": "Ben je klaar voor Deel 1?",
-      "Category": "Intro"
+      "text": "Ben je klaar voor Deel 1?"
     },
     {
       "id": "d1_start",
@@ -175,32 +161,28 @@
       "section": "deel_1_bewustwording",
       "title": "Welkom bij deel 1",
       "text": "Bewustwording van jouw rol en vooroordelen ontdekken. Je leert over verschillende soorten beperkingen en over wat jouw rol is als medewerker.",
-      "duration": "7+ minuten",
-      "Category": "Deel 1"
+      "duration": "7+ minuten"
     },
     {
       "id": "d1_auditief_intro",
       "type": "content",
       "section": "deel_1_bewustwording",
       "title": "Auditieve beperking",
-      "text": "We beginnen met uitdagingen van mensen met een auditieve beperking in de openbare ruimte. Dove mensen missen vaak informatie in openbare ruimtes, of ze worden verkeerd begrepen.",
-      "Category": "Deel 1"
+      "text": "We beginnen met uitdagingen van mensen met een auditieve beperking in de openbare ruimte. Dove mensen missen vaak informatie in openbare ruimtes, of ze worden verkeerd begrepen."
     },
     {
       "id": "d1_q01_video",
       "type": "video",
       "section": "deel_1_bewustwording",
       "title": "Bekijk de volgende video",
-      "url": "https://vimeo.com/810158384/7ab22c5733",
-      "Category": "Deel 1"
+      "url": "https://vimeo.com/810158384/7ab22c5733"
     },
     {
       "id": "d1_auditief_context",
       "type": "content",
       "section": "deel_1_bewustwording",
       "title": "Een onzichtbare beperking",
-      "text": "Auditieve beperkingen kun je vaak niet zomaar herkennen. De ene persoon hoort nog relatief veel, sommigen kunnen duidelijk spreken en anderen weer niet. Blijf rustig, heb geduld en houd het simpel.",
-      "Category": "Deel 1"
+      "text": "Auditieve beperkingen kun je vaak niet zomaar herkennen. De ene persoon hoort nog relatief veel, sommigen kunnen duidelijk spreken en anderen weer niet. Blijf rustig, heb geduld en houd het simpel."
     },
     {
       "id": "d1_q02",
@@ -231,8 +213,7 @@
           "text": "Tegen hun partner: Waar kan ik haar mee helpen?"
         }
       ],
-      "explanation": "Maak geen aanname over wat iemand wil. Trek geen overdreven aandacht en praat niet heel hard. Spreek mensen met een auditieve beperking altijd zelf aan.",
-      "Category": "Deel 1"
+      "explanation": "Maak geen aanname over wat iemand wil. Trek geen overdreven aandacht en praat niet heel hard. Spreek mensen met een auditieve beperking altijd zelf aan."
     },
     {
       "id": "d1_q03",
@@ -241,16 +222,14 @@
       "title": "Reflectie auditieve beperking",
       "question": "Wat heb je tot nu toe geleerd over mensen met een auditieve beperking, wat je eerder nog niet wist?",
       "input_type": "long_text",
-      "required": true,
-      "Category": "Deel 1"
+      "required": true
     },
     {
       "id": "d1_visueel_intro",
       "type": "content",
       "section": "deel_1_bewustwording",
       "title": "Visuele beperking",
-      "text": "We gaan meer leren over veelvoorkomende uitdagingen van mensen met een visuele beperking in de openbare ruimte. Blinde mensen missen vaak informatie; de ruimte is regelmatig niet voor hun behoeften ingericht.",
-      "Category": "Deel 1"
+      "text": "We gaan meer leren over veelvoorkomende uitdagingen van mensen met een visuele beperking in de openbare ruimte. Blinde mensen missen vaak informatie; de ruimte is regelmatig niet voor hun behoeften ingericht."
     },
     {
       "id": "d1_q04",
@@ -259,24 +238,21 @@
       "title": "Leerdoel visuele beperking",
       "question": "Wat zou je willen leren uit deze module over mensen met een visuele beperking? Wat wil je eruit halen?",
       "input_type": "long_text",
-      "required": true,
-      "Category": "Deel 1"
+      "required": true
     },
     {
       "id": "d1_q05_video",
       "type": "video",
       "section": "deel_1_bewustwording",
       "title": "Video visuele beperking",
-      "url": "https://vimeo.com/970612978?fl=pl&fe=cm",
-      "Category": "Deel 1"
+      "url": "https://vimeo.com/970612978?fl=pl&fe=cm"
     },
     {
       "id": "d1_visueel_context",
       "type": "content",
       "section": "deel_1_bewustwording",
       "title": "Een zichtbare beperking",
-      "text": "Visuele beperkingen kun je vaak makkelijker opmerken, bijvoorbeeld aan een geleidehond of blindestok. Toch hoeft dit niet altijd zo te zijn. Vraag wat iemand wil voordat je iets doet.",
-      "Category": "Deel 1"
+      "text": "Visuele beperkingen kun je vaak makkelijker opmerken, bijvoorbeeld aan een geleidehond of blindestok. Toch hoeft dit niet altijd zo te zijn. Vraag wat iemand wil voordat je iets doet."
     },
     {
       "id": "d1_q05",
@@ -307,8 +283,7 @@
           "text": "Tegen hun partner: Waar wil zij zitten?"
         }
       ],
-      "explanation": "Spreek mensen met een visuele beperking altijd zelf aan en maak geen aannames.",
-      "Category": "Deel 1"
+      "explanation": "Spreek mensen met een visuele beperking altijd zelf aan en maak geen aannames."
     },
     {
       "id": "d1_q06",
@@ -317,16 +292,14 @@
       "title": "Reflectie visuele beperking",
       "question": "Deel iets dat je hebt geleerd over omgaan met mensen met een visuele beperking.",
       "input_type": "long_text",
-      "required": true,
-      "Category": "Deel 1"
+      "required": true
     },
     {
       "id": "d1_motorisch_intro",
       "type": "content",
       "section": "deel_1_bewustwording",
       "title": "Motorische beperking",
-      "text": "Nu duiken we in uitdagingen van mensen met een motorische beperking. Iemand met een motorische beperking heeft problemen met bewegen; dit kan goed zichtbaar zijn, bijvoorbeeld door een rolstoel.",
-      "Category": "Deel 1"
+      "text": "Nu duiken we in uitdagingen van mensen met een motorische beperking. Iemand met een motorische beperking heeft problemen met bewegen; dit kan goed zichtbaar zijn, bijvoorbeeld door een rolstoel."
     },
     {
       "id": "d1_q07",
@@ -335,24 +308,21 @@
       "title": "Leerdoel motorische beperking",
       "question": "Wat zou je willen leren over mensen met een motorische beperking?",
       "input_type": "long_text",
-      "required": true,
-      "Category": "Deel 1"
+      "required": true
     },
     {
       "id": "d1_q08_video",
       "type": "video",
       "section": "deel_1_bewustwording",
       "title": "Video motorische beperking",
-      "url": "https://vimeo.com/970615768?fl=pl&fe=cm",
-      "Category": "Deel 1"
+      "url": "https://vimeo.com/970615768?fl=pl&fe=cm"
     },
     {
       "id": "d1_motorisch_context",
       "type": "content",
       "section": "deel_1_bewustwording",
       "title": "Een opvallende beperking",
-      "text": "Een motorische beperking is vaak snel op te merken, maar niet altijd. Vraag de persoon zelf om hulp wanneer dat nodig lijkt.",
-      "Category": "Deel 1"
+      "text": "Een motorische beperking is vaak snel op te merken, maar niet altijd. Vraag de persoon zelf om hulp wanneer dat nodig lijkt."
     },
     {
       "id": "d1_q08",
@@ -381,8 +351,7 @@
           "text": "We tillen je wel de trap op!"
         }
       ],
-      "explanation": "Maak geen aannames en spreek de persoon zelf aan.",
-      "Category": "Deel 1"
+      "explanation": "Maak geen aannames en spreek de persoon zelf aan."
     },
     {
       "id": "d1_q09",
@@ -391,16 +360,14 @@
       "title": "Reflectie motorische beperking",
       "question": "Hoe zou je uitleggen aan iemand anders wat je geleerd hebt van het vorige filmpje?",
       "input_type": "long_text",
-      "required": true,
-      "Category": "Deel 1"
+      "required": true
     },
     {
       "id": "d1_bijzonder_intro",
       "type": "content",
       "section": "deel_1_bewustwording",
       "title": "Bijzonder uiterlijk",
-      "text": "Laten we kijken naar uitdagingen van mensen met een bijzonder uiterlijk in de openbare ruimte. Met een bijzonder uiterlijk ben je vaak het middelpunt van de aandacht.",
-      "Category": "Deel 1"
+      "text": "Laten we kijken naar uitdagingen van mensen met een bijzonder uiterlijk in de openbare ruimte. Met een bijzonder uiterlijk ben je vaak het middelpunt van de aandacht."
     },
     {
       "id": "d1_q10",
@@ -409,24 +376,21 @@
       "title": "Leerdoel bijzonder uiterlijk",
       "question": "Wat zou je willen leren uit deze module over mensen met een bijzonder uiterlijk?",
       "input_type": "long_text",
-      "required": true,
-      "Category": "Deel 1"
+      "required": true
     },
     {
       "id": "d1_q11_video",
       "type": "video",
       "section": "deel_1_bewustwording",
       "title": "Video bijzonder uiterlijk",
-      "url": "https://vimeo.com/970619074?fl=pl&fe=cm",
-      "Category": "Deel 1"
+      "url": "https://vimeo.com/970619074?fl=pl&fe=cm"
     },
     {
       "id": "d1_bijzonder_context",
       "type": "content",
       "section": "deel_1_bewustwording",
       "title": "Context bijzonder uiterlijk",
-      "text": "Mensen met een bijzonder uiterlijk weten vaak dat ze zullen opvallen in een nieuwe ruimte. Hoe je hier als ander mee omgaat, maakt voor hen verschil.",
-      "Category": "Deel 1"
+      "text": "Mensen met een bijzonder uiterlijk weten vaak dat ze zullen opvallen in een nieuwe ruimte. Hoe je hier als ander mee omgaat, maakt voor hen verschil."
     },
     {
       "id": "d1_q11",
@@ -455,8 +419,7 @@
           "text": "Lang naar iemand kijken voordat je iets zegt."
         }
       ],
-      "explanation": "Leg niet te veel focus op hun uiterlijk. Behandel hen als ieder ander persoon.",
-      "Category": "Deel 1"
+      "explanation": "Leg niet te veel focus op hun uiterlijk. Behandel hen als ieder ander persoon."
     },
     {
       "id": "d1_q12",
@@ -465,16 +428,14 @@
       "title": "Reflectie bijzonder uiterlijk",
       "question": "Wat zijn aspecten van het filmpje waar je verbaasd over was te horen?",
       "input_type": "long_text",
-      "required": true,
-      "Category": "Deel 1"
+      "required": true
     },
     {
       "id": "d1_spraak_intro",
       "type": "content",
       "section": "deel_1_bewustwording",
       "title": "Spraakbeperking",
-      "text": "We gaan meer leren over veelvoorkomende uitdagingen van mensen met een spraakbeperking in de openbare ruimte.",
-      "Category": "Deel 1"
+      "text": "We gaan meer leren over veelvoorkomende uitdagingen van mensen met een spraakbeperking in de openbare ruimte."
     },
     {
       "id": "d1_q13",
@@ -483,24 +444,21 @@
       "title": "Leerdoel spraakbeperking",
       "question": "Wat zou je willen leren over mensen met een spraakbeperking?",
       "input_type": "long_text",
-      "required": true,
-      "Category": "Deel 1"
+      "required": true
     },
     {
       "id": "d1_q14_video",
       "type": "video",
       "section": "deel_1_bewustwording",
       "title": "Video spraakbeperking",
-      "url": "https://vimeo.com/970634942?fl=pl&fe=cm",
-      "Category": "Deel 1"
+      "url": "https://vimeo.com/970634942?fl=pl&fe=cm"
     },
     {
       "id": "d1_spraak_context",
       "type": "content",
       "section": "deel_1_bewustwording",
       "title": "Context spraakbeperking",
-      "text": "Mensen met een spraakbeperking kunnen problemen ervaren met stem-gebaseerde diensten, bijvoorbeeld telefonisch of bij diensten met spraakgestuurde functies.",
-      "Category": "Deel 1"
+      "text": "Mensen met een spraakbeperking kunnen problemen ervaren met stem-gebaseerde diensten, bijvoorbeeld telefonisch of bij diensten met spraakgestuurde functies."
     },
     {
       "id": "d1_q14",
@@ -531,8 +489,7 @@
           "is_correct": true
         }
       ],
-      "explanation": "Geef mensen de ruimte om op hun eigen manier te spreken. Vul niet in wat zij willen zeggen.",
-      "Category": "Deel 1"
+      "explanation": "Geef mensen de ruimte om op hun eigen manier te spreken. Vul niet in wat zij willen zeggen."
     },
     {
       "id": "d1_q15",
@@ -541,16 +498,14 @@
       "title": "Reflectie spraakbeperking",
       "question": "Is er iets naar boven gekomen over een spraakbeperking wat je hiervoor nog niet wist? Leg uit.",
       "input_type": "long_text",
-      "required": true,
-      "Category": "Deel 1"
+      "required": true
     },
     {
       "id": "d1_influencers_intro",
       "type": "content",
       "section": "deel_1_bewustwording",
       "title": "Blijven leren",
-      "text": "Om kennis goed toe te passen is blootstelling aan mensen met een beperking belangrijk. Door mensen op sociale media te volgen krijg je actief geheugensteuntjes mee.",
-      "Category": "Deel 1"
+      "text": "Om kennis goed toe te passen is blootstelling aan mensen met een beperking belangrijk. Door mensen op sociale media te volgen krijg je actief geheugensteuntjes mee."
     },
     {
       "id": "d1_q16",
@@ -591,8 +546,7 @@
           "@mimidarlingbeauty",
           "@thedrewlynch"
         ]
-      },
-      "Category": "Deel 1"
+      }
     },
     {
       "id": "d1_q17",
@@ -601,8 +555,7 @@
       "title": "Filmpje delen",
       "question": "Selecteer een filmpje dat je aanspreekt van die influencers en deel het met iemand uit je team. Deel daarbij kort wat je leuk vond of leerde van dat filmpje.",
       "input_type": "long_text",
-      "required": true,
-      "Category": "Deel 1"
+      "required": true
     },
     {
       "id": "d1_q18",
@@ -612,8 +565,7 @@
       "question": "Wat vond je leuk aan deze les?",
       "input_type": "long_text",
       "required": true,
-      "description": "Welke filmpjes blijven je bij? Welke oefeningen vond je leuk?",
-      "Category": "Deel 1"
+      "description": "Welke filmpjes blijven je bij? Welke oefeningen vond je leuk?"
     },
     {
       "id": "d1_q19",
@@ -623,24 +575,21 @@
       "question": "Wat kon er beter aan deze les?",
       "input_type": "long_text",
       "required": true,
-      "description": "Was er iets wat je niet handig/leerzaam/interessant vond?",
-      "Category": "Deel 1"
+      "description": "Was er iets wat je niet handig/leerzaam/interessant vond?"
     },
     {
       "id": "d1_submit",
       "type": "content",
       "section": "deel_1_bewustwording",
       "title": "Overgang",
-      "text": "Ben je klaar voor Deel 2?",
-      "Category": "Deel 1"
+      "text": "Ben je klaar voor Deel 2?"
     },
     {
       "id": "d2_start",
       "type": "content",
       "section": "deel_2_leren_door_te_ervaren",
       "title": "Welkom bij deel 2",
-      "text": "Leren door te ervaren. In dit deel gaan we leren waar mensen met een beperking mee te maken hebben door zelf een idee te krijgen van hoe het kan voelen. Let op: voor dit deel heb je iemand in je buurt nodig om de oefening mee te doen.",
-      "Category": "Deel 2"
+      "text": "Leren door te ervaren. In dit deel gaan we leren waar mensen met een beperking mee te maken hebben door zelf een idee te krijgen van hoe het kan voelen. Let op: voor dit deel heb je iemand in je buurt nodig om de oefening mee te doen."
     },
     {
       "id": "d2_q01",
@@ -649,24 +598,21 @@
       "title": "E-mail bevestigen",
       "question": "Hoi, zodat we je voortgang kunnen opslaan - wil je je e-mailadres even bevestigen?",
       "input_type": "email",
-      "required": true,
-      "Category": "Deel 2"
+      "required": true
     },
     {
       "id": "d2_q01_video",
       "type": "video",
       "section": "deel_2_leren_door_te_ervaren",
       "title": "Video auditieve ervaring",
-      "url": "https://vimeo.com/976590244?fl=pl&fe=cm",
-      "Category": "Deel 2"
+      "url": "https://vimeo.com/976590244?fl=pl&fe=cm"
     },
     {
       "id": "d2_auditief_challenge",
       "type": "content",
       "section": "deel_2_leren_door_te_ervaren",
       "title": "Challenge zonder gehoor",
-      "text": "Kies een of meerdere collega's uit waarmee je een live oefening gaat doen. Doe een koptelefoon op met muziek zodat je je omgeving niet goed kunt horen. Begroet de medewerker, voer een korte klantreis uit en reken af.",
-      "Category": "Deel 2"
+      "text": "Kies een of meerdere collega's uit waarmee je een live oefening gaat doen. Doe een koptelefoon op met muziek zodat je je omgeving niet goed kunt horen. Begroet de medewerker, voer een korte klantreis uit en reken af."
     },
     {
       "id": "d2_q02",
@@ -675,8 +621,7 @@
       "title": "Zonder gehoor - verwacht",
       "question": "Wat verwacht je tegen te komen?",
       "input_type": "long_text",
-      "required": false,
-      "Category": "Deel 2"
+      "required": false
     },
     {
       "id": "d2_q03",
@@ -685,8 +630,7 @@
       "title": "Zonder gehoor - verrassend",
       "question": "Wat vond je het verrassendste onderdeel van zonder gehoor rondlopen?",
       "input_type": "long_text",
-      "required": true,
-      "Category": "Deel 2"
+      "required": true
     },
     {
       "id": "d2_q04",
@@ -695,8 +639,7 @@
       "title": "Zonder gehoor - prettig geholpen",
       "question": "Wat vond je een prettige manier van geholpen worden?",
       "input_type": "long_text",
-      "required": true,
-      "Category": "Deel 2"
+      "required": true
     },
     {
       "id": "d2_q05",
@@ -705,8 +648,7 @@
       "title": "Zonder gehoor - onprettig",
       "question": "Wat vond je onprettig aan deze ervaring?",
       "input_type": "long_text",
-      "required": true,
-      "Category": "Deel 2"
+      "required": true
     },
     {
       "id": "d2_q06",
@@ -715,16 +657,14 @@
       "title": "Auditieve assistentie",
       "question": "Zal je vanaf nu iets anders doen als je een persoon met een auditieve beperking wilt assisteren? Leg uit.",
       "input_type": "long_text",
-      "required": true,
-      "Category": "Deel 2"
+      "required": true
     },
     {
       "id": "d2_q06_video",
       "type": "video",
       "section": "deel_2_leren_door_te_ervaren",
       "title": "Video visuele ervaring",
-      "url": "https://www.youtube.com/watch?v=pI-4fEP1GVU",
-      "Category": "Deel 2"
+      "url": "https://www.youtube.com/watch?v=pI-4fEP1GVU"
     },
     {
       "id": "d2_q07",
@@ -733,16 +673,14 @@
       "title": "Zonder zicht - obstakels",
       "question": "Welke obstakels denk je tegen te komen op jouw werkplek?",
       "input_type": "long_text",
-      "required": true,
-      "Category": "Deel 2"
+      "required": true
     },
     {
       "id": "d2_visueel_challenge",
       "type": "content",
       "section": "deel_2_leren_door_te_ervaren",
       "title": "DIY zonder zicht",
-      "text": "Doe deze opdracht samen. Een persoon is geblinddoekt. De ander oefent met het assisteren van een visueel beperkt persoon. Leg een normale klantreis af op jullie werkplek.",
-      "Category": "Deel 2"
+      "text": "Doe deze opdracht samen. Eén persoon is geblinddoekt. De ander oefent met het assisteren van een visueel beperkt persoon. Leg een normale klantreis af op jullie werkplek."
     },
     {
       "id": "d2_q08",
@@ -751,8 +689,7 @@
       "title": "Zonder zicht - verrassend",
       "question": "Wat vond je het verrassendste onderdeel van zonder zicht rondlopen?",
       "input_type": "long_text",
-      "required": true,
-      "Category": "Deel 2"
+      "required": true
     },
     {
       "id": "d2_q09",
@@ -761,8 +698,7 @@
       "title": "Zonder zicht - prettig geholpen",
       "question": "Wat vond je een prettige manier van geholpen worden?",
       "input_type": "long_text",
-      "required": true,
-      "Category": "Deel 2"
+      "required": true
     },
     {
       "id": "d2_q10",
@@ -771,8 +707,7 @@
       "title": "Zonder zicht - onprettig",
       "question": "Wat vond je onprettig aan deze ervaring?",
       "input_type": "long_text",
-      "required": true,
-      "Category": "Deel 2"
+      "required": true
     },
     {
       "id": "d2_q11",
@@ -781,16 +716,14 @@
       "title": "Visuele assistentie",
       "question": "Wat zal je vanaf nu anders doen als je een persoon met een visuele beperking wilt assisteren?",
       "input_type": "long_text",
-      "required": true,
-      "Category": "Deel 2"
+      "required": true
     },
     {
       "id": "d2_q11_video",
       "type": "video",
       "section": "deel_2_leren_door_te_ervaren",
       "title": "Video motorische toegankelijkheid",
-      "url": "http://youtube.com/watch?v=mwfTL2TPuYo",
-      "Category": "Deel 2"
+      "url": "http://youtube.com/watch?v=mwfTL2TPuYo"
     },
     {
       "id": "d2_q12",
@@ -805,8 +738,7 @@
         "max": 10,
         "min_label": "Niet toegankelijk",
         "max_label": "Zeer toegankelijk"
-      },
-      "Category": "Deel 2"
+      }
     },
     {
       "id": "d2_q13",
@@ -824,8 +756,7 @@
         "Type voordeur",
         "Route beschrijving OV",
         "Overige"
-      ],
-      "Category": "Deel 2"
+      ]
     },
     {
       "id": "d2_q14",
@@ -840,8 +771,7 @@
         "max": 10,
         "min_label": "Niet toegankelijk",
         "max_label": "Zeer toegankelijk"
-      },
-      "Category": "Deel 2"
+      }
     },
     {
       "id": "d2_q15",
@@ -850,8 +780,7 @@
       "title": "Ontdekking toegankelijkheid",
       "question": "Wat heb je ontdekt over de toegankelijkheid van jullie werkplek?",
       "input_type": "long_text",
-      "required": true,
-      "Category": "Deel 2"
+      "required": true
     },
     {
       "id": "d2_q16",
@@ -860,32 +789,28 @@
       "title": "Telefonische vraag toegankelijkheid",
       "question": "Wat zou je kunnen zeggen als een klant/bezoeker met een motorische beperking zou bellen met de vraag over de toegankelijkheid?",
       "input_type": "long_text",
-      "required": true,
-      "Category": "Deel 2"
+      "required": true
     },
     {
       "id": "d2_info_tips",
       "type": "content",
       "section": "deel_2_leren_door_te_ervaren",
       "title": "Tips informatie geven",
-      "text": "Wees eerlijk over toegankelijkheid, beloof geen dingen die je niet kunt waarmaken. Benoem de toegankelijkheid van ingangen en toiletten. Vertel of een plek zelfstandig te bedienen is.",
-      "Category": "Deel 2"
+      "text": "Wees eerlijk over toegankelijkheid, beloof geen dingen die je niet kunt waarmaken. Benoem de toegankelijkheid van ingangen en toiletten. Vertel of een plek zelfstandig te bedienen is."
     },
     {
       "id": "d2_q16_video",
       "type": "video",
       "section": "deel_2_leren_door_te_ervaren",
       "title": "Video spraakbeperking",
-      "url": "https://vimeo.com/961207927?fl=pl&fe=cm",
-      "Category": "Deel 2"
+      "url": "https://vimeo.com/961207927?fl=pl&fe=cm"
     },
     {
       "id": "d2_spraak_context",
       "type": "content",
       "section": "deel_2_leren_door_te_ervaren",
       "title": "Context over spraakbeperking",
-      "text": "Mensen met een spraakbeperking krijgen vaak niet de tijd om tot een volle zin te komen. Hun zinnen worden vaak afgemaakt door anderen.",
-      "Category": "Deel 2"
+      "text": "Mensen met een spraakbeperking krijgen vaak niet de tijd om tot een volle zin te komen. Hun zinnen worden vaak afgemaakt door anderen."
     },
     {
       "id": "d2_q17",
@@ -894,16 +819,14 @@
       "title": "Spraakbeperking geholpen",
       "question": "Heb jij wel eens iemand geholpen met een spraakbeperking?",
       "input_type": "long_text",
-      "required": true,
-      "Category": "Deel 2"
+      "required": true
     },
     {
       "id": "d2_q17_video",
       "type": "video",
       "section": "deel_2_leren_door_te_ervaren",
       "title": "Video spraakbeperking ervaring",
-      "url": "https://www.youtube.com/watch?v=CXZto5uRMqw",
-      "Category": "Deel 2"
+      "url": "https://www.youtube.com/watch?v=CXZto5uRMqw"
     },
     {
       "id": "d2_q18",
@@ -912,8 +835,7 @@
       "title": "Tijdens video",
       "question": "Vertel ons wat er door je heen ging tijdens het kijken van de video.",
       "input_type": "long_text",
-      "required": true,
-      "Category": "Deel 2"
+      "required": true
     },
     {
       "id": "d2_q19",
@@ -928,8 +850,7 @@
         "max": 10,
         "min_label": "helemaal niet",
         "max_label": "heel erg"
-      },
-      "Category": "Deel 2"
+      }
     },
     {
       "id": "d2_q20",
@@ -938,24 +859,21 @@
       "title": "Inclusieve ervaring faciliteren",
       "question": "Hoe denk je dat je een inclusievere ervaring kan faciliteren voor mensen met een spraakbeperking?",
       "input_type": "long_text",
-      "required": true,
-      "Category": "Deel 2"
+      "required": true
     },
     {
       "id": "d2_q20_video",
       "type": "video",
       "section": "deel_2_leren_door_te_ervaren",
       "title": "Video bijzonder uiterlijk",
-      "url": "https://vimeo.com/970710130?fl=pl&fe=cm",
-      "Category": "Deel 2"
+      "url": "https://vimeo.com/970710130?fl=pl&fe=cm"
     },
     {
       "id": "d2_bijzonder_context",
       "type": "content",
       "section": "deel_2_leren_door_te_ervaren",
       "title": "Context bijzonder uiterlijk",
-      "text": "Mensen met een bijzonder of opvallend uiterlijk worden in de openbare ruimte constant nagestaard. Medelijden tonen kan de situatie juist ongemakkelijk maken.",
-      "Category": "Deel 2"
+      "text": "Mensen met een bijzonder of opvallend uiterlijk worden in de openbare ruimte constant nagestaard. Medelijden tonen kan de situatie juist ongemakkelijk maken."
     },
     {
       "id": "d2_q21",
@@ -964,8 +882,7 @@
       "title": "Opdracht bijzonder uiterlijk",
       "question": "Bespreek met een collega hoe jullie je zouden voelen als er een persoon binnenloopt die van top tot teen brandwonden heeft. Wat komt er uit jullie gesprek?",
       "input_type": "long_text",
-      "required": true,
-      "Category": "Deel 2"
+      "required": true
     },
     {
       "id": "d2_q22",
@@ -974,8 +891,7 @@
       "title": "Schrikreactie",
       "question": "Ben je in het verleden wel eens geschrokken van een persoon die binnen liep en hoe ging je daar mee om?",
       "input_type": "long_text",
-      "required": true,
-      "Category": "Deel 2"
+      "required": true
     },
     {
       "id": "d2_q23",
@@ -984,40 +900,35 @@
       "title": "Verbetering omgang",
       "question": "Wat kan er beter aan deze les?",
       "input_type": "long_text",
-      "required": true,
-      "Category": "Deel 2"
+      "required": true
     },
     {
       "id": "d2_submit",
       "type": "content",
       "section": "deel_2_leren_door_te_ervaren",
       "title": "Overgang",
-      "text": "Ben je klaar voor deel 3?",
-      "Category": "Deel 2"
+      "text": "Ben je klaar voor deel 3?"
     },
     {
       "id": "d3_start",
       "type": "content",
       "section": "deel_3_vertaling_naar_jouw_werk",
       "title": "Welkom bij deel 3",
-      "text": "Vertaling naar jouw werk. We zetten praktische do's en don'ts op een rijtje en denken met collega's na over hoe jullie de werkplek inclusiever kunnen maken.",
-      "Category": "Deel 3"
+      "text": "Vertaling naar jouw werk. We zetten praktische do's en don'ts op een rijtje en denken met collega's na over hoe jullie de werkplek inclusiever kunnen maken."
     },
     {
       "id": "d3_q01_video",
       "type": "video",
       "section": "deel_3_vertaling_naar_jouw_werk",
       "title": "Auditieve beperking video",
-      "url": "https://www.youtube.com/watch?v=wMAfSblVSAw",
-      "Category": "Deel 3"
+      "url": "https://www.youtube.com/watch?v=wMAfSblVSAw"
     },
     {
       "id": "d3_auditief_context",
       "type": "content",
       "section": "deel_3_vertaling_naar_jouw_werk",
       "title": "Auditieve beperking",
-      "text": "Auditief beperkte mensen kunnen last hebben van omgevingsgeluiden. Wees je bij de inrichting bewust van geluid en muziek.",
-      "Category": "Deel 3"
+      "text": "Auditief beperkte mensen kunnen last hebben van omgevingsgeluiden. Wees je bij de inrichting bewust van geluid en muziek."
     },
     {
       "id": "d3_q01",
@@ -1026,16 +937,14 @@
       "title": "Oefening auditieve klanten",
       "question": "Neem met je collega's de tips door. Bedenk samen één actie waarmee jullie je werkplek inclusiever kunnen maken voor auditief beperkte klanten. Wat hebben jullie bedacht?",
       "input_type": "long_text",
-      "required": true,
-      "Category": "Deel 3"
+      "required": true
     },
     {
       "id": "d3_quiz_intro_1",
       "type": "content",
       "section": "deel_3_vertaling_naar_jouw_werk",
       "title": "Korte quiz",
-      "text": "Wat heb je geleerd? Kies steeds het beste antwoord voor de meeste punten.",
-      "Category": "Deel 3"
+      "text": "Wat heb je geleerd? Kies steeds het beste antwoord voor de meeste punten."
     },
     {
       "id": "d3_q02",
@@ -1059,8 +968,7 @@
           "text": "Je wacht af, als ze iets nodig hebben komen ze wel naar je toe.",
           "is_correct": true
         }
-      ],
-      "Category": "Deel 3"
+      ]
     },
     {
       "id": "d3_q03",
@@ -1085,8 +993,7 @@
           "text": "Je neemt ze mee naar een rustigere plek en blijft met ze praten en duidelijk articuleren.",
           "is_correct": true
         }
-      ],
-      "Category": "Deel 3"
+      ]
     },
     {
       "id": "d3_q04",
@@ -1110,24 +1017,21 @@
           "id": "C",
           "text": "Je vertrouwt op je gevoel en plaatst de bestelling."
         }
-      ],
-      "Category": "Deel 3"
+      ]
     },
     {
       "id": "d3_visueel_context",
       "type": "content",
       "section": "deel_3_vertaling_naar_jouw_werk",
       "title": "Visuele beperking",
-      "text": "Visueel beperkte mensen hebben moeite om informatie toegankelijk te verkrijgen. Communiceer duidelijk dat jij een medewerker bent, dat je voor ze staat en wijs niet als je de weg uitlegt.",
-      "Category": "Deel 3"
+      "text": "Visueel beperkte mensen hebben moeite om informatie toegankelijk te verkrijgen. Communiceer duidelijk dat jij een medewerker bent, dat je voor ze staat en wijs niet als je de weg uitlegt."
     },
     {
       "id": "d3_q06_video",
       "type": "video",
       "section": "deel_3_vertaling_naar_jouw_werk",
       "title": "Visuele beperking video",
-      "url": "https://www.youtube.com/watch?v=Z-zbJiGg5Jk",
-      "Category": "Deel 3"
+      "url": "https://www.youtube.com/watch?v=Z-zbJiGg5Jk"
     },
     {
       "id": "d3_q05",
@@ -1136,8 +1040,7 @@
       "title": "Oefening visuele klanten",
       "question": "Neem met je collega's de tips door. Bedenk samen één actie waarmee jullie je werkplek inclusiever kunnen maken voor visueel beperkte klanten.",
       "input_type": "long_text",
-      "required": true,
-      "Category": "Deel 3"
+      "required": true
     },
     {
       "id": "d3_q06",
@@ -1162,8 +1065,7 @@
           "id": "C",
           "text": "Je loopt naar ze toe, zegt rustig: Ik begeleid u wel even en pakt ze bij de bovenarm."
         }
-      ],
-      "Category": "Deel 3"
+      ]
     },
     {
       "id": "d3_q07",
@@ -1187,24 +1089,21 @@
           "text": "Je legt gedetailleerd uit hoe je het best bij het toilet komt.",
           "is_correct": true
         }
-      ],
-      "Category": "Deel 3"
+      ]
     },
     {
       "id": "d3_motorisch_context",
       "type": "content",
       "section": "deel_3_vertaling_naar_jouw_werk",
       "title": "Motorische beperking",
-      "text": "Motorisch beperkte mensen hebben toegankelijkheid als belangrijk onderdeel. Wees duidelijk en eerlijk over de huidige situatie van het gebouw en de faciliteiten.",
-      "Category": "Deel 3"
+      "text": "Motorisch beperkte mensen hebben toegankelijkheid als belangrijk onderdeel. Wees duidelijk en eerlijk over de huidige situatie van het gebouw en de faciliteiten."
     },
     {
       "id": "d3_q09_video",
       "type": "video",
       "section": "deel_3_vertaling_naar_jouw_werk",
       "title": "Motorische beperking video",
-      "url": "https://www.youtube.com/watch?v=l4JyxyHyTxl",
-      "Category": "Deel 3"
+      "url": "https://www.youtube.com/watch?v=l4JyxyHyTxl"
     },
     {
       "id": "d3_q08",
@@ -1213,8 +1112,7 @@
       "title": "Motorisch - betere aanpak",
       "question": "In het filmpje komt een praktische situatie naar voren. Na het lezen van de tips sheet in je mail, wat denk je dat een betere aanpak van deze situatie was geweest?",
       "input_type": "long_text",
-      "required": true,
-      "Category": "Deel 3"
+      "required": true
     },
     {
       "id": "d3_q09",
@@ -1223,8 +1121,7 @@
       "title": "Oefening motorische klanten",
       "question": "Neem met je collega's de tips door. Bedenk samen één actie waarmee jullie je werkplek inclusiever kunnen maken voor motorisch beperkte klanten.",
       "input_type": "long_text",
-      "required": true,
-      "Category": "Deel 3"
+      "required": true
     },
     {
       "id": "d3_q10",
@@ -1264,8 +1161,7 @@
           "id": "F",
           "text": "Hoe glad de vloer is"
         }
-      ],
-      "Category": "Deel 3"
+      ]
     },
     {
       "id": "d3_q11",
@@ -1289,24 +1185,21 @@
           "id": "C",
           "text": "Gehandicapt"
         }
-      ],
-      "Category": "Deel 3"
+      ]
     },
     {
       "id": "d3_bijzonder_context",
       "type": "content",
       "section": "deel_3_vertaling_naar_jouw_werk",
       "title": "Bijzonder uiterlijk",
-      "text": "Mensen met een bijzonder uiterlijk willen anderen soms geruststellen dat er niks mis met hen is. Jouw reactie kan invloed hebben op hoe iemand zich voelt.",
-      "Category": "Deel 3"
+      "text": "Mensen met een bijzonder uiterlijk willen anderen soms geruststellen dat er niks mis met hen is. Jouw reactie kan invloed hebben op hoe iemand zich voelt."
     },
     {
       "id": "d3_q13_video",
       "type": "video",
       "section": "deel_3_vertaling_naar_jouw_werk",
       "title": "Bijzonder uiterlijk video",
-      "url": "https://www.youtube.com/watch?v=nEm7rdhISgow",
-      "Category": "Deel 3"
+      "url": "https://www.youtube.com/watch?v=nEm7rdhISgow"
     },
     {
       "id": "d3_q12",
@@ -1336,16 +1229,14 @@
           "id": "D",
           "text": "Mensen een knipoog geven als ze binnen komen"
         }
-      ],
-      "Category": "Deel 3"
+      ]
     },
     {
       "id": "d3_tipsheet",
       "type": "content",
       "section": "deel_3_vertaling_naar_jouw_werk",
       "title": "Tips sheet",
-      "text": "Lees nu het tips sheet door om te kijken of er tips overeen komen met de suggesties. Print de PDF uit en hang deze op een goede plek op je werkplek.",
-      "Category": "Deel 3"
+      "text": "Lees nu het tips sheet door om te kijken of er tips overeen komen met de suggesties. Print de PDF uit en hang deze op een goede plek op je werkplek."
     },
     {
       "id": "d3_q13",
@@ -1373,24 +1264,21 @@
           "id": "D",
           "text": "Wegkijken."
         }
-      ],
-      "Category": "Deel 3"
+      ]
     },
     {
       "id": "d3_spraak_context",
       "type": "content",
       "section": "deel_3_vertaling_naar_jouw_werk",
       "title": "Spraakbeperking",
-      "text": "Mensen met een spraakbeperking krijgen minder zelfvertrouwen als mensen proberen hun zinnen af te maken. Geef ruimte en reageer gepast.",
-      "Category": "Deel 3"
+      "text": "Mensen met een spraakbeperking krijgen minder zelfvertrouwen als mensen proberen hun zinnen af te maken. Geef ruimte en reageer gepast."
     },
     {
       "id": "d3_q15_video",
       "type": "video",
       "section": "deel_3_vertaling_naar_jouw_werk",
       "title": "Spraakbeperking video",
-      "url": "https://www.youtube.com/watch?v=kOl0jm8LRv0",
-      "Category": "Deel 3"
+      "url": "https://www.youtube.com/watch?v=kOl0jm8LRv0"
     },
     {
       "id": "d3_q14",
@@ -1419,16 +1307,14 @@
           "text": "Vragen: Wat wil je het liefst dat ik doe als je stottert?",
           "is_correct": true
         }
-      ],
-      "Category": "Deel 3"
+      ]
     },
     {
       "id": "d3_formuleren",
       "type": "content",
       "section": "deel_3_vertaling_naar_jouw_werk",
       "title": "Eigen houding formuleren",
-      "text": "Als eind van de Mensenkenners training ga je formuleren hoe je jezelf inclusief zal opstellen.",
-      "Category": "Deel 3"
+      "text": "Als eind van de Mensenkenners training ga je formuleren hoe je jezelf inclusief zal opstellen."
     },
     {
       "id": "d3_q15",
@@ -1437,8 +1323,7 @@
       "title": "Eigen houding - visueel",
       "question": "Als ik een klant met een visuele beperking zie, dan...",
       "input_type": "long_text",
-      "required": true,
-      "Category": "Deel 3"
+      "required": true
     },
     {
       "id": "d3_q16",
@@ -1447,8 +1332,7 @@
       "title": "Eigen houding - auditief",
       "question": "Als iemand met een auditieve beperking mij om hulp vraagt, dan...",
       "input_type": "long_text",
-      "required": true,
-      "Category": "Deel 3"
+      "required": true
     },
     {
       "id": "d3_q17",
@@ -1457,8 +1341,7 @@
       "title": "Eigen houding - motorisch",
       "question": "Als iemand met een motorische beperking belt met een vraag over toegankelijkheid, dan...",
       "input_type": "long_text",
-      "required": true,
-      "Category": "Deel 3"
+      "required": true
     },
     {
       "id": "d3_q18",
@@ -1467,8 +1350,7 @@
       "title": "Eigen houding - opvallend uiterlijk",
       "question": "Als er iemand met een opvallend uiterlijk binnenkomt, dan...",
       "input_type": "long_text",
-      "required": true,
-      "Category": "Deel 3"
+      "required": true
     },
     {
       "id": "d3_q19",
@@ -1477,8 +1359,7 @@
       "title": "Eigen houding - spraakbeperking",
       "question": "Als iemand met een spraakbeperking mij iets vraagt, dan...",
       "input_type": "long_text",
-      "required": true,
-      "Category": "Deel 3"
+      "required": true
     },
     {
       "id": "d3_q20",
@@ -1487,8 +1368,7 @@
       "title": "Evaluatie deel 3 - leuk",
       "question": "Wat vond je leuk aan deze les?",
       "input_type": "long_text",
-      "required": true,
-      "Category": "Deel 3"
+      "required": true
     },
     {
       "id": "d3_q21",
@@ -1497,16 +1377,14 @@
       "title": "Evaluatie deel 3 - beter",
       "question": "Wat kon er beter aan deze les?",
       "input_type": "long_text",
-      "required": true,
-      "Category": "Deel 3"
+      "required": true
     },
     {
       "id": "d3_end",
       "type": "content",
       "section": "deel_3_vertaling_naar_jouw_werk",
       "title": "Einde",
-      "text": "Dit was het laatste deel van de Mensenkenners training. Je bent nu een Mensenkenner! Bedankt voor je tijd.",
-      "Category": "Deel 3"
+      "text": "Dit was het laatste deel van de Mensenkenners training. Je bent nu een Mensenkenner! Bedankt voor je tijd."
     }
   ]
 }

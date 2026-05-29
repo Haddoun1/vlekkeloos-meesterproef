@@ -1,306 +1,331 @@
 ---
 // @ts-nocheck
-import data from "../../data/mensenkennersvragen.json"; // Importeren JSON bestand met data
-import { slugify } from "../../utils/slugify"; // Importeren slugify functie voor maken van URL's
-
-// Functie genereren pagina's
+import data from "../../data/mensenkennersvragen.json";
+import { slugify } from "../../utils/slugify";
+ 
 export async function getStaticPaths() {
-  const items = data.flow.filter(
-    // Alle items in de JSON worden gefilterd op categorie
+  const items = data.blocks.filter(
     (item) =>
-      item.category && ["Content", "Video", "Question"].includes(item.type),
+      item.Category &&
+      ["content", "video", "question"].includes(item.type)
   );
-
+ 
   return items.map((item) => {
-    // Voor elke item wordt een pagina gegenereerd
-    const categorySlug = slugify(item.category);
-
+    const categorySlug = slugify(item.Category);
+ 
     const categoryItems = items.filter(
-      // Alle items in dezelfde categorie worden verzameld
-      (x) => slugify(x.category) === categorySlug,
+      (x) => slugify(x.Category) === categorySlug
     );
-
-    const stepIndex = categoryItems.findIndex(
-      // Vind de juiste index van het item binnen de categorie
-      (x) => x.id === item.id,
-    );
-
+ 
+    const stepIndex = categoryItems.findIndex((x) => x.id === item.id);
+ 
     return {
-      // Bepaalt de URL
       params: {
         category: categorySlug,
         step: String(stepIndex + 1),
       },
       props: {
-        // Bepaalt data die je meestuurt naar de pagina
         item,
         currentStep: stepIndex + 1,
         totalSteps: categoryItems.length,
-        category: item.category,
+        category: item.Category,
       },
     };
   });
 }
-
-const { item, currentStep, totalSteps, category } = Astro.props; // Data die naar de pagina wordt gestuurd ophalen
-
+ 
+const { item, currentStep, totalSteps, category } = Astro.props;
+ 
 const categorySlug = slugify(category);
-
-const previousPage = // Als er een vorige stap is, genereer de URL voor de vorige pagina, anders null
+ 
+const previousPage =
   currentStep > 1 ? `/${categorySlug}/${currentStep - 1}` : null;
-
-const nextPage = // Als er een volgende stap is, genereer de URL voor de volgende pagina, anders null
+ 
+const nextPage =
   currentStep < totalSteps ? `/${categorySlug}/${currentStep + 1}` : null;
-
-let embedUrl = item.url; // Standaard embed URL is de URL van het item
-
+ 
+let embedUrl = item.url;
+ 
 if (item.url?.includes("vimeo.com")) {
-  // Als het een Vimeo URL is, genereer de juiste embed URL
   const id = item.url.split("/").filter(Boolean).pop()?.split("?")[0];
-
   embedUrl = `https://player.vimeo.com/video/${id}`;
 }
-
+ 
 if (item.url?.includes("youtube.com/watch?v=")) {
-  // Als het een YouTube URL is, genereer de juiste embed URL
   const id = item.url.split("v=")[1]?.split("&")[0];
-
   embedUrl = `https://www.youtube.com/embed/${id}`;
 }
+ 
+if (item.url?.includes("youtu.be/")) {
+  const id = item.url.split("youtu.be/")[1]?.split("?")[0];
+  embedUrl = `https://www.youtube.com/embed/${id}`;
+}
+ 
+const options = item.options || [];
+const scale = item.scale || {};
+const minRating = scale.min || 1;
+const maxRating = scale.max || 10;
+const ratings = Array.from(
+  { length: maxRating - minRating + 1 },
+  (_, i) => minRating + i
+);
+ 
+let nextSectionUrl = null;
+ 
+if (item.id?.endsWith("_submit")) {
+  if (item.id === "intro_submit") {
+    nextSectionUrl = "/deel-1/1";
+  }
+ 
+  if (item.id === "d1_submit") {
+    nextSectionUrl = "/deel-2/1";
+  }
+ 
+  if (item.id === "d2_submit") {
+    nextSectionUrl = "/deel-3/1";
+  }
+}
+
 ---
 
 <link rel="stylesheet" href="/styles/global.css" />
 
-<body>
-  <main>
-    <h1>
-      {category} - Stap {currentStep} van {totalSteps}
-    </h1>
-
-    <section>
-      {item.title && <h2>{item.title}</h2>}
-
-      {item.content && <p>{item.content}</p>}
-
-      {
-        item.type === "Video" && embedUrl && (
-          <iframe
-            width="100%"
-            height="500"
-            src={embedUrl}
-            title={item.video_title || item.title}
-            frameborder="0"
-            allow="autoplay; fullscreen; picture-in-picture"
-            allowfullscreen
-          />
-        )
-      }
-
-      {
-        item.type === "Question" && (
-          <>
-            {item.question && <h3>{item.question}</h3>}
-
-            {item.description && <p>{item.description}</p>}
-
-            {item.input_type === "text" && (
-              <input type="text" placeholder="Typ hier je antwoord" />
-            )}
-
-            {item.input_type === "long_text" && (
-              <textarea rows="6" placeholder="Typ hier je antwoord" />
-            )}
-
-            {item.input_type === "multiple_choice" && (
-              <ul>
-                {item.options.map((option) => (
-                  <li>
-                    <button>{option.text}</button>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </>
-        )
-      }
-
-      {
-        item.input_type === "rating" && ( // genereert 10 radio buttons, met min en max labels
-          <div>
-            {item.min_label && <span>{item.min_label}</span>}
-
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((ratingValue) => (
-              <div>
-                <input
-                  type="radio"
-                  id={ratingValue}
-                  name="rating"
-                  value={ratingValue}
-                />
-
-                <label for={ratingValue}>{ratingValue}</label>
-              </div>
-            ))}
-
-            {item.max_label && <span>{item.max_label}</span>}
-          </div>
-        )
-      }
-
-      {
-        item.input_type === "email" && (
-          <input type="email" placeholder="Typ hier je e-mailadres" />
-        )
-      }
-    </section>
-
-    <nav>
-      {previousPage && <a href={previousPage}>Vorige</a>}
-
-      {nextPage && <a href={nextPage}>Volgende</a>}
-    </nav>
-  </main>
-</body>
+<main>
+<h1>{category} - Stap {currentStep} van {totalSteps}</h1>
+ 
+<section>
+  {item.title && <h2>{item.title}</h2>}
+ 
+  {item.subtitle && <p>{item.subtitle}</p>}
+ 
+  {item.text && <p>{item.text}</p>}
+ 
+  {item.source && <p><strong>Bron:</strong> {item.source}</p>}
+ 
+  {item.type === "video" && embedUrl && (
+    <iframe
+      width="100%"
+      height="500"
+      src={embedUrl}
+      title={item.title}
+      frameborder="0"
+      allow="autoplay; fullscreen; picture-in-picture"
+      allowfullscreen
+    ></iframe>
+  )}
+ 
+  {item.type === "question" && (
+    <>
+      {item.question && <h3>{item.question}</h3>}
+ 
+      {item.description && <p>{item.description}</p>}
+ 
+      {item.label && <label>{item.label}</label>}
+ 
+      {item.input_type === "text" && (
+        <input type="text" placeholder={item.placeholder || "Typ hier je antwoord"} />
+      )}
+ 
+      {item.input_type === "email" && (
+        <input type="email" placeholder="Typ hier je e-mailadres" />
+      )}
+ 
+      {item.input_type === "long_text" && (
+        <textarea
+          rows="6"
+          placeholder={item.placeholder || "Typ hier je antwoord"}
+        ></textarea>
+      )}
+ 
+      {item.input_type === "single_choice" && (
+        <ul>
+          {options.map((option) => (
+            <li>
+              <button type="button">
+                {typeof option === "string" ? option : option.text}
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+ 
+      {item.input_type === "multiple_choice" && (
+        <ul>
+          {options.map((option) => (
+            <li>
+              <button type="button">
+                {typeof option === "string" ? option : option.text}
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+ 
+      {item.input_type === "rating" && (
+        <div>
+          {scale.min_label && <span>{scale.min_label}</span>}
+ 
+          {ratings.map((ratingValue) => (
+            <div>
+              <input
+                type="radio"
+                id={`rating-${item.id}-${ratingValue}`}
+                name={`rating-${item.id}`}
+                value={ratingValue}
+              />
+              <label for={`rating-${item.id}-${ratingValue}`}>
+                {ratingValue}
+              </label>
+            </div>
+          ))}
+ 
+          {scale.max_label && <span>{scale.max_label}</span>}
+        </div>
+      )}
+    </>
+  )}
+ 
+{item.id?.endsWith("_submit") && (
+  <div class="submit-navigation">
+    
+    <a href="/index.html" class="button">
+      Terug naar dashboard
+    </a>
+ 
+    {nextSectionUrl && (
+      <a href={nextSectionUrl} class="button button-primary">
+        Naar volgend deel
+      </a>
+    )}
+  </div>
+)}
+ 
+{item.id?.endsWith("_end") && (
+  <div class="submit-navigation">
+    
+    <a href="/index.html" class="button">
+      Terug naar dashboard
+    </a>
+ 
+  </div>
+)}
+ 
+</section>
+ 
+<nav>
+  {previousPage && <a class="nav-prev" href={previousPage}>Vorige</a>}
+ 
+  {nextPage && <a class="nav-next" href={nextPage}>Volgende</a>}
+</nav>
+<link rel="stylesheet" href="/styles/global.css" />
+</main>
 
 <style>
-  :global(body) {
-    color: var(--color-text);
-    background-color: var(--color-green);
+  body {
+    background-color: var(--color-background);
   }
 
-  :global(main) {
+  main {
     display: grid;
     grid-template-columns: 1fr minmax(0, 800px) 1fr;
   }
 
-  :global(main > *) {
+  main > * {
     grid-column: 2;
   }
 
-  :global(main h1) {
-    font-size: var(--size-4xl);
+  h1 {
     font-family: var(--font-bold);
-    margin: clamp(6rem, 1vw, 1rem) 0rem clamp(1rem, 1vw, 3rem) 1rem;
+    font-size: clamp(1.5rem, 5vw, 2.5rem);
+    margin: 7rem 0 0 1rem;
   }
 
-  :global(main h2) {
+  h2 {
     font-family: var(--font-semi-bold);
-    margin: 1rem 0rem 3rem 1rem;
+    font-size: clamp(1.25rem, 4vw, 1.75rem);
+    margin: 1rem 0 0 1rem;
   }
 
-  :global(main h3) {
-    font-size: var(--size-2xl);
+  h3 {
     font-family: var(--font-semi-bold);
-    margin: 1rem 0rem 1rem 1rem;
-  }
-  :global(main p) {
-    font-family: var(--font-light);
-    margin: 3rem 0rem 3rem 1rem;
+    font-size: clamp(1.1rem, 3.5vw, 1.5rem);
+    margin: 1rem 0 0 1rem;
   }
 
-  :global(input),
-  :global(textarea) {
-    width: 100%;
-    box-sizing: border-box;
-
-    padding: 1rem;
-    margin-left: 1rem;
-
-    border: none;
-    border-radius: 1rem;
-
-    background-color: var(--color-background);
-    color: var(--color-text);
-
-    font-family: var(--font-light);
-    font-size: 1rem;
+  p {
+    font-size: clamp(var(--size-base), 2vw, var(--size-lg));
+    line-height: 1.5;
+    margin: 4rem 0 0 1rem;
   }
 
-  :global(textarea) {
-    resize: vertical;
-    min-height: 10rem;
-  }
-
-  :global(ul) {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-
+  li {
     list-style: none;
-    padding: 0;
     margin: 0 0 0 1rem;
   }
 
-  :global(li) {
-    width: 100%;
+  li:first-child {
+    margin-top: 1rem;
   }
 
-  :global(button) {
-    width: 100%;
-
-    padding: 1rem;
-
-    border: none;
-    border-radius: 1rem;
-
-    background-color: var(--color-background);
-    color: var(--color-text);
-
+  button {
+    margin: 0.5rem 0 0 0;
     font-family: var(--font-semi-bold);
-    font-size: 1rem;
-
+    padding: 0.75rem 1.5rem;
+    width: 60%;
+    border: 2px solid black;
+    border-radius: 4px;
+    background: var(--color-background);
     cursor: pointer;
-    transition: transform 0.2s ease;
+    text-align: left;
   }
 
-  :global(button:hover) {
-    transform: scale(1.02);
+  input[type="text"],
+  input[type="email"] {
+    margin: 1rem 0 0 1rem;
+    padding: 0.75rem;
+    width: calc(100% - 2rem);
+    border: 2px solid black;
+    border-radius: 4px;
   }
 
-  :global(nav) {
+  textarea {
+    margin: 1rem 0 0 1rem;
+    padding: 0.75rem;
+    width: calc(100% - 2rem);
+    border: 2px solid black;
+    border-radius: 4px;
+    font-family: var(--font-light);
+  }
+
+  span {
+    font-family: var(--font-light);
+  }
+
+  div {
     display: flex;
-    justify-content: space-between;
-    gap: 1rem;
-
-    margin: 4rem 1rem;
-  }
-
-  :global(a) {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-
-    padding: 1rem 2rem;
-
-    border-radius: 999rem;
-
-    background-color: var(--color-background);
-    color: var(--color-text);
-
-    text-decoration: none;
-    font-family: var(--font-semi-bold);
-  }
-
-  :global(iframe) {
-    border-radius: 1rem;
-    margin-left: 1rem;
-  }
-
-  :global(label) {
-    font-family: var(--font-semi-bold);
-  }
-
-  :global(input[type="radio"]) {
-    accent-color: var(--color-text);
-  }
-
-  :global(div:has(input[type="radio"])) {
-    display: flex;
+    justify-content: space-evenly;
     align-items: center;
     gap: 0.5rem;
   }
 
-  :global(div:has(input[type="radio"])):not(:last-child) {
-    margin-bottom: 0.75rem;
+  .nav-prev,
+  .nav-next {
+    position: fixed;
+    top: 90%;
+    transform: translateY(-50%);
+    font-family: var(--font-semi-bold);
+    padding: 0.75rem 1.5rem;
+    border: 2px solid black;
+    border-radius: 4px;
+    background: var(--color-background);
+    text-decoration: none;
+  }
+
+  .nav-prev {
+    left: calc(55% - 400px - 5rem);
+  }
+
+  .nav-next {
+    right: calc(55% - 400px - 5rem);
   }
 </style>
