@@ -61,106 +61,138 @@ if (item.url?.includes("youtu.be/")) {
   embedUrl = `https://www.youtube.com/embed/${id}`;
 }
 
+---
+
 <link rel="stylesheet" href="/styles/global.css" />
 
 <main>
-  <h1>
-    {category} - Stap {currentStep} van {totalSteps}
-  </h1>
-
-  <section>
-    {item.title && <h2>{item.title}</h2>}
-
-    {item.content && <p>{item.content}</p>}
-
-    {
-      item.type === "Video" && embedUrl && (
-        <iframe
-          width="100%"
-          height="500"
-          src={embedUrl}
-          title={item.video_title || item.title}
-          frameborder="0"
-          allow="autoplay; fullscreen; picture-in-picture"
-          allowfullscreen
-        />
-      )
-    }
-
-    {
-      item.type === "Question" && (
-        <>
-          {item.question && <h3>{item.question}</h3>}
-
-          {item.description && <p>{item.description}</p>}
-
-          {item.input_type === "text" && (
-            <input type="text" placeholder="Typ hier je antwoord" />
-          )}
-
-          {item.input_type === "long_text" && (
-            <textarea rows="6" placeholder="Typ hier je antwoord" />
-          )}
-
-          {item.input_type === "multiple_choice" && (
-            <ul>
-              {item.options.map((option) => (
-                <li>
-                  <button>{option.text}</button>
-                </li>
-              ))}
-            </ul>
-          )}
-        </>
-      )
-    }
-
-    {
-      item.input_type === "rating" && ( // genereert 10 radio buttons, met min en max labels
+<h1>{category} - Stap {currentStep} van {totalSteps}</h1>
+ 
+<section>
+  {item.title && <h2>{item.title}</h2>}
+ 
+  {item.subtitle && <p>{item.subtitle}</p>}
+ 
+  {item.text && <p>{item.text}</p>}
+ 
+  {item.source && <p><strong>Bron:</strong> {item.source}</p>}
+ 
+  {item.type === "video" && embedUrl && (
+    <iframe
+      width="100%"
+      height="500"
+      src={embedUrl}
+      title={item.title}
+      frameborder="0"
+      allow="autoplay; fullscreen; picture-in-picture"
+      allowfullscreen
+    ></iframe>
+  )}
+ 
+  {item.type === "question" && (
+    <>
+      {item.question && <h3>{item.question}</h3>}
+ 
+      {item.description && <p>{item.description}</p>}
+ 
+      {item.label && <label>{item.label}</label>}
+ 
+      {item.input_type === "text" && (
+        <input type="text" placeholder={item.placeholder || "Typ hier je antwoord"} />
+      )}
+ 
+      {item.input_type === "email" && (
+        <input type="email" placeholder="Typ hier je e-mailadres" />
+      )}
+ 
+      {item.input_type === "long_text" && (
+        <textarea
+          rows="6"
+          placeholder={item.placeholder || "Typ hier je antwoord"}
+        ></textarea>
+      )}
+ 
+      {item.input_type === "single_choice" && (
+        <ul>
+          {options.map((option) => (
+            <li>
+              <button type="button">
+                {typeof option === "string" ? option : option.text}
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+ 
+      {item.input_type === "multiple_choice" && (
+        <ul>
+          {options.map((option) => (
+            <li>
+              <button type="button">
+                {typeof option === "string" ? option : option.text}
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+ 
+      {item.input_type === "rating" && (
         <div>
-          {item.min_label && <span>{item.min_label}</span>}
-
-          {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((ratingValue) => (
+          {scale.min_label && <span>{scale.min_label}</span>}
+ 
+          {ratings.map((ratingValue) => (
             <div>
               <input
                 type="radio"
-                id={ratingValue}
-                name="rating"
+                id={`rating-${item.id}-${ratingValue}`}
+                name={`rating-${item.id}`}
                 value={ratingValue}
               />
-
-              <label for={ratingValue}>{ratingValue}</label>
+              <label for={`rating-${item.id}-${ratingValue}`}>
+                {ratingValue}
+              </label>
             </div>
           ))}
-
-          {item.max_label && <span>{item.max_label}</span>}
+ 
+          {scale.max_label && <span>{scale.max_label}</span>}
         </div>
-      )
-    }
-
-    {
-      item.input_type === "email" && (
-        <input type="email" placeholder="Typ hier je e-mailadres" />
-      )
-    }
-  </section>
-
-  <nav>
-    {
-      previousPage && (
-        <a class="nav-prev" href={previousPage}>
-          Vorige
-        </a>
-      )
-    }
-    {
-      nextPage && (
-        <a class="nav-next" href={nextPage}>
-          Volgende
-        </a>
-      )
-    }
-  </nav>
+      )}
+    </>
+  )}
+ 
+{item.id?.endsWith("_submit") && (
+  <div class="submit-navigation">
+    
+    <a href="/index.html" class="button">
+      Terug naar dashboard
+    </a>
+ 
+    {nextSectionUrl && (
+      <a href={nextSectionUrl} class="button button-primary">
+        Naar volgend deel
+      </a>
+    )}
+  </div>
+)}
+ 
+{item.id?.endsWith("_end") && (
+  <div class="submit-navigation">
+    
+    <a href="/index.html" class="button">
+      Terug naar dashboard
+    </a>
+ 
+  </div>
+)}
+ 
+</section>
+ 
+<nav>
+  {previousPage && <a class="nav-prev" href={previousPage}>Vorige</a>}
+ 
+  {nextPage && <a class="nav-next" href={nextPage}>Volgende</a>}
+</nav>
+<link rel="stylesheet" href="/styles/global.css" />
 </main>
 
 <style>
