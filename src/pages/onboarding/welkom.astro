@@ -5,7 +5,7 @@ import MainLayout from "../../layouts/Layout-onboarding.astro";
 
 <MainLayout
   title="Welkom"
-  nextHref="/onboarding/step-1"
+  nextHref="/onboarding/login"
   headingText="Welkom bij Mensenkenners!"
   bodyText="We gaan je een aantal vragen stellen om je ervaring zo persoonlijk mogelijk te maken."
   step={1}
@@ -20,7 +20,8 @@ import MainLayout from "../../layouts/Layout-onboarding.astro";
     />
   </div>
 
-  <img class="mockup"
+  <img
+    class="mockup"
     src="../../public/images/mockupmensenkenners.png"
     alt="Mensenkenners logo"
   />
@@ -90,24 +91,24 @@ import MainLayout from "../../layouts/Layout-onboarding.astro";
   }
 
   @media (min-width: 768px) {
-  .loader {
-    display: flex;
-    justify-content: center;
-    
-    & img {
-      width: 30%;
+    .loader {
+      display: flex;
+      justify-content: center;
+
+      & img {
+        width: 30%;
+      }
+    }
+
+    .mockup {
+      margin-top: 0;
+      width: 60% !important;
     }
   }
-
-  .mockup {
-    margin-top: 0;
-    width: 60% !important;
-  }
-}
-
 </style>
 
 <script>
+  // @ts-nocheck
   const loader = document.querySelector(".loader");
 
   if (loader) {
@@ -119,7 +120,11 @@ import MainLayout from "../../layouts/Layout-onboarding.astro";
           loader.classList.add("hidden-mobile");
         }, 750);
       } else {
-        loader.classList.add("revealed");
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            loader.classList.add("revealed");
+          });
+        });
       }
     });
 

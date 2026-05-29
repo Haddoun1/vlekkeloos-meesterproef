@@ -1,73 +1,65 @@
 ---
 // @ts-nocheck
-import data from "../../data/mensenkennersvragen.json"; // Importeren JSON bestand met data
-import { slugify } from "../../utils/slugify"; // Importeren slugify functie voor maken van URL's
+import data from "../../data/mensenkennersvragen.json";
+import { slugify } from "../../utils/slugify";
 
-// Functie genereren pagina's
 export async function getStaticPaths() {
-  const items = data.flow.filter(
-    // Alle items in de JSON worden gefilterd op categorie
+  const items = data.blocks.filter(
     (item) =>
-      item.category && ["Content", "Video", "Question"].includes(item.type),
+      item.Category &&
+      ["content", "video", "question"].includes(item.type)
   );
 
   return items.map((item) => {
-    // Voor elke item wordt een pagina gegenereerd
-    const categorySlug = slugify(item.category);
+    const categorySlug = slugify(item.Category);
 
     const categoryItems = items.filter(
-      // Alle items in dezelfde categorie worden verzameld
-      (x) => slugify(x.category) === categorySlug,
+      (x) => slugify(x.Category) === categorySlug
     );
 
-    const stepIndex = categoryItems.findIndex(
-      // Vind de juiste index van het item binnen de categorie
-      (x) => x.id === item.id,
-    );
+    const stepIndex = categoryItems.findIndex((x) => x.id === item.id);
 
     return {
-      // Bepaalt de URL
       params: {
         category: categorySlug,
         step: String(stepIndex + 1),
       },
       props: {
-        // Bepaalt data die je meestuurt naar de pagina
         item,
         currentStep: stepIndex + 1,
         totalSteps: categoryItems.length,
-        category: item.category,
+        category: item.Category,
       },
     };
   });
 }
 
-const { item, currentStep, totalSteps, category } = Astro.props; // Data die naar de pagina wordt gestuurd ophalen
+const { item, currentStep, totalSteps, category } = Astro.props;
 
 const categorySlug = slugify(category);
 
-const previousPage = // Als er een vorige stap is, genereer de URL voor de vorige pagina, anders null
+const previousPage =
   currentStep > 1 ? `/${categorySlug}/${currentStep - 1}` : null;
 
-const nextPage = // Als er een volgende stap is, genereer de URL voor de volgende pagina, anders null
+const nextPage =
   currentStep < totalSteps ? `/${categorySlug}/${currentStep + 1}` : null;
 
-let embedUrl = item.url; // Standaard embed URL is de URL van het item
+let embedUrl = item.url;
 
 if (item.url?.includes("vimeo.com")) {
-  // Als het een Vimeo URL is, genereer de juiste embed URL
   const id = item.url.split("/").filter(Boolean).pop()?.split("?")[0];
-
   embedUrl = `https://player.vimeo.com/video/${id}`;
 }
 
 if (item.url?.includes("youtube.com/watch?v=")) {
-  // Als het een YouTube URL is, genereer de juiste embed URL
   const id = item.url.split("v=")[1]?.split("&")[0];
-
   embedUrl = `https://www.youtube.com/embed/${id}`;
 }
----
+
+if (item.url?.includes("youtu.be/")) {
+  const id = item.url.split("youtu.be/")[1]?.split("?")[0];
+  embedUrl = `https://www.youtube.com/embed/${id}`;
+}
 
 <link rel="stylesheet" href="/styles/global.css" />
 

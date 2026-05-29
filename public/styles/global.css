@@ -85,8 +85,44 @@ html {
 	--color-cyan: #B1F2D9;
 	--color-pink: #FF94E1;
 	--color-blue: #2241dd;
-	--color-red: #0a0a0a;
+	--color-red: #FF6631;
 	--color-yellow: #E9F279;
+
+  --gradient-bg-cyan: radial-gradient(
+    circle at 0% 0%,
+    rgb(181 219 206 / 0.4) 0%,
+    transparent
+  );
+
+  --gradient-bg-green: radial-gradient(
+    circle at 0% 0%,
+    rgb(42 183 137 / 0.2) 0%,
+    transparent
+  );
+
+  --gradient-bg-pink:radial-gradient(
+    circle at 0% 0%,
+    rgb(255 148 225 / 0.3) 0%,
+    transparent
+  );
+
+  --gradient-bg-blue: radial-gradient(
+    circle at 0% 0%,
+    rgb(34 65 221 / 0.2) 0%,
+    transparent
+  );
+
+  --gradient-bg-yellow: radial-gradient(
+    circle at 0% 0%,
+    rgb(233 242 121 / 0.4) 0%,
+    transparent
+  );
+
+  --gradient-bg-red: radial-gradient(
+    circle at 0% 0%,
+    rgb(255 102 49 / 0.4) 0%,
+    transparent
+  );
 
 	--font-bold: 'Plus Jakarta Sans Bold', sans-serif;
 	--font-bold-italic: 'Plus Jakarta Sans Bold Italic', sans-serif;
@@ -119,7 +155,7 @@ html {
 	--size-10xl: 10rem;
 
 
-	font-family: 'Plus Jakarta Sans', sans-serif;
+	font-family: var(--font-bold);
 	color: var(--colour-text);
 	background-color: var(--colour-background);
 }
