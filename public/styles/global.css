@@ -155,7 +155,7 @@ html {
 	--size-10xl: 10rem;
 
 
-	font-family: 'Plus Jakarta Sans', sans-serif;
+	font-family: var(--font-bold);
 	color: var(--colour-text);
 	background-color: var(--colour-background);
 }
