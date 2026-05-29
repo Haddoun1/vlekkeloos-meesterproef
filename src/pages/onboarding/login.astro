@@ -11,6 +11,9 @@ import MainLayout from "../../layouts/Layout-onboarding.astro";
   bodyText=""
   step={1}
   totalSteps={5}
+  showProgress={false}
+  showBack={false}
+  showNext={false}
 >
   <!-- <img class="mockup"
     src="../../public/images/Mensenkennerskaderdoof.png"
@@ -31,23 +34,39 @@ import MainLayout from "../../layouts/Layout-onboarding.astro";
       <legend>Account</legend>
 
       <div class="container-name">
-          <label for="first-name">
-            Naam
-            <input type="text" id="first-name" name="first-name" placeholder="" />
-          </label>
-    
-          <label for="last-name">
-            Achternaam
-            <input type="text" id="last-name" name="last-name" placeholder="" />
-          </label>
-      </div>
+        <label for="first-name">
+          Naam
+          <input
+            type="text"
+            id="first-name"
+            name="first-name"
+            placeholder=""
+            required
+          />
+        </label>
 
+        <label for="last-name">
+          Achternaam
+          <input
+            type="text"
+            id="last-name"
+            name="last-name"
+            placeholder=""
+            required
+          />
+        </label>
+      </div>
 
       <label for="email">
         E-mailadres
-        <input type="email" id="email" name="email" placeholder="" />
+        <input type="email" id="email" name="email" placeholder="" required />
       </label>
+
+      <p class="login-link">
+        Heb je al een account? <a href="/onboarding/login">Inloggen</a>
+      </p>
     </fieldset>
+    <button type="submit">Ga verder</button>
   </form>
 </MainLayout>
 
@@ -85,17 +104,24 @@ import MainLayout from "../../layouts/Layout-onboarding.astro";
       color: var(--color-cyan);
     }
   }
+  form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+  }
   fieldset {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
     border: none;
-    margin: var(--size-base) 0;
+    margin: var(--size-xl) 0;
     width: 100%;
 
     & legend {
       font-size: var(--size-lg);
-      font-weight: bold;
+      font-family: var(--font-extra-bold);
       margin-bottom: 0.5rem;
     }
   }
@@ -122,4 +148,80 @@ import MainLayout from "../../layouts/Layout-onboarding.astro";
     gap: 1rem;
     width: 100%;
   }
+
+  .login-link {
+    font-size: var(--size-sm);
+    font-family: var(--font-light);
+    text-align: center;
+
+    & a {
+      margin-left: 0.25rem;
+      color: var(--color-cyan);
+      text-decoration: none;
+      font-weight: bold;
+    }
+  }
+
+  button[type="submit"] {
+    width: 100%;
+    padding: var(--size-xs) var(--size-2xl);
+    border-radius: 25px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    background-color: var(--color-cyan);
+    color: var(--color-background);
+
+    margin-top: auto;
+  }
 </style>
+
+<script>
+  // @ts-nocheck
+  const form = document.querySelector(".login-form");
+  const emailInput = document.getElementById("email");
+
+  function showError(input, message) {
+    input.setCustomValidity(message);
+    input.reportValidity();
+  }
+
+  function clearError(input) {
+    input.setCustomValidity("");
+  }
+
+  form.querySelectorAll("input").forEach((input) => {
+    input.addEventListener("input", () => clearError(input));
+  });
+
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const firstName = document.getElementById("first-name").value.trim();
+    const lastName = document.getElementById("last-name").value.trim();
+    const email = emailInput.value.trim();
+
+    if (!firstName) {
+      return showError(
+        document.getElementById("first-name"),
+        "Vul je voornaam in.",
+      );
+    }
+    if (!lastName) {
+      return showError(
+        document.getElementById("last-name"),
+        "Vul je achternaam in.",
+      );
+    }
+    if (!email) {
+      return showError(emailInput, "Vul je e-mailadres in.");
+    }
+
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(email)) {
+      return showError(emailInput, "Voer een geldig e-mailadres in.");
+    }
+
+    window.location.href = "/onboarding/step-1";
+  });
+</script>
