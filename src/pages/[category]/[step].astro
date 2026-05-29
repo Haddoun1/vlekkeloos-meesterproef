@@ -4,31 +4,35 @@ import data from "../../data/mensenkennersvragen.json"; // Importeren JSON besta
 import { slugify } from "../../utils/slugify"; // Importeren slugify functie voor maken van URL's
 
 // Functie genereren pagina's
-export async function getStaticPaths() { 
-
-  const items = data.flow.filter( // Alle items in de JSON worden gefilterd op categorie
+export async function getStaticPaths() {
+  const items = data.flow.filter(
+    // Alle items in de JSON worden gefilterd op categorie
     (item) =>
-      item.category &&
-      ["Content", "Video", "Question"].includes(item.type)
+      item.category && ["Content", "Video", "Question"].includes(item.type),
   );
 
-  return items.map((item) => { // Voor elke item wordt een pagina gegenereerd
+  return items.map((item) => {
+    // Voor elke item wordt een pagina gegenereerd
     const categorySlug = slugify(item.category);
 
-    const categoryItems = items.filter( // Alle items in dezelfde categorie worden verzameld
-      (x) => slugify(x.category) === categorySlug
+    const categoryItems = items.filter(
+      // Alle items in dezelfde categorie worden verzameld
+      (x) => slugify(x.category) === categorySlug,
     );
 
-    const stepIndex = categoryItems.findIndex( // Vind de juiste index van het item binnen de categorie
-      (x) => x.id === item.id
+    const stepIndex = categoryItems.findIndex(
+      // Vind de juiste index van het item binnen de categorie
+      (x) => x.id === item.id,
     );
 
-    return { // Bepaalt de URL
+    return {
+      // Bepaalt de URL
       params: {
         category: categorySlug,
         step: String(stepIndex + 1),
       },
-      props: { // Bepaalt data die je meestuurt naar de pagina
+      props: {
+        // Bepaalt data die je meestuurt naar de pagina
         item,
         currentStep: stepIndex + 1,
         totalSteps: categoryItems.length,
@@ -43,128 +47,236 @@ const { item, currentStep, totalSteps, category } = Astro.props; // Data die naa
 const categorySlug = slugify(category);
 
 const previousPage = // Als er een vorige stap is, genereer de URL voor de vorige pagina, anders null
-  currentStep > 1
-    ? `/${categorySlug}/${currentStep - 1}`
-    : null;
+  currentStep > 1 ? `/${categorySlug}/${currentStep - 1}` : null;
 
 const nextPage = // Als er een volgende stap is, genereer de URL voor de volgende pagina, anders null
-  currentStep < totalSteps
-    ? `/${categorySlug}/${currentStep + 1}`
-    : null;
+  currentStep < totalSteps ? `/${categorySlug}/${currentStep + 1}` : null;
 
 let embedUrl = item.url; // Standaard embed URL is de URL van het item
 
-if (item.url?.includes("vimeo.com")) { // Als het een Vimeo URL is, genereer de juiste embed URL
-  const id = item.url
-    .split("/")
-    .filter(Boolean)
-    .pop()
-    ?.split("?")[0];
+if (item.url?.includes("vimeo.com")) {
+  // Als het een Vimeo URL is, genereer de juiste embed URL
+  const id = item.url.split("/").filter(Boolean).pop()?.split("?")[0];
 
   embedUrl = `https://player.vimeo.com/video/${id}`;
 }
 
-if (item.url?.includes("youtube.com/watch?v=")) { // Als het een YouTube URL is, genereer de juiste embed URL
-  const id = item.url
-    .split("v=")[1]
-    ?.split("&")[0];
+if (item.url?.includes("youtube.com/watch?v=")) {
+  // Als het een YouTube URL is, genereer de juiste embed URL
+  const id = item.url.split("v=")[1]?.split("&")[0];
 
   embedUrl = `https://www.youtube.com/embed/${id}`;
 }
 ---
 
-<h1>
-  {category} - Stap {currentStep} van {totalSteps}
-</h1>
+<link rel="stylesheet" href="/styles/global.css" />
 
-<section>
+<main>
+  <h1>
+    {category} - Stap {currentStep} van {totalSteps}
+  </h1>
 
-  {item.title && <h2>{item.title}</h2>}
+  <section>
+    {item.title && <h2>{item.title}</h2>}
 
-  {item.content && <p>{item.content}</p>}
+    {item.content && <p>{item.content}</p>}
 
-  {item.type === "Video" && embedUrl && (
-    <iframe
-      width="100%"
-      height="500"
-      src={embedUrl}
-      title={item.video_title || item.title}
-      frameborder="0"
-      allow="autoplay; fullscreen; picture-in-picture"
-      allowfullscreen
-    ></iframe>
-  )}
-
-{item.type === "Question" && (
-  <>
-    {item.question && <h3>{item.question}</h3>}
-
-    {item.description && <p>{item.description}</p>}
-
-    {item.input_type === "text" && (
-      <input
-        type="text"
-        placeholder="Typ hier je antwoord"
-      />
-    )}
-
-    {item.input_type === "long_text" && (
-      <textarea
-        rows="6"
-        placeholder="Typ hier je antwoord"
-      ></textarea>
-    )}
-
-{item.input_type === "multiple_choice" && (
-  <ul>
-    {item.options.map((option) => (
-      <li>
-        <button>{option.text}</button>
-      </li>
-    ))}
-  </ul>
-)}
-  </>
-)}
-
-{item.input_type === "rating" && ( // genereert 10 radio buttons, met min en max labels
-  <div>
-    {item.min_label && (<span>{item.min_label}</span>)}
-
-    {[1,2,3,4,5,6,7,8,9,10].map((ratingValue) => (
-      <div>
-        <input
-          type="radio"
-          id={ratingValue}
-          name="rating"
-          value={ratingValue}
+    {
+      item.type === "Video" && embedUrl && (
+        <iframe
+          width="100%"
+          height="500"
+          src={embedUrl}
+          title={item.video_title || item.title}
+          frameborder="0"
+          allow="autoplay; fullscreen; picture-in-picture"
+          allowfullscreen
         />
+      )
+    }
 
-        <label for={ratingValue}>
-          {ratingValue}
-        </label>
-      </div>
-    ))}
+    {
+      item.type === "Question" && (
+        <>
+          {item.question && <h3>{item.question}</h3>}
 
-    {item.max_label && (<span>{item.max_label}</span>)}
-  </div>
-)}
+          {item.description && <p>{item.description}</p>}
 
-{item.input_type === "email" && (
-  <input
-    type="email"
-    placeholder="Typ hier je e-mailadres"
-  />
-)}
+          {item.input_type === "text" && (
+            <input type="text" placeholder="Typ hier je antwoord" />
+          )}
 
-</section>
+          {item.input_type === "long_text" && (
+            <textarea rows="6" placeholder="Typ hier je antwoord" />
+          )}
 
-<nav>
-  {previousPage && (
-    <a href={previousPage}>Vorige</a>
-  )}
+          {item.input_type === "multiple_choice" && (
+            <ul>
+              {item.options.map((option) => (
+                <li>
+                  <button>{option.text}</button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </>
+      )
+    }
 
-  {nextPage && (
-    <a href={nextPage}>Volgende</a>
-  )}
-</nav>
+    {
+      item.input_type === "rating" && ( // genereert 10 radio buttons, met min en max labels
+        <div>
+          {item.min_label && <span>{item.min_label}</span>}
+
+          {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((ratingValue) => (
+            <div>
+              <input
+                type="radio"
+                id={ratingValue}
+                name="rating"
+                value={ratingValue}
+              />
+
+              <label for={ratingValue}>{ratingValue}</label>
+            </div>
+          ))}
+
+          {item.max_label && <span>{item.max_label}</span>}
+        </div>
+      )
+    }
+
+    {
+      item.input_type === "email" && (
+        <input type="email" placeholder="Typ hier je e-mailadres" />
+      )
+    }
+  </section>
+
+  <nav>
+    {
+      previousPage && (
+        <a class="nav-prev" href={previousPage}>
+          Vorige
+        </a>
+      )
+    }
+    {
+      nextPage && (
+        <a class="nav-next" href={nextPage}>
+          Volgende
+        </a>
+      )
+    }
+  </nav>
+</main>
+
+<style>
+  body {
+    background-color: var(--color-background);
+  }
+
+  main {
+    display: grid;
+    grid-template-columns: 1fr minmax(0, 800px) 1fr;
+  }
+
+  main > * {
+    grid-column: 2;
+  }
+
+  h1 {
+    font-family: var(--font-bold);
+    font-size: clamp(1.5rem, 5vw, 2.5rem);
+    margin: 7rem 0 0 1rem;
+  }
+
+  h2 {
+    font-family: var(--font-semi-bold);
+    font-size: clamp(1.25rem, 4vw, 1.75rem);
+    margin: 1rem 0 0 1rem;
+  }
+
+  h3 {
+    font-family: var(--font-semi-bold);
+    font-size: clamp(1.1rem, 3.5vw, 1.5rem);
+    margin: 1rem 0 0 1rem;
+  }
+
+  p {
+    font-size: clamp(var(--size-base), 2vw, var(--size-lg));
+    line-height: 1.5;
+    margin: 4rem 0 0 1rem;
+  }
+
+  li {
+    list-style: none;
+    margin: 0 0 0 1rem;
+  }
+
+  li:first-child {
+    margin-top: 1rem;
+  }
+
+  button {
+    margin: 0.5rem 0 0 0;
+    font-family: var(--font-semi-bold);
+    padding: 0.75rem 1.5rem;
+    width: 60%;
+    border: 2px solid black;
+    border-radius: 4px;
+    background: var(--color-background);
+    cursor: pointer;
+    text-align: left;
+  }
+
+  input[type="text"],
+  input[type="email"] {
+    margin: 1rem 0 0 1rem;
+    padding: 0.75rem;
+    width: calc(100% - 2rem);
+    border: 2px solid black;
+    border-radius: 4px;
+  }
+
+  textarea {
+    margin: 1rem 0 0 1rem;
+    padding: 0.75rem;
+    width: calc(100% - 2rem);
+    border: 2px solid black;
+    border-radius: 4px;
+    font-family: var(--font-light);
+  }
+
+  span {
+    font-family: var(--font-light);
+  }
+
+  div {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .nav-prev,
+  .nav-next {
+    position: fixed;
+    top: 90%;
+    transform: translateY(-50%);
+    font-family: var(--font-semi-bold);
+    padding: 0.75rem 1.5rem;
+    border: 2px solid black;
+    border-radius: 4px;
+    background: var(--color-background);
+    text-decoration: none;
+  }
+
+  .nav-prev {
+    left: calc(55% - 400px - 5rem);
+  }
+
+  .nav-next {
+    right: calc(55% - 400px - 5rem);
+  }
+</style>
