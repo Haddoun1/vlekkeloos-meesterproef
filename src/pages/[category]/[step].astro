@@ -90,7 +90,7 @@ if (item.id?.endsWith("_submit")) {
 
 <link rel="stylesheet" href="/styles/global.css" />
 
-<main>
+<main   data-step-id={item.id} data-category={category}>
 <h1>{category} - Stap {currentStep} van {totalSteps}</h1>
  
 <section>
@@ -219,6 +219,50 @@ if (item.id?.endsWith("_submit")) {
 </nav>
 <link rel="stylesheet" href="/styles/global.css" />
 </main>
+
+<script>
+  //@ts-nocheck
+  const main = document.querySelector("main");
+
+  const stepId = main.dataset.stepId;
+  const category = main.dataset.category;
+  const startedAt = new Date();
+
+  let alreadySaved = false;
+
+  async function saveProgress() {
+    if (alreadySaved) return;
+    alreadySaved = true;
+
+    const endedAt = new Date();
+    const durationSeconds = Math.round((endedAt - startedAt) / 1000);
+
+    await fetch("/api/track-step", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        userId: localStorage.getItem("userId") || "anonymous",
+        email: localStorage.getItem("email") || null,
+        name: localStorage.getItem("name") || null,
+        stepId,
+        category,
+        startedAt: startedAt.toISOString(),
+        endedAt: endedAt.toISOString(),
+        durationSeconds
+      })
+    });
+  }
+
+  document.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", async (event) => {
+      event.preventDefault();
+      await saveProgress();
+      window.location.href = link.href;
+    });
+  });
+</script>
 
 <style>
   body {
