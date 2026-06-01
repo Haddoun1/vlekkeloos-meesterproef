@@ -1,0 +1,67 @@
+---
+import { supabase } from "../../lib/supabase";
+
+const { data: progress, error } = await supabase
+  .from("course_progress")
+  .select("*")
+  .order("created_at", { ascending: false });
+
+const records = progress || [];
+
+const totalRecords = records.length;
+
+const totalSeconds = records.reduce(
+  (sum, row) => sum + (row.duration_seconds || 0),
+  0
+);
+
+const totalMinutes = Math.round(totalSeconds / 60);
+
+const uniqueUsers = new Set(records.map((row) => row.user_id)).size;
+---
+
+<h1>Dashboard Mensenkenners</h1>
+
+{error && (
+  <p style="color: red;">
+    Fout bij ophalen data: {error.message}
+  </p>
+)}
+
+<section>
+  <h2>Overzicht</h2>
+
+  <p><strong>Aantal opgeslagen stappen:</strong> {totalRecords}</p>
+  <p><strong>Aantal gebruikers:</strong> {uniqueUsers}</p>
+  <p><strong>Totale actieve tijd:</strong> {totalMinutes} minuten</p>
+</section>
+
+<section>
+  <h2>Laatste activiteit</h2>
+
+  <table border="1" cellpadding="8">
+    <thead>
+      <tr>
+        <th>Gebruiker</th>
+        <th>Email</th>
+        <th>Stap</th>
+        <th>Categorie</th>
+        <th>Duur</th>
+        <th>Tijdstip</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {records.map((row) => (
+        <tr>
+          <td>{row.name || row.user_id || "Onbekend"}</td>
+          <td>{row.email || "-"}</td>
+          <td>{row.step_id}</td>
+          <td>{row.category}</td>
+          <td>{row.duration_seconds}s</td>
+          <td>{new Date(row.created_at).toLocaleString("nl-NL")}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</section>
