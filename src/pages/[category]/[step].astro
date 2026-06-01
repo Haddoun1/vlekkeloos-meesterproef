@@ -1,5 +1,6 @@
 ---
 // @ts-nocheck
+export const prerender = true;
 import data from "../../data/mensenkennersvragen.json";
 import { slugify } from "../../utils/slugify";
  
@@ -85,12 +86,11 @@ if (item.id?.endsWith("_submit")) {
     nextSectionUrl = "/deel-3/1";
   }
 }
-
 ---
 
 <link rel="stylesheet" href="/styles/global.css" />
 
-<main   data-step-id={item.id} data-category={category}>
+<main data-step-id={item.id} data-category={category}>
 <h1>{category} - Stap {currentStep} van {totalSteps}</h1>
  
 <section>
@@ -224,9 +224,15 @@ if (item.id?.endsWith("_submit")) {
   //@ts-nocheck
   const main = document.querySelector("main");
 
-  const stepId = main.dataset.stepId;
-  const category = main.dataset.category;
+  console.log("Script geladen");
+  console.log("main element:", main);
+
+  const stepId = main?.dataset.stepId;
+  const category = main?.dataset.category;
   const startedAt = new Date();
+
+  console.log("stepId:", stepId);
+  console.log("category:", category);
 
   let alreadySaved = false;
 
@@ -237,7 +243,9 @@ if (item.id?.endsWith("_submit")) {
     const endedAt = new Date();
     const durationSeconds = Math.round((endedAt - startedAt) / 1000);
 
-    await fetch("/api/track-step", {
+    console.log("Saving progress...", { stepId, category, durationSeconds });
+
+    const response = await fetch("/api/track-step", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -253,14 +261,23 @@ if (item.id?.endsWith("_submit")) {
         durationSeconds
       })
     });
+
+    const result = await response.json();
+    console.log("API response:", result);
   }
 
-  document.querySelectorAll("a").forEach((link) => {
-    link.addEventListener("click", async (event) => {
-      event.preventDefault();
-      await saveProgress();
-      window.location.href = link.href;
-    });
+  window.addEventListener("beforeunload", () => {
+    console.log("Pagina verlaten, progress opslaan...");
+    navigator.sendBeacon("/api/track-step", JSON.stringify({
+      userId: localStorage.getItem("userId") || "anonymous",
+      email: localStorage.getItem("email") || null,
+      name: localStorage.getItem("name") || null,
+      stepId,
+      category,
+      startedAt: startedAt.toISOString(),
+      endedAt: new Date().toISOString(),
+      durationSeconds: Math.round((new Date() - startedAt) / 1000)
+    }));
   });
 </script>
 

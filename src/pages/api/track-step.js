@@ -43,7 +43,6 @@ export async function POST({ request }) {
       started_at: body.startedAt || new Date().toISOString(),
       ended_at: body.endedAt || new Date().toISOString(),
       duration_seconds: body.durationSeconds || 0,
-      completed: true
     })
     .select();
 

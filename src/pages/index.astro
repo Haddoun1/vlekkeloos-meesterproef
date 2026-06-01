@@ -4,6 +4,12 @@ export const prerender = false;
 import MainLayout from '../layouts/Layout.astro';
 import CourseCard from '../components/CourseCard.astro';
 
+import { supabase } from '../lib/supabase';
+
+const { data: progress } = await supabase
+  .from("course_progress")
+  .select("*");
+
 const courses = [
   {
     title: 'Onboarding',
