@@ -7,37 +7,70 @@ import CourseCard from '../components/CourseCard.astro';
 const courses = [
   {
     title: 'Onboarding',
-    image: '/src/assets/algemeen.png',
+    image: '',
     progress: 20,
     href: '/onboarding/welkom',
     color: '#2241DD',
   },
   {
     title: 'Deel 1',
-    image: '/src/assets/visuelebeperking.png',
+    image: '',
     progress: 40,
     href: '/deel-1/1',
     color: '#FF94E1',
   },
   {
     title: 'Deel 2',
-    image: '/src/assets/auditievebeperking.png',
+    image: '',
     progress: 60,
     href: '/deel-2/1',
     color: '#FF6631',
   },
   {
     title: 'Deel 3',
-    image: '/src/assets/spraakbeperking.png',
+    image: '',
     progress: 70,
     href: '/deel-3/1',
     color: '#E9F279',
+  },
+];
+
+// Hier komen items zodra een gebruiker een cursus is begonnen.
+const recentCourses = [
+  {
+    title: 'Onboarding',
+    image: '',
+    progress: 20,
+    href: '/onboarding/welkom',
+    color: '#2241DD',
   },
 ];
 ---
 
 <MainLayout>
   <section class="dashboard">
+    {recentCourses.length > 0 && (
+      <>
+        <h2>Ga verder waar je gebleven was</h2>
+
+        <div class="carousel-wrapper">
+          <ul class="carousel">
+            {recentCourses.map((course) => (
+              <li class="carousel-item">
+                <CourseCard
+                  title={course.title}
+                  image={course.image}
+                  progress={course.progress}
+                  href={course.href}
+                  color={course.color}
+                />
+              </li>
+            ))}
+          </ul>
+        </div>
+      </>
+    )}
+
     <h1>Mijn Cursussen</h1>
 
     <div class="carousel-wrapper">
@@ -55,6 +88,7 @@ const courses = [
         ))}
       </ul>
     </div>
+
   </section>
 </MainLayout>
 
@@ -65,10 +99,14 @@ const courses = [
     padding: 2rem;
   }
 
-  h1 {
+  h1, h2 {
     margin: 0 0 1.5rem;
     font-size: 2rem;
     color: #333;
+  }
+
+  h2 {
+    margin-top: 2rem;
   }
 
   /* Carousel */
@@ -78,7 +116,7 @@ const courses = [
 
   .carousel {
     list-style: none;
-    padding: 0.5rem 0;
+    padding: 2rem 0;
     margin: 0;
     display: flex;
     gap: 1rem;
@@ -87,36 +125,24 @@ const courses = [
     scroll-behavior: smooth;
     scrollbar-width: none;
     -ms-overflow-style: none;
-    padding: 2rem 0;
   }
 
   .carousel::-webkit-scrollbar {
     display: none;
   }
 
-.carousel-item {
-  flex: 0 0 200px;
-  scroll-snap-align: start;
-}
-
-@media (min-width: 768px) {
   .carousel-item {
-    flex: 0 0 350px;
+    flex: 0 0 200px;
+    scroll-snap-align: start;
   }
 
-  h1{
-    margin-bottom: 0rem;
-  }
-}
+  @media (min-width: 768px) {
+    .carousel-item {
+      flex: 0 0 350px;
+    }
 
-/* @media (min-width: 1440px) {
-  .dashboard {
-    width: 100%;
-    margin:0;
-
-    & .carousel {
-      width: 100vw;
+    h1, h2 {
+      margin-bottom: 0rem;
     }
   }
-} */
 </style>
