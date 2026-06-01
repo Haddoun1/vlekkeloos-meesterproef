@@ -114,13 +114,13 @@ import MainLayout from "../../layouts/Layout-onboarding.astro";
     }
 
     & button.active {
-      background-color: var(--color-cyan);
+      background-color: var(--color-cyan-dark);
       color: var(--color-background);
     }
 
     & button.not-active {
       background-color: var(--color-background);
-      color: var(--color-cyan);
+      color: var(--color-cyan-dark);
     }
   }
   form{
@@ -208,7 +208,7 @@ import MainLayout from "../../layouts/Layout-onboarding.astro";
     border: none;
     font-weight: 600;
     cursor: pointer;
-    background-color: var(--color-cyan);
+    background-color: var(--color-cyan-dark);
     color: var(--color-background);
 
     /* margin-top:6em; */
@@ -229,9 +229,9 @@ import MainLayout from "../../layouts/Layout-onboarding.astro";
       width: 100%;
       padding: var(--size-xs) var(--size-2xl);
       border-radius: 25px;
-      border: 2px solid var(--color-cyan);
+      border: 2px solid var(--color-cyan-dark);
       background-color: var(--color-background);
-      color: var(--color-cyan);
+      color: var(--color-cyan-dark);
       font-weight: 600;
       cursor: pointer;
     }
@@ -244,13 +244,33 @@ import MainLayout from "../../layouts/Layout-onboarding.astro";
     margin-right: auto;
   }
 
+  :global(.panel-right) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+
+    & :global(.buttons-onboarding) {
+      display: none;
+      margin:0 !important;
+    }
+  }
+
+  :global(.mockup){
+      display: none;
+      max-width: 400px;
+      margin-top: auto;
+      margin-bottom: auto;
+    }
+
   @media (min-width: 768px) {
     :global(.content) {
       flex-direction: row-reverse;
     }
 
     :global(.logo-desktop) {
-      opacity: 0 !important;
+      display: none !important;
     }
 
     fieldset {
@@ -267,6 +287,14 @@ import MainLayout from "../../layouts/Layout-onboarding.astro";
           padding: 0.75em 1.5em;
         }
       }
+    }
+
+    :global(.panel-left){
+      margin: auto 0;
+    }
+
+    :global(.mockup){
+      display: block;
     }
 
     .login-link {
