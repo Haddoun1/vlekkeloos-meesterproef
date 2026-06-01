@@ -45,6 +45,7 @@ const {
   showBack = true,
   showProgress = true,
   showNext = true,
+  mockupSrc = "",
 } = Astro.props;
 
 // https://claude.ai/chat/8789b362-5b69-4d5c-9b16-a4b157d09820 button back niet op welkompagina, wel op rest van stappen
@@ -77,6 +78,7 @@ const {
 
         <!-- Rechts op desktop: logo, tekst, progress, knoppen -->
         <div class="panel-right">
+          {mockupSrc && <img class="mockup" src={mockupSrc} alt="mockup" />}
           <div class="logo-desktop">
             <img
               src="/images/Mensenkenners-logo-hori.png"
@@ -168,6 +170,12 @@ const {
     justify-content: space-between;
     flex: 1;
     width: 100%;
+  }
+  
+  .panel-left {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
   }
 
   .panel-right {
@@ -282,7 +290,8 @@ const {
   }
 
   .button-next button {
-    background-color: var(--color-cyan);
+    /* background-color: var(--color-cyan); */
+    background-color: #8bcab2;
     color: var(--color-background);
     transition:
       background-color 0.3s ease,
