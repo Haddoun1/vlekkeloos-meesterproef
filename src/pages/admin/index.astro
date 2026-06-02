@@ -14,7 +14,7 @@ const totalSeconds = records.reduce((sum, row) => sum + (row.duration_seconds ||
 const totalMinutes = Math.round(totalSeconds / 60);
 const uniqueUsers = new Set(records.map((row) => row.user_id)).size;
 
-// Group by category → then by user (summary only, no individual steps)
+// Group by category → then by user
 const byCategory = records.reduce((acc, row) => {
   const cat = row.category || "Onbekend";
   const uid = row.user_id || "anonymous";
@@ -24,10 +24,11 @@ const byCategory = records.reduce((acc, row) => {
   if (!acc[cat][uid]) {
     acc[cat][uid] = {
       name: row.name || row.user_id || "Onbekend",
-      email: row.email || "—",
+      userId: uid,
       stepCount: 0,
       totalSeconds: 0,
       lastSeen: row.created_at,
+      lastStep: row.step_id,
     };
   }
 
@@ -36,10 +37,11 @@ const byCategory = records.reduce((acc, row) => {
 
   if (new Date(row.created_at) > new Date(acc[cat][uid].lastSeen)) {
     acc[cat][uid].lastSeen = row.created_at;
+    acc[cat][uid].lastStep = row.step_id;
   }
 
   return acc;
-}, {} as Record<string, Record<string, any>>);
+}, {});
 
 const categories = Object.entries(byCategory).map(([name, usersObj]) => ({
   name,
@@ -105,25 +107,22 @@ const categories = Object.entries(byCategory).map(([name, usersObj]) => ({
           <table>
             <thead>
               <tr>
-                <th>Deelnemer</th>
                 <th>ID</th>
                 <th>Stappen</th>
                 <th>Tijd besteed</th>
+                <th>Laatste stap</th>
                 <th>Laatst actief</th>
               </tr>
             </thead>
             <tbody>
               {cat.users.map((user) => (
                 <tr>
-                  <td class="name-cell">
-                    <span class="avatar">{user.name[0].toUpperCase()}</span>
-                    {user.name}
-                  </td>
                   <td class="mono muted">{user.userId}</td>
                   <td>
                     <span class="step-count">{user.stepCount}</span>
                   </td>
                   <td class="mono">{Math.round(user.totalSeconds / 60)} min</td>
+                  <td><span class="step-tag">{user.lastStep}</span></td>
                   <td class="mono muted">
                     {new Date(user.lastSeen).toLocaleString("nl-NL")}
                   </td>
@@ -387,6 +386,16 @@ const categories = Object.entries(byCategory).map(([name, usersObj]) => ({
     border: 1px solid var(--border);
     padding: 0.15rem 0.55rem;
     border-radius: 6px;
+  }
+
+  .step-tag {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    background: var(--accent-light);
+    border: 1px solid var(--accent-mid);
+    color: var(--accent);
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
   }
 
   .mono { font-family: var(--mono); font-size: 0.8rem; }

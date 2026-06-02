@@ -1,4 +1,5 @@
 ---
+// @ts-nocheck
 import { ClientRouter } from "astro:transitions";
 
 const bounceTransition = {
@@ -42,6 +43,8 @@ const {
   bodyText = "...",
   step = 1,
   totalSteps = 5,
+  stepId,
+  category,
   showBack = true,
   showProgress = true,
   showNext = true,
@@ -62,7 +65,10 @@ const {
   </head>
 
   <body>
-    <main class="container">
+    <main class="container"     
+    data-step-id={stepId}
+    data-category={category} 
+    >
       <div class="logo-mobile">
         <img
           src="/images/Mensenkenners-logo-hori.png"
@@ -480,6 +486,7 @@ const {
 
 <!-- https://claude.ai/chat/c67f7248-9580-489f-a97f-bb6489468314 het terugnavigeren met view transitions voor de backbuttons -->
 <script>
+  // @ts-nocheck
   import { navigate } from "astro:transitions/client";
 
   let goingBack = false;
@@ -495,6 +502,7 @@ const {
 
   document.addEventListener("astro:after-swap", () => {
     // Astro reset <html>, zet klasse terug op basis van goingBack
+
     if (goingBack) {
       document.documentElement.classList.add("is-going-back");
     } else {
@@ -536,4 +544,48 @@ const {
   }
 
   document.addEventListener("astro:page-load", setupNavigation);
+
+  const main = document.querySelector("main");
+  const nextButton = document.querySelector(".button-next");
+
+  const stepId = main?.dataset.stepId;
+  const category = main?.dataset.category;
+
+  const startedAt = Date.now();
+
+  async function saveProgress() {
+    if (!stepId || !category) return;
+    
+    console.log("Next button clicked");
+    const endedAt = Date.now();
+    const durationSeconds = Math.round((new Date() - startedAt) / 1000);
+
+    console.log("Saving progress...", { stepId, category, durationSeconds });
+
+    const response = await fetch("/api/track-step", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userId: localStorage.getItem("userId") || "anonymous",
+        email: localStorage.getItem("email") || null,
+        name: localStorage.getItem("name") || null,
+        startedAt: new Date(startedAt).toISOString(),
+        endedAt: new Date(endedAt).toISOString(),
+        stepId,
+        category,
+        durationSeconds,
+      }),
+    });
+
+    const result = await response.json();
+    console.log("API response:", result);
+  }
+  
+
+  nextButton.addEventListener("click", saveProgress)
+
+  console.log(stepId);
+  console.log(category);
 </script>

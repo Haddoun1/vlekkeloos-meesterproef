@@ -55,6 +55,7 @@ import MainLayout from "../../layouts/Layout-onboarding.astro";
             placeholder=""
             required
           />
+          <p class="error">Vul je voornaam in.</p>
         </label>
 
         <label for="last-name">
@@ -66,12 +67,14 @@ import MainLayout from "../../layouts/Layout-onboarding.astro";
             placeholder=""
             required
           />
+          <p class="error">Vul je achternaam in.</p>
         </label>
       </div>
 
       <label for="email">
         E-mailadres
         <input type="email" id="email" name="email" placeholder="" required />
+        <p class="error">Vul een geldig e-mailadres in.</p>
       </label>
 
       <p class="login-link">
@@ -90,6 +93,17 @@ import MainLayout from "../../layouts/Layout-onboarding.astro";
 </MainLayout>
 
 <style>
+  .error {
+      color: #b43f3f;
+      display: none;
+      font-size: 1em;
+      margin-top: .3em;
+  }
+
+  label:has(input:user-invalid) .error {
+      display:block;
+  }
+
   img {
     width: 70%;
     max-width: 400px;
@@ -323,18 +337,6 @@ import MainLayout from "../../layouts/Layout-onboarding.astro";
   const form = document.querySelector(".login-form");
   const emailInput = document.getElementById("email");
 
-  function showError(input, message) {
-    input.setCustomValidity(message);
-    input.reportValidity();
-  }
-
-  function clearError(input) {
-    input.setCustomValidity("");
-  }
-
-  form.querySelectorAll("input").forEach((input) => {
-    input.addEventListener("input", () => clearError(input));
-  });
 
   form.addEventListener("submit", (e) => {
     e.preventDefault();
@@ -343,27 +345,13 @@ import MainLayout from "../../layouts/Layout-onboarding.astro";
     const lastName = document.getElementById("last-name").value.trim();
     const email = emailInput.value.trim();
 
-    if (!firstName) {
-      return showError(
-        document.getElementById("first-name"),
-        "Vul je voornaam in.",
-      );
-    }
-    if (!lastName) {
-      return showError(
-        document.getElementById("last-name"),
-        "Vul je achternaam in.",
-      );
-    }
-    if (!email) {
-      return showError(emailInput, "Vul je e-mailadres in.");
-    }
-
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailPattern.test(email)) {
       return showError(emailInput, "Voer een geldig e-mailadres in.");
     }
+     
 
     window.location.href = "/onboarding/step-1";
+    localStorage.setItem("firstName", firstName);
   });
 </script>
