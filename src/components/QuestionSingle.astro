@@ -60,12 +60,14 @@ const { question, options, name } = Astro.props;
   .questions-single label {
     padding: 0.6em;
     font-size: var(--size-sm);
-    border: 1px solid #73747a;
     border-radius: 8px;
     cursor: pointer;
     display: flex;
     flex-direction: row;
+    
+    border: 1px solid #73747a;
     color: #73747a;
+    
     transition: 0.5s;
     text-align: center;
     height: 100%;
@@ -79,6 +81,11 @@ const { question, options, name } = Astro.props;
       border-color: var(--color-cyan-dark);
       color: var(--color-background);
       font-family: var(--font-bold);
+    }
+
+    &:hover {
+      background-color: rgb(139 202 178 / 0.5);
+      border-color: var(--color-cyan-dark);
     }
   }
 
