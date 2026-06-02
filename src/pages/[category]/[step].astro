@@ -260,8 +260,6 @@ const progressPct = Math.round((currentStep / totalSteps) * 100);
 
     const { data: { user } } = await supabase.auth.getUser();
 
-console.log("1 saveProgress gestart");
-
 const response = await fetch("/api/track-step", {
   method: "POST",
   headers: {
@@ -279,11 +277,8 @@ const response = await fetch("/api/track-step", {
   }),
 });
 
-console.log("2 fetch klaar", response.status);
-
 const result = await response.json();
 
-console.log("3 result", result);
 }
 
   if (navNext) {
