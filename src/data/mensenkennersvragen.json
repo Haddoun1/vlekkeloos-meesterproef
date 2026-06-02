@@ -1024,7 +1024,7 @@
       "type": "question",
       "section": "deel_3_vertaling_naar_jouw_werk",
       "title": "Oefening auditieve klanten",
-      "question": "Neem met je collega's de tips door. Bedenk samen één actie waarmee jullie je werkplek inclusiever kunnen maken voor auditief beperkte klanten. Wat hebben jullie bedacht?",
+      "question": "Neem met je collega's de tips door. Bedenk samen een actie waarmee jullie je werkplek inclusiever kunnen maken voor auditief beperkte klanten. Wat hebben jullie bedacht?",
       "input_type": "long_text",
       "required": true,
       "Category": "Deel 3"
@@ -1134,7 +1134,7 @@
       "type": "question",
       "section": "deel_3_vertaling_naar_jouw_werk",
       "title": "Oefening visuele klanten",
-      "question": "Neem met je collega's de tips door. Bedenk samen één actie waarmee jullie je werkplek inclusiever kunnen maken voor visueel beperkte klanten.",
+      "question": "Neem met je collega's de tips door. Bedenk samen een actie waarmee jullie je werkplek inclusiever kunnen maken voor visueel beperkte klanten.",
       "input_type": "long_text",
       "required": true,
       "Category": "Deel 3"
@@ -1221,7 +1221,7 @@
       "type": "question",
       "section": "deel_3_vertaling_naar_jouw_werk",
       "title": "Oefening motorische klanten",
-      "question": "Neem met je collega's de tips door. Bedenk samen één actie waarmee jullie je werkplek inclusiever kunnen maken voor motorisch beperkte klanten.",
+      "question": "Neem met je collega's de tips door. Bedenk samen een actie waarmee jullie je werkplek inclusiever kunnen maken voor motorisch beperkte klanten.",
       "input_type": "long_text",
       "required": true,
       "Category": "Deel 3"
