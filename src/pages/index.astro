@@ -57,7 +57,7 @@ const recentCourses = [
   <section class="dashboard">
     {recentCourses.length > 0 && (
       <>
-        <h2>Ga verder waar je gebleven was</h2>
+        <h2 id="welcome">Ga verder waar je gebleven was</h2>
 
         <div class="carousel-wrapper">
           <ul class="carousel">
@@ -97,6 +97,13 @@ const recentCourses = [
 
   </section>
 </MainLayout>
+
+<script>
+  //@ts-nocheck
+    const name = localStorage.getItem("firstName");
+    document.getElementById("welcome").innerText = `Welkom, ${name}! Ga verder waar je gebleven was.`;
+
+</script>
 
 <style>
   .dashboard {

@@ -363,7 +363,9 @@ import MainLayout from "../../layouts/Layout-onboarding.astro";
     if (!emailPattern.test(email)) {
       return showError(emailInput, "Voer een geldig e-mailadres in.");
     }
+     
 
     window.location.href = "/onboarding/step-1";
+    localStorage.setItem("firstName", firstName);
   });
 </script>
