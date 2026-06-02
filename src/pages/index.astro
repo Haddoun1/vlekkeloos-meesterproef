@@ -167,13 +167,14 @@ const recentCourses = [
     greeting = "Goedenavond";
   }
 
-  document.getElementById("welcome").innerText = `${greeting}, ${name}! Ga verder waar je gebleven was.`;
+  document.getElementById("welcome").innerText = `${greeting}, ${name}!`;
 
+//  Ga verder waar je gebleven was.
 </script>
 
 <style>
   .dashboard {
-    max-width: 1100px;
+    /* max-width: 1100px; */
     margin: 0 auto;
     padding: 2rem;
   }
@@ -181,13 +182,8 @@ const recentCourses = [
   h1, h2 {
     margin: 0 0 1.5rem;
     font-size: 2rem;
-    color: #333;
+    color: var(--color-text);
   }
-
-  h2 {
-    margin-top: 2rem;
-  }
-
   /* Carousel */
   .carousel-wrapper {
     position: relative;

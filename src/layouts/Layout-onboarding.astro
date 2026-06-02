@@ -117,6 +117,13 @@ const {
 
           <div class="buttons-onboarding">
             {
+              showNext && (
+                <a class="button-next" href={nextHref} data-direction="forward">
+                  <button>Ga verder</button>
+                </a>
+              )
+            }
+            {
               showBack && (
                 <a
                   class="button-back"
@@ -125,13 +132,6 @@ const {
                   data-direction="back"
                 >
                   <button>Ga terug</button>
-                </a>
-              )
-            }
-            {
-              showNext && (
-                <a class="button-next" href={nextHref} data-direction="forward">
-                  <button>Ga verder</button>
                 </a>
               )
             }
