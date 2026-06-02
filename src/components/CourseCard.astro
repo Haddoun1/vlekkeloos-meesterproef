@@ -1,52 +1,77 @@
 ---
-
-const { title, image, progress, href = '#', color } = Astro.props;
-
+const {
+  title,
+  image = '',
+  progress = 0,
+  href = '#',
+  color = '#2AB789'
+} = Astro.props;
 ---
 
-<a href={href} class="course-card" style={`--bg-image: url(${image}); --bg-color: ${color}; --progress: ${progress}%;`}>
+<a
+  href={href}
+  class="course-card"
+  style={`--bg-image: url(${image}); --bg-color: ${color};`}
+>
   <h2>{title}</h2>
 
   <div class="progress-row">
-    <progress value={progress} max="100">{progress}%</progress>
-    <span class="progress-label">{progress}%</span>
+    <progress
+      data-progress-bar
+      value={progress}
+      max="100"
+    >
+      {progress}%
+    </progress>
+
+    <span
+      data-progress-text
+      class="progress-label"
+    >
+      {progress}%
+    </span>
   </div>
 </a>
 
 <style>
-.course-card {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  padding: 1.5rem;
-  border-radius: 16px;
-  overflow: hidden;
-  text-decoration: none;
-  color: #fff;                 
-  background-color: var(--bg-color);
-  background-image: var(--bg-image);
-  background-size: cover;
-  background-position: center;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  border-left: 5px solid var(--bg-color);
-}
+  .course-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    padding: 1.5rem;
+    border-radius: 16px;
+    overflow: hidden;
+    text-decoration: none;
+    color: #fff;
+    background-color: var(--bg-color);
+    background-image: var(--bg-image);
+    background-size: cover;
+    background-position: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
+    border-left: 5px solid var(--bg-color);
+  }
 
-/* Donkere Gradient */
-.course-card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.55) 100%);
-}
+  .course-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0.1) 0%,
+      rgba(0, 0, 0, 0.55) 100%
+    );
+  }
 
-.course-card > * {
-  position: relative;
-  z-index: 1;
-}
+  .course-card > * {
+    position: relative;
+    z-index: 1;
+  }
 
   .course-card:hover {
     transform: translateY(-3px);
@@ -72,30 +97,30 @@ const { title, image, progress, href = '#', color } = Astro.props;
     border: none;
     border-radius: 999px;
     overflow: hidden;
-    background-color: #f0f0f0;
+    background-color: rgba(255, 255, 255, 0.3);
   }
 
   progress::-webkit-progress-bar {
-    background-color: #f0f0f0;
+    background-color: rgba(255, 255, 255, 0.3);
     border-radius: 999px;
   }
 
   progress::-webkit-progress-value {
-    background-color: var(--bg-color);
+    background-color: #fff;
     border-radius: 999px;
-    transition: width 0.4s ease;
+    transition: all 0.4s ease;
   }
 
   progress::-moz-progress-bar {
-    background-color: var(--bg-color);
+    background-color: #fff;
     border-radius: 999px;
   }
 
   .progress-label {
     font-size: 1.2rem;
-    font-weight: 600;
-    color: var(--bg-color);
-    min-width: 2.5rem;
+    font-weight: 700;
+    color: #fff;
+    min-width: 3rem;
     text-align: right;
   }
 </style>
