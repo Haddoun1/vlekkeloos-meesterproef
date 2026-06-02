@@ -1,0 +1,57 @@
+---
+export const prerender = false;
+import MainLayout from "../../layouts/Layout-onboarding.astro";
+import QuestionSingle from "../../components/QuestionSingle.astro";
+---
+
+<MainLayout
+  title="Stap 7"
+  nextHref="/onboarding/step-8"
+  backHref="/onboarding/step-6"
+  headingText="Kennis"
+  bodyText="Een klant met een visuele beperking komt binnen. Wat doe je?"
+  step={7}
+  totalSteps={9}
+>
+  <QuestionSingle
+    slot="question"
+    name="visuele_beperking"
+    options={[
+      "Ik wacht af",
+      "Ik vraag of ik kan helpen",
+      "Ik weet het niet",
+      "Ik help direct",
+    ]}
+  />
+
+  <img class="mockup"
+    src="../../public/images/Mensenkennerskaderdoof.png"
+    alt="Mensenkenners logo"
+  />
+</MainLayout>
+
+<style>
+  :global(.panel-left) {
+    display: none !important;
+  }
+
+  :global(.panel-right) {
+    margin: 2em 0 auto 0;
+    height: 100%;
+  }
+
+  @media (min-width: 768px) {
+    :global(.panel-left) {
+      display: flex !important;
+    }
+
+    :global(.panel-right) {
+        margin: 0 auto;
+        height: 100%;
+    }
+  }
+
+  .mockup{
+    max-width: 400px !important;
+  }
+</style>
