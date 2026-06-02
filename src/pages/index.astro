@@ -100,8 +100,23 @@ const recentCourses = [
 
 <script>
   //@ts-nocheck
-    const name = localStorage.getItem("firstName");
-    document.getElementById("welcome").innerText = `Welkom, ${name}! Ga verder waar je gebleven was.`;
+  const name = localStorage.getItem("firstName");
+
+  const hour = new Date().getHours();
+
+  let greeting = "";
+
+  if (hour < 12) {
+    greeting = "Goedemorgen";
+  } else if (hour < 18) {
+    greeting = "Goedemiddag";
+  } else {
+    greeting = "Goedenavond";
+  }
+
+  document.getElementById(
+    "welcome"
+  ).innerText = `${greeting}, ${name}! Ga verder waar je gebleven was.`;
 
 </script>
 
