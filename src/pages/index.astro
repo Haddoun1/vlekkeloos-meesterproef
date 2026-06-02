@@ -6,47 +6,40 @@ import CourseCard from '../components/CourseCard.astro';
 
 import { supabase } from '../lib/supabase';
 
-const { data: progress } = await supabase
-  .from("course_progress")
-  .select("*");
-
 const courses = [
   {
-    title: 'Onboarding',
-    image: '',
-    progress: 20,
-    href: '/onboarding/welkom',
-    color: '#2241DD',
+    id: "deel_1",
+    title: "Deel 1",
+    image: "",
+    progress: 0,
+    href: "/deel-1/1",
+    color: "#FF94E1",
   },
   {
-    title: 'Deel 1',
-    image: '',
-    progress: 40,
-    href: '/deel-1/1',
-    color: '#FF94E1',
+    id: "deel_2",
+    title: "Deel 2",
+    image: "",
+    progress: 0,
+    href: "/deel-2/1",
+    color: "#FF6631",
   },
   {
-    title: 'Deel 2',
-    image: '',
-    progress: 60,
-    href: '/deel-2/1',
-    color: '#FF6631',
-  },
-  {
-    title: 'Deel 3',
-    image: '',
-    progress: 70,
-    href: '/deel-3/1',
-    color: '#E9F279',
+    id: "deel_3",
+    title: "Deel 3",
+    image: "",
+    progress: 0,
+    href: "/deel-3/1",
+    color: "#E9F279",
   },
 ];
 
 // Hier komen items zodra een gebruiker een cursus is begonnen.
 const recentCourses = [
   {
+    id: "onboarding",
     title: 'Onboarding',
     image: '',
-    progress: 20,
+    progress: 0,
     href: '/onboarding/welkom',
     color: '#2241DD',
   },
@@ -62,7 +55,7 @@ const recentCourses = [
         <div class="carousel-wrapper">
           <ul class="carousel">
             {recentCourses.map((course) => (
-              <li class="carousel-item">
+              <li class="carousel-item" data-course-id={course.id}>
                 <CourseCard
                   title={course.title}
                   image={course.image}
@@ -82,7 +75,7 @@ const recentCourses = [
     <div class="carousel-wrapper">
       <ul class="carousel">
         {courses.map((course) => (
-          <li class="carousel-item">
+          <li class="carousel-item" data-course-id={course.id}>
             <CourseCard
               title={course.title}
               image={course.image}
@@ -99,7 +92,67 @@ const recentCourses = [
 </MainLayout>
 
 <script>
-  //@ts-nocheck
+  // @ts-nocheck
+  const userId = localStorage.getItem("userId");
+
+  async function loadProgress() {
+    if (!userId) return;
+
+    const response = await fetch("/api/get-progress", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ userId })
+    });
+
+    const result = await response.json();
+    const rows = result.data || [];
+
+    const totals = {
+      deel_1: 33,
+      deel_2: 32,
+      deel_3: 31,
+      onboarding: 5
+    };
+
+    const completed = {
+      deel_1: new Set(),
+      deel_2: new Set(),
+      deel_3: new Set(),
+      onboarding: new Set()
+    };
+
+    rows.forEach((row) => {
+      if (row.category === "Deel 1") completed.deel_1.add(row.step_id);
+      if (row.category === "Deel 2") completed.deel_2.add(row.step_id);
+      if (row.category === "Deel 3") completed.deel_3.add(row.step_id);
+      if (row.category === "onboarding") completed.onboarding.add(row.step_id);
+    });
+
+    Object.keys(completed).forEach((key) => {
+      const percentage = Math.round(
+        (completed[key].size / totals[key]) * 100
+      );
+
+      const card = document.querySelector(`[data-course-id="${key}"]`);
+      if (!card) return;
+
+      const progressText = card.querySelector("[data-progress-text]");
+      const progressBar = card.querySelector("[data-progress-bar]");
+
+      if (progressText) {
+        progressText.textContent = `${percentage}%`;
+      }
+
+      if (progressBar) {
+        progressBar.value = percentage;
+      }
+          });
+        }
+
+  loadProgress();
+
   const name = localStorage.getItem("firstName");
 
   const hour = new Date().getHours();
