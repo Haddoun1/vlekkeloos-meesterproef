@@ -50,7 +50,7 @@ const recentCourses = [
   <section class="dashboard">
     {recentCourses.length > 0 && (
       <>
-        <h2>Ga verder waar je gebleven was</h2>
+        <h2 id="welcome">Ga verder waar je gebleven was</h2>
 
         <div class="carousel-wrapper">
           <ul class="carousel">
@@ -152,6 +152,23 @@ const recentCourses = [
         }
 
   loadProgress();
+
+  const name = localStorage.getItem("firstName");
+
+  const hour = new Date().getHours();
+
+  let greeting = "";
+
+  if (hour < 12) {
+    greeting = "Goedemorgen";
+  } else if (hour < 18) {
+    greeting = "Goedemiddag";
+  } else {
+    greeting = "Goedenavond";
+  }
+
+  document.getElementById("welcome").innerText = `${greeting}, ${name}! Ga verder waar je gebleven was.`;
+
 </script>
 
 <style>

@@ -48,6 +48,7 @@ const {
   showBack = true,
   showProgress = true,
   showNext = true,
+  mockupSrc = "",
 } = Astro.props;
 
 // https://claude.ai/chat/8789b362-5b69-4d5c-9b16-a4b157d09820 button back niet op welkompagina, wel op rest van stappen
@@ -83,6 +84,7 @@ const {
 
         <!-- Rechts op desktop: logo, tekst, progress, knoppen -->
         <div class="panel-right">
+          {mockupSrc && <img class="mockup" src={mockupSrc} alt="mockup" />}
           <div class="logo-desktop">
             <img
               src="/images/Mensenkenners-logo-hori.png"
@@ -102,6 +104,10 @@ const {
                 </div>
               )
             }
+
+            <div class="question-wrapper">
+              <slot name="question" />
+            </div>
 
             <div class="questionnaire">
               <h1>{headingText}</h1>
@@ -176,6 +182,12 @@ const {
     width: 100%;
   }
 
+  .panel-left {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+  }
+
   .panel-right {
     display: flex;
     flex-direction: column;
@@ -189,6 +201,10 @@ const {
     gap: var(--size-xs);
     align-items: center;
     text-align: center;
+
+    & .question-wrapper {
+      order: 1;
+    }
 
     & .progress-bar {
       order: 2;
@@ -256,12 +272,12 @@ const {
   }
 
   .progress.done-small {
-    background-color: var(--color-cyan);
+    background-color: var(--color-cyan-dark);
   }
 
   .progress.done {
     width: 15%;
-    background-color: var(--color-cyan);
+    background-color: var(--color-cyan-dark);
   }
 
   /* ── Buttons ── */
@@ -288,27 +304,28 @@ const {
   }
 
   .button-next button {
-    background-color: var(--color-cyan);
+    /* background-color: var(--color-cyan); */
+    background-color: var(--color-cyan-dark);
     color: var(--color-background);
     transition:
       background-color 0.3s ease,
       color 0.3s ease;
 
     &:hover {
-      background-color: #82c2a9;
+      background-color: var(--color-cyan);
     }
   }
 
   .button-back button {
     background-color: var(--color-background);
-    color: var(--color-cyan);
-    border: 2px solid var(--color-cyan);
+    color: var(--color-cyan-dark);
+    border: 2px solid var(--color-cyan-dark);
     transition:
       background-color 0.3s ease,
       color 0.3s ease;
 
     &:hover {
-      background-color: var(--color-cyan);
+      background-color: var(--color-cyan-dark);
       color: var(--color-background);
     }
   }

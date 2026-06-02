@@ -3,28 +3,22 @@
 export const prerender = true;
 import data from "../../data/mensenkennersvragen.json";
 import { slugify } from "../../utils/slugify";
- 
+
 export async function getStaticPaths() {
   const items = data.blocks.filter(
     (item) =>
-      item.Category &&
-      ["content", "video", "question"].includes(item.type)
+      item.Category && ["content", "video", "question"].includes(item.type),
   );
- 
+
   return items.map((item) => {
     const categorySlug = slugify(item.Category);
- 
     const categoryItems = items.filter(
-      (x) => slugify(x.Category) === categorySlug
+      (x) => slugify(x.Category) === categorySlug,
     );
- 
     const stepIndex = categoryItems.findIndex((x) => x.id === item.id);
- 
+
     return {
-      params: {
-        category: categorySlug,
-        step: String(stepIndex + 1),
-      },
+      params: { category: categorySlug, step: String(stepIndex + 1) },
       props: {
         item,
         currentStep: stepIndex + 1,
@@ -34,359 +28,833 @@ export async function getStaticPaths() {
     };
   });
 }
- 
+
 const { item, currentStep, totalSteps, category } = Astro.props;
- 
 const categorySlug = slugify(category);
- 
-const previousPage =
-  currentStep > 1 ? `/${categorySlug}/${currentStep - 1}` : null;
- 
-const nextPage =
-  currentStep < totalSteps ? `/${categorySlug}/${currentStep + 1}` : null;
- 
+const previousPage = currentStep > 1 ? `/${categorySlug}/${currentStep - 1}` : null;
+const nextPage = currentStep < totalSteps ? `/${categorySlug}/${currentStep + 1}` : null;
+
 let embedUrl = item.url;
- 
 if (item.url?.includes("vimeo.com")) {
   const id = item.url.split("/").filter(Boolean).pop()?.split("?")[0];
   embedUrl = `https://player.vimeo.com/video/${id}`;
 }
- 
 if (item.url?.includes("youtube.com/watch?v=")) {
   const id = item.url.split("v=")[1]?.split("&")[0];
   embedUrl = `https://www.youtube.com/embed/${id}`;
 }
- 
 if (item.url?.includes("youtu.be/")) {
   const id = item.url.split("youtu.be/")[1]?.split("?")[0];
   embedUrl = `https://www.youtube.com/embed/${id}`;
 }
- 
+
 const options = item.options || [];
 const scale = item.scale || {};
 const minRating = scale.min || 1;
 const maxRating = scale.max || 10;
-const ratings = Array.from(
-  { length: maxRating - minRating + 1 },
-  (_, i) => minRating + i
-);
- 
+const ratings = Array.from({ length: maxRating - minRating + 1 }, (_, i) => minRating + i);
+
 let nextSectionUrl = null;
- 
 if (item.id?.endsWith("_submit")) {
-  if (item.id === "intro_submit") {
-    nextSectionUrl = "/deel-1/1";
-  }
- 
-  if (item.id === "d1_submit") {
-    nextSectionUrl = "/deel-2/1";
-  }
- 
-  if (item.id === "d2_submit") {
-    nextSectionUrl = "/deel-3/1";
-  }
+  if (item.id === "intro_submit") nextSectionUrl = "/deel-1/1";
+  if (item.id === "d1_submit") nextSectionUrl = "/deel-2/1";
+  if (item.id === "d2_submit") nextSectionUrl = "/deel-3/1";
 }
+
+const progressPct = Math.round((currentStep / totalSteps) * 100);
 ---
 
 <link rel="stylesheet" href="/styles/global.css" />
 
-<main data-step-id={item.id} data-category={category}>
-<h1>{category} - Stap {currentStep} van {totalSteps}</h1>
- 
-<section>
-  {item.title && <h2>{item.title}</h2>}
- 
-  {item.subtitle && <p>{item.subtitle}</p>}
- 
-  {item.text && <p>{item.text}</p>}
- 
-  {item.source && <p><strong>Bron:</strong> {item.source}</p>}
- 
-  {item.type === "video" && embedUrl && (
-    <iframe
-      width="100%"
-      height="500"
-      src={embedUrl}
-      title={item.title}
-      frameborder="0"
-      allow="autoplay; fullscreen; picture-in-picture"
-      allowfullscreen
-    ></iframe>
-  )}
- 
-  {item.type === "question" && (
-    <>
-      {item.question && <h3>{item.question}</h3>}
- 
-      {item.description && <p>{item.description}</p>}
- 
-      {item.label && <label>{item.label}</label>}
- 
-      {item.input_type === "text" && (
-        <input type="text" placeholder={item.placeholder || "Typ hier je antwoord"} />
+<div class="page-shell">
+
+  <aside class="sidebar-left" aria-label="Voortgang">
+    <div class="progress-block">
+      <div class="progress-bar-track" role="progressbar" aria-valuenow={currentStep} aria-valuemin={1} aria-valuemax={totalSteps}>
+        <div class="progress-bar-fill" style={`height: ${progressPct}%`}></div>
+      </div>
+      <span class="progress-label">{progressPct}%</span>
+    </div>
+  </aside>
+
+  <main class="content-col" data-step-id={item.id} data-category={categorySlug}>
+
+    <header class="page-header">
+      <p class="category-pill">{category}</p>
+         <span class="step-fraction">{currentStep}<span class="step-total">/{totalSteps}</span></span>
+    </header>
+
+    <section class="card">
+
+      {item.title && <h1 class="card-title">{item.title}</h1>}
+      {item.subtitle && <p class="card-subtitle">{item.subtitle}</p>}
+      {item.text && <p class="card-body">{item.text}</p>}
+
+      {item.source && (
+        <p class="card-source">
+          <span class="source-label">Bron</span>
+          {item.source}
+        </p>
       )}
- 
-      {item.input_type === "email" && (
-        <input type="email" placeholder="Typ hier je e-mailadres" />
-      )}
- 
-      {item.input_type === "long_text" && (
-        <textarea
-          rows="6"
-          placeholder={item.placeholder || "Typ hier je antwoord"}
-        ></textarea>
-      )}
- 
-      {item.input_type === "single_choice" && (
-        <ul>
-          {options.map((option) => (
-            <li>
-              <button type="button">
-                {typeof option === "string" ? option : option.text}
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
- 
-      {item.input_type === "multiple_choice" && (
-        <ul>
-          {options.map((option) => (
-            <li>
-              <button type="button">
-                {typeof option === "string" ? option : option.text}
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
- 
-      {item.input_type === "rating" && (
-        <div>
-          {scale.min_label && <span>{scale.min_label}</span>}
- 
-          {ratings.map((ratingValue) => (
-            <div>
-              <input
-                type="radio"
-                id={`rating-${item.id}-${ratingValue}`}
-                name={`rating-${item.id}`}
-                value={ratingValue}
-              />
-              <label for={`rating-${item.id}-${ratingValue}`}>
-                {ratingValue}
-              </label>
-            </div>
-          ))}
- 
-          {scale.max_label && <span>{scale.max_label}</span>}
+
+      {item.type === "video" && embedUrl && (
+        <div class="video-wrapper">
+          <iframe
+            src={embedUrl}
+            title={item.title}
+            frameborder="0"
+            allow="autoplay; fullscreen; picture-in-picture"
+            allowfullscreen
+          />
         </div>
       )}
-    </>
-  )}
- 
-{item.id?.endsWith("_submit") && (
-  <div class="submit-navigation">
-    
-    <a href="/index.html" class="button">
-      Terug naar dashboard
-    </a>
- 
-    {nextSectionUrl && (
-      <a href={nextSectionUrl} class="button button-primary">
-        Naar volgend deel
-      </a>
-    )}
-  </div>
-)}
- 
-{item.id?.endsWith("_end") && (
-  <div class="submit-navigation">
-    
-    <a href="/index.html" class="button">
-      Terug naar dashboard
-    </a>
- 
-  </div>
-)}
- 
-</section>
- 
-<nav>
-  {previousPage && <a class="nav-prev" href={previousPage}>Vorige</a>}
- 
-  {nextPage && <a class="nav-next" href={nextPage}>Volgende</a>}
-</nav>
-<link rel="stylesheet" href="/styles/global.css" />
-</main>
+
+      {item.type === "question" && (
+        <div class="question-block">
+          {item.question && <h2 class="question-text">{item.question}</h2>}
+          {item.description && <p class="card-body">{item.description}</p>}
+          {item.label && <label class="field-label">{item.label}</label>}
+
+          {item.input_type === "text" && (
+            <input class="text-input" type="text" placeholder={item.placeholder || "Typ hier je antwoord"} />
+          )}
+
+          {item.input_type === "email" && (
+            <input class="text-input" type="email" placeholder="Typ hier je e-mailadres" />
+          )}
+
+          {item.input_type === "long_text" && (
+            <textarea class="text-area" rows="5" placeholder={item.placeholder || "Typ hier je antwoord"} />
+          )}
+
+          {item.input_type === "single_choice" && (
+            <ul class="options-list" role="radiogroup">
+              {options.map((option, index) => {
+                const text = typeof option === "string" ? option : option.text;
+                return (
+                  <li>
+                    <label class="option-label">
+                      <input type="radio" name={item.id} value={text} class="option-input" />
+                      <span class="option-key">{String.fromCharCode(65 + index)}</span>
+                      <span class="option-text">{text}</span>
+                    </label>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+
+          {item.input_type === "multiple_choice" && (
+            <div data-multiple-choice>
+              <p class="mc-hint">Selecteer maximaal 2 opties</p>
+              <ul class="options-list" role="group">
+                {options.map((option, index) => {
+                  const text = typeof option === "string" ? option : option.text;
+                  return (
+                    <li>
+                      <label class="option-label option-label--multi">
+                        <input type="checkbox" name={item.id} value={text} class="option-input" />
+                        <span class="option-key">{String.fromCharCode(65 + index)}</span>
+                        <span class="option-text">{text}</span>
+                      </label>
+                    </li>
+                  );
+                })}
+              </ul>
+              <div class="mc-error" role="alert" aria-live="polite" id="mc-error" hidden>
+                Je kunt maximaal 2 opties selecteren.
+              </div>
+            </div>
+          )}
+
+          {item.input_type === "rating" && (
+            <div class="rating-block">
+              {scale.min_label && <span class="rating-label">{scale.min_label}</span>}
+              <div class="rating-row">
+                {ratings.map((ratingValue) => (
+                  <label class="rating-option">
+                    <input
+                      type="radio"
+                      id={`rating-${item.id}-${ratingValue}`}
+                      name={`rating-${item.id}`}
+                      value={ratingValue}
+                      class="option-input"
+                    />
+                    <span class="rating-pip">{ratingValue}</span>
+                  </label>
+                ))}
+              </div>
+              {scale.max_label && <span class="rating-label">{scale.max_label}</span>}
+            </div>
+          )}
+        </div>
+      )}
+
+      {item.id?.endsWith("_submit") && (
+        <div class="action-row">
+          <a href="/index.html" class="btn btn--ghost">
+             Dashboard
+          </a>
+          {nextSectionUrl && (
+            <a href={nextSectionUrl} class="btn btn--primary">
+              Volgend deel 
+            </a>
+          )}
+        </div>
+      )}
+
+      {item.id?.endsWith("_end") && (
+        <div class="action-row">
+          <a href="/index.html" class="btn btn--ghost">
+             Dashboard
+          </a>
+        </div>
+      )}
+
+    </section>
+
+    <nav class="bottom-nav" aria-label="Navigatie">
+      {previousPage
+        ? <a class="nav-btn nav-btn--prev" href={previousPage}> Vorige</a>
+        : <span class="nav-btn nav-btn--disabled" aria-disabled="true"> Vorige</span>
+      }
+
+
+      {nextPage
+        ? <a class="nav-btn nav-btn--next" href={nextPage} id="nav-next">Volgende </a>
+        : <span class="nav-btn nav-btn--disabled" aria-disabled="true">Volgende </span>
+      }
+    </nav>
+
+  </main>
+
+  <aside class="sidebar-right" aria-hidden="true">
+    <div class="sidebar-right-inner">
+    </div>
+  </aside>
+
+</div>
+
 
 <script>
   //@ts-nocheck
-  const main = document.querySelector("main");
-
-  console.log("Script geladen");
-  console.log("main element:", main);
-
+  const main = document.querySelector("main.content-col");
   const stepId = main?.dataset.stepId;
   const category = main?.dataset.category;
   const startedAt = new Date();
-
-  console.log("stepId:", stepId);
-  console.log("category:", category);
-
   let alreadySaved = false;
+
+  const mcBlock = document.querySelector("[data-multiple-choice]");
+  if (mcBlock) {
+    const checkboxes = mcBlock.querySelectorAll("input[type='checkbox']");
+    const errorEl   = document.getElementById("mc-error");
+    const navNext   = document.getElementById("nav-next");
+
+    function updateMC() {
+      const checked = [...checkboxes].filter(cb => cb.checked);
+      if (checked.length > 2) {
+        const event = window._lastChangedCb;
+        if (event) event.checked = false;
+        errorEl && (errorEl.hidden = false);
+        return;
+      }
+      errorEl && (errorEl.hidden = true);
+    }
+
+    checkboxes.forEach(cb => {
+      cb.addEventListener("change", (e) => {
+        window._lastChangedCb = e.target.checked ? e.target : null;
+
+        const checked = [...checkboxes].filter(cb => cb.checked);
+        if (checked.length > 2) {
+          e.target.checked = false;
+          if (errorEl) {
+            errorEl.hidden = false;
+            clearTimeout(errorEl._timer);
+            errorEl._timer = setTimeout(() => { errorEl.hidden = true; }, 3000);
+          }
+        } else {
+          if (errorEl) errorEl.hidden = true;
+        }
+      });
+    });
+
+    if (navNext) {
+      navNext.addEventListener("click", (e) => {
+        const checked = [...checkboxes].filter(cb => cb.checked);
+      });
+    }
+  }
 
   async function saveProgress() {
     if (alreadySaved) return;
     alreadySaved = true;
-
     const endedAt = new Date();
-    const durationSeconds = Math.round((endedAt - startedAt) / 1000);
-
-    console.log("Saving progress...", { stepId, category, durationSeconds });
-
-    const response = await fetch("/api/track-step", {
+    await fetch("/api/track-step", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         userId: localStorage.getItem("userId") || "anonymous",
-        email: localStorage.getItem("email") || null,
-        name: localStorage.getItem("name") || null,
-        stepId,
-        category,
+        email:  localStorage.getItem("email")  || null,
+        name:   localStorage.getItem("name")   || null,
+        stepId, category,
         startedAt: startedAt.toISOString(),
-        endedAt: endedAt.toISOString(),
-        durationSeconds
-      })
+        endedAt:   endedAt.toISOString(),
+        durationSeconds: Math.round((endedAt - startedAt) / 1000),
+      }),
     });
-
-    const result = await response.json();
-    console.log("API response:", result);
   }
 
   window.addEventListener("beforeunload", () => {
-    console.log("Pagina verlaten, progress opslaan...");
     navigator.sendBeacon("/api/track-step", JSON.stringify({
       userId: localStorage.getItem("userId") || "anonymous",
-      email: localStorage.getItem("email") || null,
-      name: localStorage.getItem("name") || null,
-      stepId,
-      category,
+      email:  localStorage.getItem("email")  || null,
+      name:   localStorage.getItem("name")   || null,
+      stepId, category,
       startedAt: startedAt.toISOString(),
-      endedAt: new Date().toISOString(),
-      durationSeconds: Math.round((new Date() - startedAt) / 1000)
+      endedAt:   new Date().toISOString(),
+      durationSeconds: Math.round((new Date() - startedAt) / 1000),
     }));
   });
 </script>
 
+
 <style>
-  body {
-    background-color: var(--color-background);
+
+body {
+  background: var(--gradient-bg-cyan);
+  min-height: 100vh;
+}
+
+.page-shell {
+  display: grid;
+  grid-template-columns: 1fr 4fr 1fr;
+  min-height: 100vh;
+  max-width: 1200px;
+  margin-inline: auto;
+  padding: 0 1rem;
+  gap: 0 2rem;
+}
+
+.sidebar-left,
+.sidebar-right {
+  display: flex;
+  align-items: flex-start;
+  padding-top: 6rem;
+}
+
+.sidebar-left {
+  justify-content: flex-end;
+}
+
+.progress-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.step-fraction {
+  font-family: var(--font-extra-bold);
+  font-size: var(--size-xl);
+  color: var(--color-text);
+  line-height: 1;
+}
+
+.step-total {
+  font-family: var(--font-light);
+  font-size: var(--size-base);
+  opacity: 0.45;
+}
+
+.progress-bar-track,
+.progress-bar-fill,
+.progress-label {
+  display: none;
+}
+
+.sidebar-right {
+  justify-content: flex-start;
+}
+
+.sidebar-right-inner {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  opacity: 0.15;
+}
+
+.content-col {
+  padding: 5rem 0 7rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.category-pill {
+  font-family: var(--font-semi-bold);
+  font-size: var(--size-sm);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: rgba(0,0,0,0.07);
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 99px;
+  padding: 0.25rem 0.85rem;
+  color: var(--color-text);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.card {
+  background: rgba(255,255,255,0.72);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 20px;
+  padding: 2.5rem 2.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.card-title {
+  font-family: var(--font-extra-bold);
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  line-height: 1.15;
+  margin: 0;
+}
+
+.card-subtitle {
+  font-family: var(--font-semi-bold);
+  font-size: var(--size-xl);
+  opacity: 0.7;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.card-body {
+  font-family: var(--font-light);
+  font-size: var(--size-lg);
+  line-height: 1.65;
+  margin: 0;
+  color: var(--color-text);
+}
+
+.card-source {
+  font-family: var(--font-light);
+  font-size: var(--size-sm);
+  opacity: 0.55;
+  margin: 0;
+  display: flex;
+  gap: 0.4rem;
+}
+
+.source-label {
+  font-family: var(--font-semi-bold);
+  font-size: var(--size-sm);
+}
+
+.video-wrapper {
+  position: relative;
+  padding-top: 56.25%;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(0,0,0,0.1);
+}
+
+.video-wrapper iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.question-block {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.question-text {
+  font-family: var(--font-semi-bold);
+  font-size: clamp(1.1rem, 3vw, 1.4rem);
+  margin: 0;
+  line-height: 1.3;
+}
+
+.field-label {
+  font-family: var(--font-semi-bold);
+  font-size: var(--size-sm);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  opacity: 0.55;
+}
+
+.text-input,
+.text-area {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-family: var(--font-light);
+  font-size: var(--size-base);
+  border: 2px solid rgba(0,0,0,0.15);
+  border-radius: 10px;
+  background: rgba(255,255,255,0.8);
+  color: var(--color-text);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  resize: vertical;
+}
+
+.text-input:hover,
+.text-area:hover {
+  border-color: rgba(0,0,0,0.3);
+}
+
+.text-input:focus,
+.text-area:focus {
+  border-color: var(--color-green);
+  box-shadow: 0 0 0 3px rgba(42,183,137,0.18);
+}
+
+.mc-hint {
+  font-family: var(--font-light);
+  font-size: var(--size-sm);
+  opacity: 0.55;
+  margin: 0;
+}
+
+.options-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.option-input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  width: 0;
+  height: 0;
+}
+
+.option-label {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.7rem 1rem 0.7rem 0.75rem;
+  border: 1.5px solid rgba(0,0,0,0.1);
+  border-radius: 12px;
+  background: rgba(255,255,255,0.5);
+  cursor: pointer;
+  transition:
+    background 0.18s ease,
+    border-color 0.18s ease,
+    transform 0.12s ease,
+    box-shadow 0.18s ease;
+  user-select: none;
+  position: relative;
+}
+
+.option-label:hover {
+  background: rgba(255,255,255,0.9);
+  border-color: rgba(0,0,0,0.22);
+  transform: translateX(3px);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+}
+
+.option-label:active {
+  transform: translateX(2px) scale(0.995);
+}
+
+.option-label:has(.option-input:checked) {
+  background: var(--color-cyan);
+  border-color: rgba(0,0,0,0.3);
+  box-shadow: 0 2px 12px rgba(42,183,137,0.2);
+}
+
+.option-label:has(.option-input:checked) .option-key {
+  background: var(--color-text);
+  color: white;
+  border-color: var(--color-text);
+}
+
+.option-key {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 7px;
+  border: 1.5px solid rgba(0,0,0,0.12);
+  background: rgba(0,0,0,0.04);
+  font-family: var(--font-bold);
+  font-size: var(--size-sm);
+  transition: background 0.18s, color 0.18s, border-color 0.18s;
+}
+
+.option-text {
+  flex: 1;
+  font-family: var(--font-semi-bold);
+  font-size: var(--size-base);
+  line-height: 1.35;
+}
+
+.option-check {
+  flex-shrink: 0;
+  font-size: var(--size-base);
+  opacity: 0;
+  transform: scale(0.5);
+  transition: opacity 0.18s, transform 0.2s cubic-bezier(0.34,1.56,0.64,1);
+}
+
+.mc-error {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #FFF0ED;
+  border: 1.5px solid #FF6631;
+  color: #B83200;
+  border-radius: 10px;
+  padding: 0.6rem 1rem;
+  font-family: var(--font-semi-bold);
+  font-size: var(--size-sm);
+  animation: shake 0.3s ease;
+}
+
+.mc-error[hidden] {
+  display: none;
+}
+
+@keyframes shake {
+  0%   { transform: translateX(0); }
+  25%  { transform: translateX(-5px); }
+  50%  { transform: translateX(5px); }
+  75%  { transform: translateX(-3px); }
+  100% { transform: translateX(0); }
+}
+
+.rating-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.rating-label {
+  font-family: var(--font-light);
+  font-size: var(--size-sm);
+  opacity: 0.6;
+}
+
+.rating-row {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.rating-option {
+  cursor: pointer;
+}
+
+.rating-option .option-input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.rating-pip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.8rem;
+  height: 2.8rem;
+  border-radius: 10px;
+  border: 1.5px solid rgba(0,0,0,0.12);
+  background: rgba(255,255,255,0.5);
+  font-family: var(--font-bold);
+  font-size: var(--size-base);
+  transition: background 0.15s, border-color 0.15s, transform 0.1s;
+  user-select: none;
+}
+
+.rating-option:hover .rating-pip {
+  background: rgba(255,255,255,0.9);
+  border-color: rgba(0,0,0,0.25);
+  transform: translateY(-2px);
+}
+
+.rating-option:has(.option-input:checked) .rating-pip {
+  background: var(--color-cyan);
+  border-color: rgba(0,0,0,0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(42,183,137,0.2);
+}
+
+.action-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding-top: 0.5rem;
+}
+
+.btn {
+  font-family: var(--font-bold);
+  font-size: var(--size-base);
+  padding: 0.7rem 1.5rem;
+  border-radius: 25px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: background 0.18s, color 0.18s, transform 0.12s, box-shadow 0.18s;
+  cursor: pointer;
+  border: none;
+}
+
+.btn--primary {
+  background: var(--color-cyan);
+  color: var(--color-text);
+  border: 1.5px solid rgba(0,0,0,0.15);
+}
+
+.btn--primary:hover {
+  background: var(--color-green);
+  color: white;
+  box-shadow: 0 4px 14px rgba(42,183,137,0.3);
+  transform: translateY(-1px);
+}
+
+.btn--primary:active {
+  transform: scale(0.97);
+}
+
+.btn--ghost {
+  background: transparent;
+  color: var(--color-text);
+  border: 1.5px solid rgba(0,0,0,0.18);
+}
+
+.btn--ghost:hover {
+  background: rgba(0,0,0,0.06);
+  border-color: rgba(0,0,0,0.3);
+}
+
+.btn--ghost:active {
+  transform: scale(0.97);
+}
+
+.bottom-nav {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(66.67%, 800px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  z-index: 100;
+  background: rgba(255,255,255,0.6);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0,0,0,0.07);
+  border-radius: 99px;
+  padding: 0.5rem 0.75rem;
+}
+
+.nav-btn {
+  font-family: var(--font-bold);
+  font-size: var(--size-base);
+  padding: 0.6rem 1.4rem;
+  border-radius: 25px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: background 0.18s, color 0.18s, transform 0.12s, box-shadow 0.18s;
+  background: var(--color-cyan);
+  color: var(--color-text);
+  border: 1.5px solid rgba(0,0,0,0.12);
+}
+
+.nav-btn:hover {
+  background: var(--color-green);
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(42,183,137,0.25);
+}
+
+.nav-btn:active {
+  transform: scale(0.97);
+}
+
+.nav-btn--disabled {
+  background: rgba(0,0,0,0.05);
+  color: rgba(0,0,0,0.28);
+  border-color: transparent;
+  pointer-events: none;
+  cursor: default;
+}
+
+/* Tablet */
+@media (max-width: 900px) {
+  .page-shell {
+    grid-template-columns: 1fr 4fr 1fr;
+    gap: 0 1rem;
+    padding: 0 0.75rem;
   }
 
-  main {
-    display: grid;
-    grid-template-columns: 1fr minmax(0, 800px) 1fr;
+  .sidebar-right {
+    display: none;
   }
 
-  main > * {
-    grid-column: 2;
+  .bottom-nav {
+    width: min(80%, 700px);
+  }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .page-shell {
+    grid-template-columns: 1fr;
+    padding: 0 1rem;
   }
 
-  h1 {
-    font-family: var(--font-bold);
-    font-size: clamp(1.5rem, 5vw, 2.5rem);
-    margin: 7rem 0 0 1rem;
+  .sidebar-left,
+  .sidebar-right {
+    display: none;
   }
 
-  h2 {
-    font-family: var(--font-semi-bold);
-    font-size: clamp(1.25rem, 4vw, 1.75rem);
-    margin: 1rem 0 0 1rem;
+  .content-col {
+    padding: 3.5rem 0 7rem;
   }
 
-  h3 {
-    font-family: var(--font-semi-bold);
-    font-size: clamp(1.1rem, 3.5vw, 1.5rem);
-    margin: 1rem 0 0 1rem;
+  .card {
+    padding: 1.5rem 1.25rem;
+    border-radius: 14px;
   }
 
-  p {
-    font-size: clamp(var(--size-base), 2vw, var(--size-lg));
-    line-height: 1.5;
-    margin: 4rem 0 0 1rem;
+  .card-title {
+    font-size: clamp(1.35rem, 6vw, 1.8rem);
   }
 
-  li {
-    list-style: none;
-    margin: 0 0 0 1rem;
+  .rating-pip {
+    width: 2.4rem;
+    height: 2.4rem;
+    font-size: var(--size-sm);
   }
 
-  li:first-child {
-    margin-top: 1rem;
-  }
-
-  button {
-    margin: 0.5rem 0 0 0;
-    font-family: var(--font-semi-bold);
-    padding: 0.75rem 1.5rem;
-    width: 60%;
-    border: 2px solid black;
-    border-radius: 4px;
-    background: var(--color-background);
-    cursor: pointer;
-    text-align: left;
-  }
-
-  input[type="text"],
-  input[type="email"] {
-    margin: 1rem 0 0 1rem;
-    padding: 0.75rem;
+  .bottom-nav {
     width: calc(100% - 2rem);
-    border: 2px solid black;
-    border-radius: 4px;
+    bottom: 1rem;
+    border-radius: 16px;
   }
-
-  textarea {
-    margin: 1rem 0 0 1rem;
-    padding: 0.75rem;
-    width: calc(100% - 2rem);
-    border: 2px solid black;
-    border-radius: 4px;
-    font-family: var(--font-light);
-  }
-
-  span {
-    font-family: var(--font-light);
-  }
-
-  div {
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .nav-prev,
-  .nav-next {
-    position: fixed;
-    top: 90%;
-    transform: translateY(-50%);
-    font-family: var(--font-semi-bold);
-    padding: 0.75rem 1.5rem;
-    border: 2px solid black;
-    border-radius: 4px;
-    background: var(--color-background);
-    text-decoration: none;
-  }
-
-  .nav-prev {
-    left: calc(55% - 400px - 5rem);
-  }
-
-  .nav-next {
-    right: calc(55% - 400px - 5rem);
-  }
+}
 </style>

@@ -14,11 +14,19 @@ import MainLayout from "../../layouts/Layout-onboarding.astro";
   showProgress={false}
   showBack={false}
   showNext={false}
+  mockupSrc="/images/Mensenkennerskaderdoof.png"
 >
+
   <!-- <img class="mockup"
     src="../../public/images/Mensenkennerskaderdoof.png"
     alt="Mensenkenners logo"
   /> -->
+
+<img
+    class="logo-desktop-login"
+    src="/images/Mensenkenners-logo-hori.png"
+    alt="Mensenkenners logo"
+  />
 
   <form class="login-form">
     <!-- <div class="buttons-container">
@@ -31,7 +39,11 @@ import MainLayout from "../../layouts/Layout-onboarding.astro";
         </button>
       </div> -->
     <fieldset>
-      <legend>Account</legend>
+      <div class="title-login">
+        <legend>Account</legend>
+        <p>Maak een account aan om je voortgang op te slaan</p>
+      </div>
+
 
       <div class="container-name">
         <label for="first-name">
@@ -43,6 +55,7 @@ import MainLayout from "../../layouts/Layout-onboarding.astro";
             placeholder=""
             required
           />
+          <p class="error">Vul je voornaam in.</p>
         </label>
 
         <label for="last-name">
@@ -54,23 +67,43 @@ import MainLayout from "../../layouts/Layout-onboarding.astro";
             placeholder=""
             required
           />
+          <p class="error">Vul je achternaam in.</p>
         </label>
       </div>
 
       <label for="email">
         E-mailadres
         <input type="email" id="email" name="email" placeholder="" required />
+        <p class="error">Vul een geldig e-mailadres in.</p>
       </label>
 
       <p class="login-link">
         Heb je al een account? <a href="/onboarding/login">Inloggen</a>
       </p>
     </fieldset>
-    <button type="submit">Ga verder</button>
+
+    <div class="buttons-onboarding">
+      <a class="button-back" href="/onboarding/welkom-no-loader" id="back-btn">
+        <button type="button">Ga terug</button>
+      </a>
+      <button type="submit">Ga verder</button>
+    </div>
+
   </form>
 </MainLayout>
 
 <style>
+  .error {
+      color: #b43f3f;
+      display: none;
+      font-size: 1em;
+      margin-top: .3em;
+  }
+
+  label:has(input:user-invalid) .error {
+      display:block;
+  }
+
   img {
     width: 70%;
     max-width: 400px;
@@ -95,13 +128,13 @@ import MainLayout from "../../layouts/Layout-onboarding.astro";
     }
 
     & button.active {
-      background-color: var(--color-cyan);
+      background-color: var(--color-cyan-dark);
       color: var(--color-background);
     }
 
     & button.not-active {
       background-color: var(--color-background);
-      color: var(--color-cyan);
+      color: var(--color-cyan-dark);
     }
   }
   form{
@@ -119,11 +152,28 @@ import MainLayout from "../../layouts/Layout-onboarding.astro";
     margin: var(--size-xl) 0;
     width: 100%;
 
+    & .title-login {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      & p {
+        font-size: var(--size-sm);
+        font-family: var(--font-light);
+        text-align: center;
+        max-width: 70vw;
+
+        color:#525252;
+      }
+    }
+
     & legend {
       font-size: var(--size-lg);
       font-family: var(--font-extra-bold);
-      margin-bottom: 0.5rem;
+      text-align: center;
+      margin-bottom: 0rem;
     }
+
   }
 
   label {
@@ -132,13 +182,15 @@ import MainLayout from "../../layouts/Layout-onboarding.astro";
     gap: 0.2em;
     font-size: var(--size-sm);
     font-family: var(--font-light);
+    color:#525252;
 
     & input {
-      padding: 0.5em;
+      padding: 0.75em 1em;
       border: 1px solid #e5e5e5;
       background-color: rgb(255 255 255 / 0.8);
-      border-radius: 4px;
-      font-size: var(--size-base);
+      /* border-radius: 4px; */
+      border-radius: 25px;
+      font-size: var(--size-sm);
     }
   }
 
@@ -150,6 +202,7 @@ import MainLayout from "../../layouts/Layout-onboarding.astro";
   }
 
   .login-link {
+    margin-top: -1em;
     font-size: var(--size-sm);
     font-family: var(--font-light);
     text-align: center;
@@ -169,11 +222,114 @@ import MainLayout from "../../layouts/Layout-onboarding.astro";
     border: none;
     font-weight: 600;
     cursor: pointer;
-    background-color: var(--color-cyan);
+    background-color: var(--color-cyan-dark);
     color: var(--color-background);
 
-    margin-top: auto;
+    /* margin-top:6em; */
   }
+
+  .buttons-onboarding {
+    display: flex;
+    flex-direction: column;
+    gap: var(--size-xxs);
+    width: 100%;
+    margin-top: 2em;
+  }
+
+  .button-back {
+    width: 100%;
+
+    & button {
+      width: 100%;
+      padding: var(--size-xs) var(--size-2xl);
+      border-radius: 25px;
+      border: 2px solid var(--color-cyan-dark);
+      background-color: var(--color-background);
+      color: var(--color-cyan-dark);
+      font-weight: 600;
+      cursor: pointer;
+    }
+  }
+
+  .logo-desktop-login {
+    display: none;
+    width: 150px;
+    margin: 0;
+    margin-right: auto;
+  }
+
+  :global(.panel-right) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+
+    & :global(.buttons-onboarding) {
+      display: none;
+      margin:0 !important;
+    }
+  }
+
+  :global(.mockup){
+      display: none;
+      max-width: 400px;
+      margin-top: auto;
+      margin-bottom: auto;
+    }
+
+  @media (min-width: 768px) {
+    :global(.content) {
+      flex-direction: row-reverse;
+    }
+
+    :global(.logo-desktop) {
+      display: none !important;
+    }
+
+    fieldset {
+      & .title-login {
+        align-items: flex-start;
+        & p {
+          text-align: left;
+          max-width: 100%;
+        }
+      }
+
+      label{
+        & input {
+          padding: 0.75em 1.5em;
+        }
+      }
+    }
+
+    :global(.panel-left){
+      margin: auto 0;
+    }
+
+    :global(.mockup){
+      display: block;
+    }
+
+    .login-link {
+      text-align: left;
+    }
+
+    /* .login-form {
+      width: 75%;
+    } */
+
+    .logo-desktop-login {
+      display: block;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .logo-desktop-login {
+      width: 200px;
+    }
+  }
+
 </style>
 
 <script>
@@ -181,18 +337,6 @@ import MainLayout from "../../layouts/Layout-onboarding.astro";
   const form = document.querySelector(".login-form");
   const emailInput = document.getElementById("email");
 
-  function showError(input, message) {
-    input.setCustomValidity(message);
-    input.reportValidity();
-  }
-
-  function clearError(input) {
-    input.setCustomValidity("");
-  }
-
-  form.querySelectorAll("input").forEach((input) => {
-    input.addEventListener("input", () => clearError(input));
-  });
 
   form.addEventListener("submit", (e) => {
     e.preventDefault();
@@ -201,27 +345,13 @@ import MainLayout from "../../layouts/Layout-onboarding.astro";
     const lastName = document.getElementById("last-name").value.trim();
     const email = emailInput.value.trim();
 
-    if (!firstName) {
-      return showError(
-        document.getElementById("first-name"),
-        "Vul je voornaam in.",
-      );
-    }
-    if (!lastName) {
-      return showError(
-        document.getElementById("last-name"),
-        "Vul je achternaam in.",
-      );
-    }
-    if (!email) {
-      return showError(emailInput, "Vul je e-mailadres in.");
-    }
-
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailPattern.test(email)) {
       return showError(emailInput, "Voer een geldig e-mailadres in.");
     }
+     
 
     window.location.href = "/onboarding/step-1";
+    localStorage.setItem("firstName", firstName);
   });
 </script>
