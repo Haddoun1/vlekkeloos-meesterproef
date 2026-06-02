@@ -79,6 +79,11 @@ const { question, options, name } = Astro.props;
       color: var(--color-background);
       font-family: var(--font-bold);
     }
+
+    &:hover {
+      background-color: rgb(139 202 178 / 0.5);
+      border-color: var(--color-cyan-dark);
+    }
   }
 
   .questions-multiple input[type="checkbox"] {
