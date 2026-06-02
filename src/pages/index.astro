@@ -46,7 +46,7 @@ const recentCourses = [
 ];
 ---
 
-<MainLayout>
+<!-- <MainLayout>
   <section class="dashboard">
     {recentCourses.length > 0 && (
       <>
@@ -71,6 +71,63 @@ const recentCourses = [
     )}
 
     <h1>Mijn Cursussen</h1>
+
+    <div class="carousel-wrapper">
+      <ul class="carousel">
+        {courses.map((course) => (
+          <li class="carousel-item" data-course-id={course.id}>
+            <CourseCard
+              title={course.title}
+              image={course.image}
+              progress={course.progress}
+              href={course.href}
+              color={course.color}
+            />
+          </li>
+        ))}
+      </ul>
+    </div>
+
+  </section>
+</MainLayout> -->
+
+<MainLayout>
+  <section class="dashboard">
+    <!-- {recentCourses.length > 0 && (
+      <>
+
+        <div class="carousel-wrapper">
+          <ul class="carousel">
+            {recentCourses.map((course) => (
+              <li class="carousel-item" data-course-id={course.id}>
+                <CourseCard
+                  title={course.title}
+                  image={course.image}
+                  progress={course.progress}
+                  href={course.href}
+                  color={course.color}
+                />
+              </li>
+            ))}
+          </ul>
+        </div>
+      </>
+    )} -->
+
+    <div class="dashboard-title">
+      <h1 id="welcome">Ga verder waar je gebleven was</h1>
+      <hr>
+    </div>
+
+    <div class="dashboard-cursus">
+      <h2>Mijn Cursussen</h2>
+      <div class="dashboard-buttons">
+        <button class="filter-button" id="all-courses">Alle cursussen</button>
+        <button class="filter-button" id="not-started">Niet begonnen</button>
+        <button class="filter-button" id="in-progress">Bezig</button>
+        <button class="filter-button" id="completed">Voltooid</button>
+      </div>
+    </div>
 
     <div class="carousel-wrapper">
       <ul class="carousel">
@@ -179,9 +236,26 @@ const recentCourses = [
     padding: 2rem;
   }
 
+  .dashboard-title {
+    display: flex;
+    flex-direction: column;
+    gap: var(--size-sm);
+    margin-bottom: 2rem;
+
+    & hr {
+      border: 2px solid var(--color-green);
+      width: 200px;
+    }
+  }
+
+  .dashboard-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
   h1, h2 {
-    margin: 0 0 1.5rem;
-    font-size: 2rem;
+    font-size: var(--size-2xl);
     color: var(--color-text);
   }
   /* Carousel */
@@ -217,7 +291,7 @@ const recentCourses = [
     }
 
     h1, h2 {
-      margin-bottom: 0rem;
+      font-size: var(--size-3xl);
     }
   }
 </style>
