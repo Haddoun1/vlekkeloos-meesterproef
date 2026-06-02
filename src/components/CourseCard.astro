@@ -1,6 +1,7 @@
 ---
 const {
   title,
+  description = '',
   image = '',
   progress = 0,
   href = '#',
@@ -13,7 +14,15 @@ const {
   class="course-card"
   style={`--bg-image: url(${image}); --bg-color: ${color};`}
 >
-  <h2>{title}</h2>
+
+  <div class="image-wrapper">
+    <img src={image} alt={title}/>
+  </div>
+
+  <div class="card-title">
+    <h2>{title}</h2>
+    <p>{description}</p>
+  </div>
 
   <div class="progress-row">
     <progress
@@ -34,7 +43,7 @@ const {
 </a>
 
 <style>
-  .course-card {
+  /* .course-card {
     position: relative;
     display: flex;
     flex-direction: column;
@@ -71,18 +80,55 @@ const {
   .course-card > * {
     position: relative;
     z-index: 1;
-  }
+  } */
 
-  .course-card:hover {
+  /* .course-card:hover {
     transform: translateY(-3px);
     box-shadow: 0 12px 28px var(--bg-color);
-  }
+  } */
 
-  h2 {
-    margin: 0;
-    font-size: 1.8rem;
-    font-weight: 700;
-    letter-spacing: -0.01em;
+  .course-card{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    
+    text-decoration: none;
+    color: var(--color-text);
+
+    /* background-color: var(--color-green); */
+    background-color: var(--bg-color);
+    padding: var(--size-xl);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+
+    & .image-wrapper {
+      /* width: 80%; */
+      width: 60%;
+      height: auto;
+      margin: 0 auto auto auto;
+    }
+
+    & .card-title {
+      margin-bottom: 1rem;
+
+      & h2 {
+        margin-top: 0.5rem;
+        font-size: var(--size-xl);
+        font-family: var(--font-extra-bold);
+      }
+
+      & p{
+        font-size: var(--size-base);
+        font-family: var(--font-medium);
+      }
+    }
+
+    &:hover {
+      /* background-color: #21a478; */
+      background-color: color-mix(in srgb, var(--bg-color) 85%, black);
+      scale: 1.02;
+    }
   }
 
   .progress-row {
