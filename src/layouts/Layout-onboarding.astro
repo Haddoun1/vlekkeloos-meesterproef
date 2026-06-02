@@ -1,0 +1,574 @@
+---
+// @ts-nocheck
+import { ClientRouter } from "astro:transitions";
+
+const bounceTransition = {
+  forwards: {
+    old: {
+      name: "bounceOut",
+      duration: "0.3s",
+      easing: "ease-in",
+      fillMode: "forwards",
+    },
+    new: {
+      name: "bounceIn",
+      duration: "0.4s",
+      easing: "cubic-bezier(0.34, 1.3, 0.64, 1)",
+      fillMode: "backwards",
+      delay: "0.3s",
+    },
+  },
+  backwards: {
+    old: {
+      name: "bounceOutRight",
+      duration: "0.3s",
+      easing: "ease-in",
+      fillMode: "forwards",
+    },
+    new: {
+      name: "bounceInLeft",
+      duration: "0.4s",
+      easing: "cubic-bezier(0.34, 1.3, 0.64, 1)",
+      fillMode: "backwards",
+      delay: "0.3s",
+    },
+  },
+};
+
+const {
+  title,
+  nextHref = "/",
+  backHref = "/",
+  headingText = "Welkom!",
+  bodyText = "...",
+  step = 1,
+  totalSteps = 5,
+  stepId,
+  category,
+  showBack = true,
+  showProgress = true,
+  showNext = true,
+} = Astro.props;
+
+// https://claude.ai/chat/8789b362-5b69-4d5c-9b16-a4b157d09820 button back niet op welkompagina, wel op rest van stappen
+---
+
+<html lang="nl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <link rel="stylesheet" href="/styles/global.css" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2" />
+    <ClientRouter />
+  </head>
+
+  <body>
+    <main class="container"     
+    data-step-id={stepId}
+    data-category={category} 
+    >
+      <div class="logo-mobile">
+        <img
+          src="/images/Mensenkenners-logo-hori.png"
+          alt="Mensenkenners logo"
+        />
+      </div>
+
+      <div class="content" transition:animate="none" transition:name="content">
+        <!-- Links op desktop: slot voor bv. een afbeelding of illustratie -->
+        <div class="panel-left">
+          <slot />
+        </div>
+
+        <!-- Rechts op desktop: logo, tekst, progress, knoppen -->
+        <div class="panel-right">
+          <div class="logo-desktop">
+            <img
+              src="/images/Mensenkenners-logo-hori.png"
+              alt="Mensenkenners logo"
+            />
+          </div>
+
+          <div class="text-section">
+            {
+              showProgress && (
+                <div class="progress-bar">
+                  {Array.from({ length: totalSteps }, (_, i) => (
+                    <div
+                      class={`progress ${i < step - 1 ? "done-small" : ""} ${i === step - 1 ? "done" : ""}`}
+                    />
+                  ))}
+                </div>
+              )
+            }
+
+            <div class="questionnaire">
+              <h1>{headingText}</h1>
+              <p>{bodyText}</p>
+            </div>
+          </div>
+
+          <div class="buttons-onboarding">
+            {
+              showBack && (
+                <a
+                  class="button-back"
+                  href={backHref}
+                  id="back-btn"
+                  data-direction="back"
+                >
+                  <button>Ga terug</button>
+                </a>
+              )
+            }
+            {
+              showNext && (
+                <a class="button-next" href={nextHref} data-direction="forward">
+                  <button>Ga verder</button>
+                </a>
+              )
+            }
+          </div>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>
+
+<style>
+  html {
+    /* background-image: radial-gradient(
+      circle at 0% 0%,
+      rgb(181 219 206 / 0.4) 0%,
+      transparent
+    ); */
+
+    background-image: var(--gradient-bg-cyan);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%,
+    100% {
+      background-size: 100% 100%;
+    }
+    50% {
+      background-size: 120% 120%;
+    }
+  }
+
+  /* ── Layout ── */
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+    padding: var(--size-base) var(--size-2xl);
+  }
+
+  :global(.content) {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex: 1;
+    width: 100%;
+  }
+
+  .panel-right {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex: 1;
+  }
+
+  .text-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--size-xs);
+    align-items: center;
+    text-align: center;
+
+    & .progress-bar {
+      order: 2;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+  /* ── Logo ── */
+  .logo-mobile {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding: var(--size-xl) 0 0;
+
+    & img {
+      width: 60%;
+    }
+  }
+
+  .logo-desktop {
+    display: none;
+  }
+
+  /* ── Text & progress ── */
+  .text-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--size-xs);
+  }
+
+  .questionnaire {
+    display: flex;
+    flex-direction: column;
+    gap: var(--size-xxs);
+    color: var(--color-text);
+
+    & h1 {
+      font-family: "Plus Jakarta Sans", sans-serif;
+      font-size: var(--size-2xl);
+      font-weight: 800;
+      color: var(--color-text);
+    }
+
+    & p {
+      font-size: var(--size-sm);
+      font-family: var(--font-regular);
+      color: #7e7676;
+      line-height: 1.2;
+    }
+  }
+
+  .progress-bar {
+    display: flex;
+    gap: var(--size-xxs);
+    padding: var(--size-xxs) 0;
+    width: 100%;
+  }
+
+  .progress {
+    width: var(--size-xxs);
+    height: var(--size-xxs);
+    background-color: #cbc6c6;
+    border-radius: 50px;
+  }
+
+  .progress.done-small {
+    background-color: var(--color-cyan);
+  }
+
+  .progress.done {
+    width: 15%;
+    background-color: var(--color-cyan);
+  }
+
+  /* ── Buttons ── */
+  .buttons-onboarding {
+    display: flex;
+    flex-direction: column;
+    gap: var(--size-xxs);
+    width: 100%;
+    padding: var(--size-base) 0;
+  }
+
+  .button-next,
+  .button-back {
+    width: 100%;
+
+    & button {
+      width: 100%;
+      padding: var(--size-xs) var(--size-2xl);
+      border-radius: 25px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+    }
+  }
+
+  .button-next button {
+    background-color: var(--color-cyan);
+    color: var(--color-background);
+    transition:
+      background-color 0.3s ease,
+      color 0.3s ease;
+
+    &:hover {
+      background-color: #82c2a9;
+    }
+  }
+
+  .button-back button {
+    background-color: var(--color-background);
+    color: var(--color-cyan);
+    border: 2px solid var(--color-cyan);
+    transition:
+      background-color 0.3s ease,
+      color 0.3s ease;
+
+    &:hover {
+      background-color: var(--color-cyan);
+      color: var(--color-background);
+    }
+  }
+
+  ::view-transition-old(content) {
+    animation: 0.3s ease-in bounceOut forwards;
+  }
+  ::view-transition-new(content) {
+    animation: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s bounceIn backwards;
+  }
+
+  html.is-going-back::view-transition-old(content) {
+    animation: 0.3s ease-in bounceOutRight forwards;
+  }
+  html.is-going-back::view-transition-new(content) {
+    animation: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s bounceInLeft
+      backwards;
+  }
+
+  @keyframes bounceIn {
+    from {
+      opacity: 0;
+      transform: translateX(100%);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  @keyframes bounceOut {
+    from {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateX(-100%);
+    }
+  }
+  @keyframes bounceInLeft {
+    from {
+      opacity: 0;
+      transform: translateX(-100%);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  @keyframes bounceOutRight {
+    from {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateX(100%);
+    }
+  }
+
+  /* ── Desktop / tablet ── */
+  @media (min-width: 768px) {
+    .container {
+      padding: var(--size-2xl) var(--size-4xl);
+      justify-content: center;
+    }
+
+    .logo-mobile {
+      display: none;
+    }
+
+    :global(.content) {
+      flex-direction: row;
+      align-items: stretch;
+      gap: var(--size-2xl);
+    }
+
+    /* Linker kolom: slot-inhoud (bv. afbeelding/illustratie) */
+    .panel-left {
+      display: flex;
+      flex: 1;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--size-base);
+
+      .mockup {
+        width: 100%;
+      }
+    }
+
+    /* Rechter kolom: logo + tekst + knoppen */
+    .panel-right {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+
+    .text-section {
+      align-items: flex-start;
+      text-align: left;
+      & .progress-bar {
+        justify-content: flex-start;
+      }
+    }
+
+    .logo-desktop {
+      display: block;
+      padding-bottom: var(--size-2xl);
+
+      & img {
+        width: 150px;
+      }
+    }
+
+    .questionnaire {
+      text-align: left;
+      align-items: flex-start;
+    }
+
+    .buttons-onboarding {
+      margin-top: auto;
+      flex-direction: row;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .container {
+      padding: var(--size-5xl) var(--size-4xl);
+      justify-content: center;
+    }
+
+    .logo-desktop {
+      & img {
+        width: 200px;
+      }
+    }
+
+    .progress.done {
+      width: 5%;
+    }
+    .questionnaire {
+      & h1 {
+        font-size: var(--size-3xl);
+      }
+
+      & p {
+        font-size: var(--size-base);
+      }
+    }
+    .panel-left {
+      .mockup {
+        margin: 0;
+      }
+    }
+  }
+</style>
+
+<!-- https://claude.ai/chat/c67f7248-9580-489f-a97f-bb6489468314 het terugnavigeren met view transitions voor de backbuttons -->
+<script>
+  // @ts-nocheck
+  import { navigate } from "astro:transitions/client";
+
+  let goingBack = false;
+  let controller = new AbortController();
+
+  document.addEventListener("astro:before-preparation", () => {
+    if (goingBack) {
+      document.documentElement.classList.add("is-going-back");
+    } else {
+      document.documentElement.classList.remove("is-going-back");
+    }
+  });
+
+  document.addEventListener("astro:after-swap", () => {
+    // Astro reset <html>, zet klasse terug op basis van goingBack
+
+    if (goingBack) {
+      document.documentElement.classList.add("is-going-back");
+    } else {
+      document.documentElement.classList.remove("is-going-back");
+    }
+    goingBack = false;
+  });
+
+  function setupNavigation() {
+    controller.abort();
+    controller = new AbortController();
+    const signal = controller.signal;
+
+    const backBtn = document.getElementById("back-btn");
+    if (backBtn) {
+      backBtn.addEventListener(
+        "click",
+        (e) => {
+          e.preventDefault();
+          goingBack = true;
+          navigate(backBtn.getAttribute("href") ?? "/");
+        },
+        { signal },
+      );
+    }
+
+    const nextBtn = document.querySelector(".button-next");
+    if (nextBtn) {
+      nextBtn.addEventListener(
+        "click",
+        (e) => {
+          e.preventDefault();
+          goingBack = false;
+          navigate(nextBtn.getAttribute("href") ?? "/");
+        },
+        { signal },
+      );
+    }
+  }
+
+  document.addEventListener("astro:page-load", setupNavigation);
+
+  const main = document.querySelector("main");
+  const nextButton = document.querySelector(".button-next");
+
+  const stepId = main?.dataset.stepId;
+  const category = main?.dataset.category;
+
+  const startedAt = Date.now();
+
+  async function saveProgress() {
+    if (!stepId || !category) return;
+    
+    console.log("Next button clicked");
+    const endedAt = Date.now();
+    const durationSeconds = Math.round((new Date() - startedAt) / 1000);
+
+    console.log("Saving progress...", { stepId, category, durationSeconds });
+
+    const response = await fetch("/api/track-step", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userId: localStorage.getItem("userId") || "anonymous",
+        email: localStorage.getItem("email") || null,
+        name: localStorage.getItem("name") || null,
+        startedAt: new Date(startedAt).toISOString(),
+        endedAt: new Date(endedAt).toISOString(),
+        stepId,
+        category,
+        durationSeconds,
+      }),
+    });
+
+    const result = await response.json();
+    console.log("API response:", result);
+  }
+  
+
+  nextButton.addEventListener("click", saveProgress)
+
+  console.log(stepId);
+  console.log(category);
+</script>

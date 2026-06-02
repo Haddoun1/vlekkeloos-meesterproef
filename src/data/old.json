@@ -1,0 +1,1390 @@
+{
+  "api_version": "1.0",
+  "slug": "mensenkenners-2025",
+  "title": "Mensenkenners training",
+  "language": "nl",
+  "estimated_duration_minutes": {
+    "deel_1": 45,
+    "deel_2": 40,
+    "deel_3": 35
+  },
+  "structure": {
+    "content_model": "ordered_blocks",
+    "question_ids_are_stable": true,
+    "answer_storage_suggestion": {
+      "user_fields": [
+        "name",
+        "email",
+        "sector",
+        "organization"
+      ],
+      "responses_collection": "mensenkenners_responses",
+      "response_shape": {
+        "question_id": "string",
+        "answer": "string | string[] | number",
+        "submitted_at": "ISO-8601"
+      }
+    }
+  },
+  "blocks": [
+    {
+      "id": "intro_01",
+      "type": "content",
+      "section": "intro",
+      "title": "Intro Mensenkenners",
+      "text": "In deze training ga je (samen met je team) werken aan toegankelijkheid in de openbare ruimte voor mensen met een beperking. Want de openbare ruimte, dat ben jij! Omdat jij het gezicht bent van jouw werkplek naar klanten en bezoekers toe, kun jij er eigenhandig voor zorgen dat de plek waar je werkt fijner wordt voor mensen met een beperking. Je gaat je inclusiviteitsspier trainen.",
+      "subtitle": "Hoe toegankelijk ben jij? Weet jij wat je moet doen om een blind of slechtziend persoon te helpen als ze jouw werkplek bezoeken?"
+    },
+    {
+      "id": "intro_02",
+      "type": "content",
+      "section": "intro",
+      "title": "Opbouw training",
+      "text": "De Mensenkenners training bestaat uit 3 delen. Deel 1: Bewustwording en vooroordelen (45 min). Deel 2: Leren door te ervaren (40 min). Benodigdheden: blinddoek, koptelefoon en een collega of ander persoon. Deel 3: Vertaling naar jouw werk (35 min). Deel 1 en 2 zijn voor leren. In deel 3 wordt je kennis getest."
+    },
+    {
+      "id": "intro_03",
+      "type": "content",
+      "section": "intro",
+      "title": "Waarom Mensenkenners?",
+      "text": "8 op de 10 interacties in de openbare ruimte verloopt ongemakkelijk voor iemand met een beperking. Sociale inclusiviteit verbeteren is dus erg nodig. We moeten niet alleen de omgeving aanpassen, we moeten vooral onszelf aanpassen.",
+      "source": "HandicapNL"
+    },
+    {
+      "id": "intro_04",
+      "type": "content",
+      "section": "intro",
+      "title": "Inclusiviteitsspier trainen",
+      "text": "Door ons bewust te worden over bepaalde handelingen en situaties kunnen wij met een kleine inspanning een inclusievere maatschappij inrichten. Mensen met een beperking passen zich al dagelijks aan aan hoe de publieke ruimte is ingericht."
+    },
+    {
+      "id": "intro_05",
+      "type": "content",
+      "section": "intro",
+      "title": "Wat als ik me onwennig voel?",
+      "text": "Het is normaal dat je niet meteen weet hoe je een persoon met een beperking moet helpen. Contact is heel belangrijk om interacties te bevorderen; daarom is Mensenkenners hier om je wegwijs te maken in deze situaties."
+    },
+    {
+      "id": "intro_06",
+      "type": "content",
+      "section": "intro",
+      "title": "Bewoording",
+      "text": "In deze cursus gebruiken we de term 'mensen met een beperking'. Woorden als invalide en gehandicapt worden minder op prijs gesteld."
+    },
+    {
+      "id": "intro_q01",
+      "type": "question",
+      "section": "intro",
+      "title": "Sector",
+      "question": "Voordat we beginnen, wil je aangeven wat het meest op jou van toepassing is?",
+      "input_type": "single_choice",
+      "required": true,
+      "options": [
+        "Horeca",
+        "Retail (winkelomgeving)",
+        "Culturele sector (bijv. theater, museum)",
+        "Onderwijs",
+        "Overige"
+      ],
+      "label": "Ik werk in deze sector"
+    },
+    {
+      "id": "intro_q02",
+      "type": "question",
+      "section": "intro",
+      "title": "Naam",
+      "question": "Wat is je naam?",
+      "input_type": "text",
+      "required": true,
+      "description": "Graag voor- en achternaam invullen."
+    },
+    {
+      "id": "intro_q03",
+      "type": "question",
+      "section": "intro",
+      "title": "E-mail",
+      "question": "Wat is je email?",
+      "input_type": "email",
+      "required": true
+    },
+    {
+      "id": "intro_q04",
+      "type": "question",
+      "section": "intro",
+      "title": "Bevestig e-mail",
+      "question": "Bevestig nogmaals je email!",
+      "input_type": "email",
+      "required": true
+    },
+    {
+      "id": "intro_q05",
+      "type": "question",
+      "section": "intro",
+      "title": "Updates",
+      "question": "Wil je per mail op de hoogte gehouden worden van Mensenkenners inclusiviteit updates?",
+      "input_type": "single_choice",
+      "required": true,
+      "options": [
+        "Ja",
+        "Nee"
+      ]
+    },
+    {
+      "id": "intro_q06",
+      "type": "question",
+      "section": "intro",
+      "title": "Organisatie",
+      "question": "Via welke organisatie ben je hier gekomen?",
+      "input_type": "text",
+      "required": true
+    },
+    {
+      "id": "intro_q07",
+      "type": "question",
+      "section": "intro",
+      "title": "Leerdoel",
+      "question": "Wat zou je willen leren over mensen met een beperking?",
+      "input_type": "long_text",
+      "required": true,
+      "placeholder": "Bijvoorbeeld: Ik wil weten wat mensen als negatief ervaren in de openbare ruimte."
+    },
+    {
+      "id": "intro_submit",
+      "type": "content",
+      "section": "intro",
+      "title": "Overgang",
+      "text": "Ben je klaar voor Deel 1?"
+    },
+    {
+      "id": "d1_start",
+      "type": "content",
+      "section": "deel_1_bewustwording",
+      "title": "Welkom bij deel 1",
+      "text": "Bewustwording van jouw rol en vooroordelen ontdekken. Je leert over verschillende soorten beperkingen en over wat jouw rol is als medewerker.",
+      "duration": "7+ minuten"
+    },
+    {
+      "id": "d1_auditief_intro",
+      "type": "content",
+      "section": "deel_1_bewustwording",
+      "title": "Auditieve beperking",
+      "text": "We beginnen met uitdagingen van mensen met een auditieve beperking in de openbare ruimte. Dove mensen missen vaak informatie in openbare ruimtes, of ze worden verkeerd begrepen."
+    },
+    {
+      "id": "d1_q01_video",
+      "type": "video",
+      "section": "deel_1_bewustwording",
+      "title": "Bekijk de volgende video",
+      "url": "https://vimeo.com/810158384/7ab22c5733"
+    },
+    {
+      "id": "d1_auditief_context",
+      "type": "content",
+      "section": "deel_1_bewustwording",
+      "title": "Een onzichtbare beperking",
+      "text": "Auditieve beperkingen kun je vaak niet zomaar herkennen. De ene persoon hoort nog relatief veel, sommigen kunnen duidelijk spreken en anderen weer niet. Blijf rustig, heb geduld en houd het simpel."
+    },
+    {
+      "id": "d1_q02",
+      "type": "question",
+      "section": "deel_1_bewustwording",
+      "title": "Auditieve beperking - benaderen",
+      "question": "Hoe kun je het beste iemand benaderen waarvan je denkt dat ze misschien slechthorend of doof zijn?",
+      "input_type": "multiple_choice",
+      "required": true,
+      "max_selections": 2,
+      "options": [
+        {
+          "id": "A",
+          "text": "Zwaaien met je armen tot ze je zien"
+        },
+        {
+          "id": "B",
+          "text": "Op een papiertje schrijven: Hallo, hoe kan ik u het beste helpen?",
+          "is_correct": true
+        },
+        {
+          "id": "C",
+          "text": "In hun zicht gaan staan, ze aankijken en rustig vragen: Kan ik u ergens mee helpen?",
+          "is_correct": true
+        },
+        {
+          "id": "D",
+          "text": "Tegen hun partner: Waar kan ik haar mee helpen?"
+        }
+      ],
+      "explanation": "Maak geen aanname over wat iemand wil. Trek geen overdreven aandacht en praat niet heel hard. Spreek mensen met een auditieve beperking altijd zelf aan."
+    },
+    {
+      "id": "d1_q03",
+      "type": "question",
+      "section": "deel_1_bewustwording",
+      "title": "Reflectie auditieve beperking",
+      "question": "Wat heb je tot nu toe geleerd over mensen met een auditieve beperking, wat je eerder nog niet wist?",
+      "input_type": "long_text",
+      "required": true
+    },
+    {
+      "id": "d1_visueel_intro",
+      "type": "content",
+      "section": "deel_1_bewustwording",
+      "title": "Visuele beperking",
+      "text": "We gaan meer leren over veelvoorkomende uitdagingen van mensen met een visuele beperking in de openbare ruimte. Blinde mensen missen vaak informatie; de ruimte is regelmatig niet voor hun behoeften ingericht."
+    },
+    {
+      "id": "d1_q04",
+      "type": "question",
+      "section": "deel_1_bewustwording",
+      "title": "Leerdoel visuele beperking",
+      "question": "Wat zou je willen leren uit deze module over mensen met een visuele beperking? Wat wil je eruit halen?",
+      "input_type": "long_text",
+      "required": true
+    },
+    {
+      "id": "d1_q05_video",
+      "type": "video",
+      "section": "deel_1_bewustwording",
+      "title": "Video visuele beperking",
+      "url": "https://vimeo.com/970612978?fl=pl&fe=cm"
+    },
+    {
+      "id": "d1_visueel_context",
+      "type": "content",
+      "section": "deel_1_bewustwording",
+      "title": "Een zichtbare beperking",
+      "text": "Visuele beperkingen kun je vaak makkelijker opmerken, bijvoorbeeld aan een geleidehond of blindestok. Toch hoeft dit niet altijd zo te zijn. Vraag wat iemand wil voordat je iets doet."
+    },
+    {
+      "id": "d1_q05",
+      "type": "question",
+      "section": "deel_1_bewustwording",
+      "title": "Visuele beperking - goede vraag",
+      "question": "Wat is een goede vraag om te stellen aan iemand die visueel beperkt is?",
+      "input_type": "multiple_choice",
+      "required": true,
+      "max_selections": 2,
+      "options": [
+        {
+          "id": "A",
+          "text": "Hoe kan ik je het beste helpen?",
+          "is_correct": true
+        },
+        {
+          "id": "B",
+          "text": "Wil je dat ik je help met oversteken?",
+          "is_correct": true
+        },
+        {
+          "id": "C",
+          "text": "Ben je blind?"
+        },
+        {
+          "id": "D",
+          "text": "Tegen hun partner: Waar wil zij zitten?"
+        }
+      ],
+      "explanation": "Spreek mensen met een visuele beperking altijd zelf aan en maak geen aannames."
+    },
+    {
+      "id": "d1_q06",
+      "type": "question",
+      "section": "deel_1_bewustwording",
+      "title": "Reflectie visuele beperking",
+      "question": "Deel iets dat je hebt geleerd over omgaan met mensen met een visuele beperking.",
+      "input_type": "long_text",
+      "required": true
+    },
+    {
+      "id": "d1_motorisch_intro",
+      "type": "content",
+      "section": "deel_1_bewustwording",
+      "title": "Motorische beperking",
+      "text": "Nu duiken we in uitdagingen van mensen met een motorische beperking. Iemand met een motorische beperking heeft problemen met bewegen; dit kan goed zichtbaar zijn, bijvoorbeeld door een rolstoel."
+    },
+    {
+      "id": "d1_q07",
+      "type": "question",
+      "section": "deel_1_bewustwording",
+      "title": "Leerdoel motorische beperking",
+      "question": "Wat zou je willen leren over mensen met een motorische beperking?",
+      "input_type": "long_text",
+      "required": true
+    },
+    {
+      "id": "d1_q08_video",
+      "type": "video",
+      "section": "deel_1_bewustwording",
+      "title": "Video motorische beperking",
+      "url": "https://vimeo.com/970615768?fl=pl&fe=cm"
+    },
+    {
+      "id": "d1_motorisch_context",
+      "type": "content",
+      "section": "deel_1_bewustwording",
+      "title": "Een opvallende beperking",
+      "text": "Een motorische beperking is vaak snel op te merken, maar niet altijd. Vraag de persoon zelf om hulp wanneer dat nodig lijkt."
+    },
+    {
+      "id": "d1_q08",
+      "type": "question",
+      "section": "deel_1_bewustwording",
+      "title": "Motorische beperking - goede vraag",
+      "question": "Wat is een goede vraag om te stellen aan iemand die motorisch beperkt is?",
+      "input_type": "single_choice",
+      "required": true,
+      "options": [
+        {
+          "id": "A",
+          "text": "Wat is er met je gebeurd?"
+        },
+        {
+          "id": "B",
+          "text": "Waar kan ze het beste zitten? (Tegen hun gezelschap)."
+        },
+        {
+          "id": "C",
+          "text": "Kan ik je ergens mee helpen?",
+          "is_correct": true
+        },
+        {
+          "id": "D",
+          "text": "We tillen je wel de trap op!"
+        }
+      ],
+      "explanation": "Maak geen aannames en spreek de persoon zelf aan."
+    },
+    {
+      "id": "d1_q09",
+      "type": "question",
+      "section": "deel_1_bewustwording",
+      "title": "Reflectie motorische beperking",
+      "question": "Hoe zou je uitleggen aan iemand anders wat je geleerd hebt van het vorige filmpje?",
+      "input_type": "long_text",
+      "required": true
+    },
+    {
+      "id": "d1_bijzonder_intro",
+      "type": "content",
+      "section": "deel_1_bewustwording",
+      "title": "Bijzonder uiterlijk",
+      "text": "Laten we kijken naar uitdagingen van mensen met een bijzonder uiterlijk in de openbare ruimte. Met een bijzonder uiterlijk ben je vaak het middelpunt van de aandacht."
+    },
+    {
+      "id": "d1_q10",
+      "type": "question",
+      "section": "deel_1_bewustwording",
+      "title": "Leerdoel bijzonder uiterlijk",
+      "question": "Wat zou je willen leren uit deze module over mensen met een bijzonder uiterlijk?",
+      "input_type": "long_text",
+      "required": true
+    },
+    {
+      "id": "d1_q11_video",
+      "type": "video",
+      "section": "deel_1_bewustwording",
+      "title": "Video bijzonder uiterlijk",
+      "url": "https://vimeo.com/970619074?fl=pl&fe=cm"
+    },
+    {
+      "id": "d1_bijzonder_context",
+      "type": "content",
+      "section": "deel_1_bewustwording",
+      "title": "Context bijzonder uiterlijk",
+      "text": "Mensen met een bijzonder uiterlijk weten vaak dat ze zullen opvallen in een nieuwe ruimte. Hoe je hier als ander mee omgaat, maakt voor hen verschil."
+    },
+    {
+      "id": "d1_q11",
+      "type": "question",
+      "section": "deel_1_bewustwording",
+      "title": "Bijzonder uiterlijk - goede vraag",
+      "question": "Wat is een goede vraag om te stellen aan iemand die een bijzonder uiterlijk heeft?",
+      "input_type": "single_choice",
+      "required": true,
+      "options": [
+        {
+          "id": "A",
+          "text": "Wat is er met je gezicht?"
+        },
+        {
+          "id": "B",
+          "text": "Hoe is het gebeurd?"
+        },
+        {
+          "id": "C",
+          "text": "Kan ik je ergens bij helpen?",
+          "is_correct": true
+        },
+        {
+          "id": "D",
+          "text": "Lang naar iemand kijken voordat je iets zegt."
+        }
+      ],
+      "explanation": "Leg niet te veel focus op hun uiterlijk. Behandel hen als ieder ander persoon."
+    },
+    {
+      "id": "d1_q12",
+      "type": "question",
+      "section": "deel_1_bewustwording",
+      "title": "Reflectie bijzonder uiterlijk",
+      "question": "Wat zijn aspecten van het filmpje waar je verbaasd over was te horen?",
+      "input_type": "long_text",
+      "required": true
+    },
+    {
+      "id": "d1_spraak_intro",
+      "type": "content",
+      "section": "deel_1_bewustwording",
+      "title": "Spraakbeperking",
+      "text": "We gaan meer leren over veelvoorkomende uitdagingen van mensen met een spraakbeperking in de openbare ruimte."
+    },
+    {
+      "id": "d1_q13",
+      "type": "question",
+      "section": "deel_1_bewustwording",
+      "title": "Leerdoel spraakbeperking",
+      "question": "Wat zou je willen leren over mensen met een spraakbeperking?",
+      "input_type": "long_text",
+      "required": true
+    },
+    {
+      "id": "d1_q14_video",
+      "type": "video",
+      "section": "deel_1_bewustwording",
+      "title": "Video spraakbeperking",
+      "url": "https://vimeo.com/970634942?fl=pl&fe=cm"
+    },
+    {
+      "id": "d1_spraak_context",
+      "type": "content",
+      "section": "deel_1_bewustwording",
+      "title": "Context spraakbeperking",
+      "text": "Mensen met een spraakbeperking kunnen problemen ervaren met stem-gebaseerde diensten, bijvoorbeeld telefonisch of bij diensten met spraakgestuurde functies."
+    },
+    {
+      "id": "d1_q14",
+      "type": "question",
+      "section": "deel_1_bewustwording",
+      "title": "Spraakbeperking - reageren",
+      "question": "Hoe kan je goed reageren op iemand die een spraakbeperking heeft?",
+      "input_type": "multiple_choice",
+      "required": true,
+      "max_selections": 2,
+      "options": [
+        {
+          "id": "A",
+          "text": "De tijd nemen om de persoon te laten antwoorden.",
+          "is_correct": true
+        },
+        {
+          "id": "B",
+          "text": "Hen helpen hun zin af te maken."
+        },
+        {
+          "id": "C",
+          "text": "Vragen aan hun gezelschap wat zij willen zeggen."
+        },
+        {
+          "id": "D",
+          "text": "Ik merk dat je stottert, wat kan ik doen om dit gesprek voor jou prettig te maken?",
+          "is_correct": true
+        }
+      ],
+      "explanation": "Geef mensen de ruimte om op hun eigen manier te spreken. Vul niet in wat zij willen zeggen."
+    },
+    {
+      "id": "d1_q15",
+      "type": "question",
+      "section": "deel_1_bewustwording",
+      "title": "Reflectie spraakbeperking",
+      "question": "Is er iets naar boven gekomen over een spraakbeperking wat je hiervoor nog niet wist? Leg uit.",
+      "input_type": "long_text",
+      "required": true
+    },
+    {
+      "id": "d1_influencers_intro",
+      "type": "content",
+      "section": "deel_1_bewustwording",
+      "title": "Blijven leren",
+      "text": "Om kennis goed toe te passen is blootstelling aan mensen met een beperking belangrijk. Door mensen op sociale media te volgen krijg je actief geheugensteuntjes mee."
+    },
+    {
+      "id": "d1_q16",
+      "type": "question",
+      "section": "deel_1_bewustwording",
+      "title": "Influencers volgen",
+      "question": "Kies 3 influencers uit van de lijst hieronder die je interessant vindt en volg deze mensen. Deel hieronder wie jij bent gaan volgen.",
+      "input_type": "long_text",
+      "required": true,
+      "lists": {
+        "auditieve_beperking": [
+          "@robinftings",
+          "@chrissymarshall",
+          "@hardofhearingmama",
+          "@somedeafguy"
+        ],
+        "visuele_beperking": [
+          "@anastasia_k_p",
+          "@mollyburkeofficial",
+          "@lucyedwards",
+          "@tjardostruik"
+        ],
+        "motorische_beperking": [
+          "@jeanettechedde",
+          "@jesistrocham",
+          "@wheelsnoheels_",
+          "@dedeopiton"
+        ],
+        "bijzonder_uiterlijk": [
+          "@7erencemz",
+          "@phyllidaswift",
+          "@carlyfindlay",
+          "@athollmills"
+        ],
+        "spraakbeperking": [
+          "@marcwinski",
+          "@lifetime_stuttering",
+          "@mimidarlingbeauty",
+          "@thedrewlynch"
+        ]
+      }
+    },
+    {
+      "id": "d1_q17",
+      "type": "question",
+      "section": "deel_1_bewustwording",
+      "title": "Filmpje delen",
+      "question": "Selecteer een filmpje dat je aanspreekt van die influencers en deel het met iemand uit je team. Deel daarbij kort wat je leuk vond of leerde van dat filmpje.",
+      "input_type": "long_text",
+      "required": true
+    },
+    {
+      "id": "d1_q18",
+      "type": "question",
+      "section": "deel_1_bewustwording",
+      "title": "Evaluatie deel 1 - leuk",
+      "question": "Wat vond je leuk aan deze les?",
+      "input_type": "long_text",
+      "required": true,
+      "description": "Welke filmpjes blijven je bij? Welke oefeningen vond je leuk?"
+    },
+    {
+      "id": "d1_q19",
+      "type": "question",
+      "section": "deel_1_bewustwording",
+      "title": "Evaluatie deel 1 - beter",
+      "question": "Wat kon er beter aan deze les?",
+      "input_type": "long_text",
+      "required": true,
+      "description": "Was er iets wat je niet handig/leerzaam/interessant vond?"
+    },
+    {
+      "id": "d1_submit",
+      "type": "content",
+      "section": "deel_1_bewustwording",
+      "title": "Overgang",
+      "text": "Ben je klaar voor Deel 2?"
+    },
+    {
+      "id": "d2_start",
+      "type": "content",
+      "section": "deel_2_leren_door_te_ervaren",
+      "title": "Welkom bij deel 2",
+      "text": "Leren door te ervaren. In dit deel gaan we leren waar mensen met een beperking mee te maken hebben door zelf een idee te krijgen van hoe het kan voelen. Let op: voor dit deel heb je iemand in je buurt nodig om de oefening mee te doen."
+    },
+    {
+      "id": "d2_q01",
+      "type": "question",
+      "section": "deel_2_leren_door_te_ervaren",
+      "title": "E-mail bevestigen",
+      "question": "Hoi, zodat we je voortgang kunnen opslaan - wil je je e-mailadres even bevestigen?",
+      "input_type": "email",
+      "required": true
+    },
+    {
+      "id": "d2_q01_video",
+      "type": "video",
+      "section": "deel_2_leren_door_te_ervaren",
+      "title": "Video auditieve ervaring",
+      "url": "https://vimeo.com/976590244?fl=pl&fe=cm"
+    },
+    {
+      "id": "d2_auditief_challenge",
+      "type": "content",
+      "section": "deel_2_leren_door_te_ervaren",
+      "title": "Challenge zonder gehoor",
+      "text": "Kies een of meerdere collega's uit waarmee je een live oefening gaat doen. Doe een koptelefoon op met muziek zodat je je omgeving niet goed kunt horen. Begroet de medewerker, voer een korte klantreis uit en reken af."
+    },
+    {
+      "id": "d2_q02",
+      "type": "question",
+      "section": "deel_2_leren_door_te_ervaren",
+      "title": "Zonder gehoor - verwacht",
+      "question": "Wat verwacht je tegen te komen?",
+      "input_type": "long_text",
+      "required": false
+    },
+    {
+      "id": "d2_q03",
+      "type": "question",
+      "section": "deel_2_leren_door_te_ervaren",
+      "title": "Zonder gehoor - verrassend",
+      "question": "Wat vond je het verrassendste onderdeel van zonder gehoor rondlopen?",
+      "input_type": "long_text",
+      "required": true
+    },
+    {
+      "id": "d2_q04",
+      "type": "question",
+      "section": "deel_2_leren_door_te_ervaren",
+      "title": "Zonder gehoor - prettig geholpen",
+      "question": "Wat vond je een prettige manier van geholpen worden?",
+      "input_type": "long_text",
+      "required": true
+    },
+    {
+      "id": "d2_q05",
+      "type": "question",
+      "section": "deel_2_leren_door_te_ervaren",
+      "title": "Zonder gehoor - onprettig",
+      "question": "Wat vond je onprettig aan deze ervaring?",
+      "input_type": "long_text",
+      "required": true
+    },
+    {
+      "id": "d2_q06",
+      "type": "question",
+      "section": "deel_2_leren_door_te_ervaren",
+      "title": "Auditieve assistentie",
+      "question": "Zal je vanaf nu iets anders doen als je een persoon met een auditieve beperking wilt assisteren? Leg uit.",
+      "input_type": "long_text",
+      "required": true
+    },
+    {
+      "id": "d2_q06_video",
+      "type": "video",
+      "section": "deel_2_leren_door_te_ervaren",
+      "title": "Video visuele ervaring",
+      "url": "https://www.youtube.com/watch?v=pI-4fEP1GVU"
+    },
+    {
+      "id": "d2_q07",
+      "type": "question",
+      "section": "deel_2_leren_door_te_ervaren",
+      "title": "Zonder zicht - obstakels",
+      "question": "Welke obstakels denk je tegen te komen op jouw werkplek?",
+      "input_type": "long_text",
+      "required": true
+    },
+    {
+      "id": "d2_visueel_challenge",
+      "type": "content",
+      "section": "deel_2_leren_door_te_ervaren",
+      "title": "DIY zonder zicht",
+      "text": "Doe deze opdracht samen. Eén persoon is geblinddoekt. De ander oefent met het assisteren van een visueel beperkt persoon. Leg een normale klantreis af op jullie werkplek."
+    },
+    {
+      "id": "d2_q08",
+      "type": "question",
+      "section": "deel_2_leren_door_te_ervaren",
+      "title": "Zonder zicht - verrassend",
+      "question": "Wat vond je het verrassendste onderdeel van zonder zicht rondlopen?",
+      "input_type": "long_text",
+      "required": true
+    },
+    {
+      "id": "d2_q09",
+      "type": "question",
+      "section": "deel_2_leren_door_te_ervaren",
+      "title": "Zonder zicht - prettig geholpen",
+      "question": "Wat vond je een prettige manier van geholpen worden?",
+      "input_type": "long_text",
+      "required": true
+    },
+    {
+      "id": "d2_q10",
+      "type": "question",
+      "section": "deel_2_leren_door_te_ervaren",
+      "title": "Zonder zicht - onprettig",
+      "question": "Wat vond je onprettig aan deze ervaring?",
+      "input_type": "long_text",
+      "required": true
+    },
+    {
+      "id": "d2_q11",
+      "type": "question",
+      "section": "deel_2_leren_door_te_ervaren",
+      "title": "Visuele assistentie",
+      "question": "Wat zal je vanaf nu anders doen als je een persoon met een visuele beperking wilt assisteren?",
+      "input_type": "long_text",
+      "required": true
+    },
+    {
+      "id": "d2_q11_video",
+      "type": "video",
+      "section": "deel_2_leren_door_te_ervaren",
+      "title": "Video motorische toegankelijkheid",
+      "url": "http://youtube.com/watch?v=mwfTL2TPuYo"
+    },
+    {
+      "id": "d2_q12",
+      "type": "question",
+      "section": "deel_2_leren_door_te_ervaren",
+      "title": "Toegankelijkheid inschatten",
+      "question": "Hoe toegankelijk denk je dat jouw werkplek is?",
+      "input_type": "rating",
+      "required": true,
+      "scale": {
+        "min": 0,
+        "max": 10,
+        "min_label": "Niet toegankelijk",
+        "max_label": "Zeer toegankelijk"
+      }
+    },
+    {
+      "id": "d2_q13",
+      "type": "question",
+      "section": "deel_2_leren_door_te_ervaren",
+      "title": "Website toegankelijkheidsinformatie",
+      "question": "Ga nu op jullie eigen website na wat er vermeld staat over de rolstoeltoegankelijkheid van jouw werkplek. Wat mist er verder volgens jou op de website qua informatie?",
+      "input_type": "multiple_choice",
+      "required": true,
+      "options": [
+        "Toilet",
+        "Tafel",
+        "Obstakels",
+        "Voordeur breedte",
+        "Type voordeur",
+        "Route beschrijving OV",
+        "Overige"
+      ]
+    },
+    {
+      "id": "d2_q14",
+      "type": "question",
+      "section": "deel_2_leren_door_te_ervaren",
+      "title": "Website informatie score",
+      "question": "Hoe toegankelijk vond je de informatie op de website van jullie organisatie?",
+      "input_type": "rating",
+      "required": true,
+      "scale": {
+        "min": 1,
+        "max": 10,
+        "min_label": "Niet toegankelijk",
+        "max_label": "Zeer toegankelijk"
+      }
+    },
+    {
+      "id": "d2_q15",
+      "type": "question",
+      "section": "deel_2_leren_door_te_ervaren",
+      "title": "Ontdekking toegankelijkheid",
+      "question": "Wat heb je ontdekt over de toegankelijkheid van jullie werkplek?",
+      "input_type": "long_text",
+      "required": true
+    },
+    {
+      "id": "d2_q16",
+      "type": "question",
+      "section": "deel_2_leren_door_te_ervaren",
+      "title": "Telefonische vraag toegankelijkheid",
+      "question": "Wat zou je kunnen zeggen als een klant/bezoeker met een motorische beperking zou bellen met de vraag over de toegankelijkheid?",
+      "input_type": "long_text",
+      "required": true
+    },
+    {
+      "id": "d2_info_tips",
+      "type": "content",
+      "section": "deel_2_leren_door_te_ervaren",
+      "title": "Tips informatie geven",
+      "text": "Wees eerlijk over toegankelijkheid, beloof geen dingen die je niet kunt waarmaken. Benoem de toegankelijkheid van ingangen en toiletten. Vertel of een plek zelfstandig te bedienen is."
+    },
+    {
+      "id": "d2_q16_video",
+      "type": "video",
+      "section": "deel_2_leren_door_te_ervaren",
+      "title": "Video spraakbeperking",
+      "url": "https://vimeo.com/961207927?fl=pl&fe=cm"
+    },
+    {
+      "id": "d2_spraak_context",
+      "type": "content",
+      "section": "deel_2_leren_door_te_ervaren",
+      "title": "Context over spraakbeperking",
+      "text": "Mensen met een spraakbeperking krijgen vaak niet de tijd om tot een volle zin te komen. Hun zinnen worden vaak afgemaakt door anderen."
+    },
+    {
+      "id": "d2_q17",
+      "type": "question",
+      "section": "deel_2_leren_door_te_ervaren",
+      "title": "Spraakbeperking geholpen",
+      "question": "Heb jij wel eens iemand geholpen met een spraakbeperking?",
+      "input_type": "long_text",
+      "required": true
+    },
+    {
+      "id": "d2_q17_video",
+      "type": "video",
+      "section": "deel_2_leren_door_te_ervaren",
+      "title": "Video spraakbeperking ervaring",
+      "url": "https://www.youtube.com/watch?v=CXZto5uRMqw"
+    },
+    {
+      "id": "d2_q18",
+      "type": "question",
+      "section": "deel_2_leren_door_te_ervaren",
+      "title": "Tijdens video",
+      "question": "Vertel ons wat er door je heen ging tijdens het kijken van de video.",
+      "input_type": "long_text",
+      "required": true
+    },
+    {
+      "id": "d2_q19",
+      "type": "question",
+      "section": "deel_2_leren_door_te_ervaren",
+      "title": "Zin afmaken neiging",
+      "question": "Had je de neiging om de zin van de persoon in de video af te maken?",
+      "input_type": "rating",
+      "required": true,
+      "scale": {
+        "min": 1,
+        "max": 10,
+        "min_label": "helemaal niet",
+        "max_label": "heel erg"
+      }
+    },
+    {
+      "id": "d2_q20",
+      "type": "question",
+      "section": "deel_2_leren_door_te_ervaren",
+      "title": "Inclusieve ervaring faciliteren",
+      "question": "Hoe denk je dat je een inclusievere ervaring kan faciliteren voor mensen met een spraakbeperking?",
+      "input_type": "long_text",
+      "required": true
+    },
+    {
+      "id": "d2_q20_video",
+      "type": "video",
+      "section": "deel_2_leren_door_te_ervaren",
+      "title": "Video bijzonder uiterlijk",
+      "url": "https://vimeo.com/970710130?fl=pl&fe=cm"
+    },
+    {
+      "id": "d2_bijzonder_context",
+      "type": "content",
+      "section": "deel_2_leren_door_te_ervaren",
+      "title": "Context bijzonder uiterlijk",
+      "text": "Mensen met een bijzonder of opvallend uiterlijk worden in de openbare ruimte constant nagestaard. Medelijden tonen kan de situatie juist ongemakkelijk maken."
+    },
+    {
+      "id": "d2_q21",
+      "type": "question",
+      "section": "deel_2_leren_door_te_ervaren",
+      "title": "Opdracht bijzonder uiterlijk",
+      "question": "Bespreek met een collega hoe jullie je zouden voelen als er een persoon binnenloopt die van top tot teen brandwonden heeft. Wat komt er uit jullie gesprek?",
+      "input_type": "long_text",
+      "required": true
+    },
+    {
+      "id": "d2_q22",
+      "type": "question",
+      "section": "deel_2_leren_door_te_ervaren",
+      "title": "Schrikreactie",
+      "question": "Ben je in het verleden wel eens geschrokken van een persoon die binnen liep en hoe ging je daar mee om?",
+      "input_type": "long_text",
+      "required": true
+    },
+    {
+      "id": "d2_q23",
+      "type": "question",
+      "section": "deel_2_leren_door_te_ervaren",
+      "title": "Verbetering omgang",
+      "question": "Wat kan er beter aan deze les?",
+      "input_type": "long_text",
+      "required": true
+    },
+    {
+      "id": "d2_submit",
+      "type": "content",
+      "section": "deel_2_leren_door_te_ervaren",
+      "title": "Overgang",
+      "text": "Ben je klaar voor deel 3?"
+    },
+    {
+      "id": "d3_start",
+      "type": "content",
+      "section": "deel_3_vertaling_naar_jouw_werk",
+      "title": "Welkom bij deel 3",
+      "text": "Vertaling naar jouw werk. We zetten praktische do's en don'ts op een rijtje en denken met collega's na over hoe jullie de werkplek inclusiever kunnen maken."
+    },
+    {
+      "id": "d3_q01_video",
+      "type": "video",
+      "section": "deel_3_vertaling_naar_jouw_werk",
+      "title": "Auditieve beperking video",
+      "url": "https://www.youtube.com/watch?v=wMAfSblVSAw"
+    },
+    {
+      "id": "d3_auditief_context",
+      "type": "content",
+      "section": "deel_3_vertaling_naar_jouw_werk",
+      "title": "Auditieve beperking",
+      "text": "Auditief beperkte mensen kunnen last hebben van omgevingsgeluiden. Wees je bij de inrichting bewust van geluid en muziek."
+    },
+    {
+      "id": "d3_q01",
+      "type": "question",
+      "section": "deel_3_vertaling_naar_jouw_werk",
+      "title": "Oefening auditieve klanten",
+      "question": "Neem met je collega's de tips door. Bedenk samen één actie waarmee jullie je werkplek inclusiever kunnen maken voor auditief beperkte klanten. Wat hebben jullie bedacht?",
+      "input_type": "long_text",
+      "required": true
+    },
+    {
+      "id": "d3_quiz_intro_1",
+      "type": "content",
+      "section": "deel_3_vertaling_naar_jouw_werk",
+      "title": "Korte quiz",
+      "text": "Wat heb je geleerd? Kies steeds het beste antwoord voor de meeste punten."
+    },
+    {
+      "id": "d3_q02",
+      "type": "question",
+      "section": "deel_3_vertaling_naar_jouw_werk",
+      "title": "Auditief - hulp aanbieden",
+      "question": "Wat doe je als je vermoedt dat iemand misschien doof is en je je afvraagt of je die persoon moet helpen?",
+      "input_type": "single_choice",
+      "required": true,
+      "options": [
+        {
+          "id": "A",
+          "text": "Je spreekt luider zodat ze je kunnen horen."
+        },
+        {
+          "id": "B",
+          "text": "Je loopt naar ze toe, gaat voor ze staan en zegt rustig: Kan ik u ergens mee helpen?"
+        },
+        {
+          "id": "C",
+          "text": "Je wacht af, als ze iets nodig hebben komen ze wel naar je toe.",
+          "is_correct": true
+        }
+      ]
+    },
+    {
+      "id": "d3_q03",
+      "type": "question",
+      "section": "deel_3_vertaling_naar_jouw_werk",
+      "title": "Auditief - gehoorimplantaat",
+      "question": "Wat doe je als een klant met een zichtbaar gehoorimplantaat je aanspreekt, en het lijkt alsof ze je niet begrijpen?",
+      "input_type": "single_choice",
+      "required": true,
+      "options": [
+        {
+          "id": "A",
+          "text": "Je gaat harder praten en maakt grote gebaren."
+        },
+        {
+          "id": "B",
+          "text": "Je zoekt pen en papier, of pakt je smartphone en typt je antwoord uit.",
+          "is_correct": true
+        },
+        {
+          "id": "C",
+          "text": "Je neemt ze mee naar een rustigere plek en blijft met ze praten en duidelijk articuleren.",
+          "is_correct": true
+        }
+      ]
+    },
+    {
+      "id": "d3_q04",
+      "type": "question",
+      "section": "deel_3_vertaling_naar_jouw_werk",
+      "title": "Auditief - bestelling checken",
+      "question": "Wat doe je als een klant met een auditieve beperking iets bij je bestelt maar je weet niet zeker of je het goed hebt begrepen?",
+      "input_type": "single_choice",
+      "required": true,
+      "options": [
+        {
+          "id": "A",
+          "text": "Je pakt de menukaart erbij om te checken of je het hebt begrepen.",
+          "is_correct": true
+        },
+        {
+          "id": "B",
+          "text": "Je vraagt aan haar gezelschap wat ze bedoelde."
+        },
+        {
+          "id": "C",
+          "text": "Je vertrouwt op je gevoel en plaatst de bestelling."
+        }
+      ]
+    },
+    {
+      "id": "d3_visueel_context",
+      "type": "content",
+      "section": "deel_3_vertaling_naar_jouw_werk",
+      "title": "Visuele beperking",
+      "text": "Visueel beperkte mensen hebben moeite om informatie toegankelijk te verkrijgen. Communiceer duidelijk dat jij een medewerker bent, dat je voor ze staat en wijs niet als je de weg uitlegt."
+    },
+    {
+      "id": "d3_q06_video",
+      "type": "video",
+      "section": "deel_3_vertaling_naar_jouw_werk",
+      "title": "Visuele beperking video",
+      "url": "https://www.youtube.com/watch?v=Z-zbJiGg5Jk"
+    },
+    {
+      "id": "d3_q05",
+      "type": "question",
+      "section": "deel_3_vertaling_naar_jouw_werk",
+      "title": "Oefening visuele klanten",
+      "question": "Neem met je collega's de tips door. Bedenk samen één actie waarmee jullie je werkplek inclusiever kunnen maken voor visueel beperkte klanten.",
+      "input_type": "long_text",
+      "required": true
+    },
+    {
+      "id": "d3_q06",
+      "type": "question",
+      "section": "deel_3_vertaling_naar_jouw_werk",
+      "title": "Visueel - gebouw binnenstappen",
+      "question": "Wat doe je als een blind persoon alleen het gebouw binnen stapt?",
+      "input_type": "single_choice",
+      "required": true,
+      "options": [
+        {
+          "id": "A",
+          "text": "Je wacht af, als ze iets nodig hebben komen ze wel naar je toe.",
+          "is_correct": true
+        },
+        {
+          "id": "B",
+          "text": "Je loopt naar ze toe, gaat voor ze staan en zegt rustig: Kan ik u ergens mee helpen?",
+          "is_correct": true
+        },
+        {
+          "id": "C",
+          "text": "Je loopt naar ze toe, zegt rustig: Ik begeleid u wel even en pakt ze bij de bovenarm."
+        }
+      ]
+    },
+    {
+      "id": "d3_q07",
+      "type": "question",
+      "section": "deel_3_vertaling_naar_jouw_werk",
+      "title": "Visueel - toilet uitleggen",
+      "question": "Wat doe je als een klant die zichtbaar visueel beperkt is vraagt waar het toilet is?",
+      "input_type": "single_choice",
+      "required": true,
+      "options": [
+        {
+          "id": "A",
+          "text": "Je wijst naar waar het toilet is en zegt dat je het daar kan vinden."
+        },
+        {
+          "id": "B",
+          "text": "Je vraagt of ze assistentie nodig hebben bij het bezoek."
+        },
+        {
+          "id": "C",
+          "text": "Je legt gedetailleerd uit hoe je het best bij het toilet komt.",
+          "is_correct": true
+        }
+      ]
+    },
+    {
+      "id": "d3_motorisch_context",
+      "type": "content",
+      "section": "deel_3_vertaling_naar_jouw_werk",
+      "title": "Motorische beperking",
+      "text": "Motorisch beperkte mensen hebben toegankelijkheid als belangrijk onderdeel. Wees duidelijk en eerlijk over de huidige situatie van het gebouw en de faciliteiten."
+    },
+    {
+      "id": "d3_q09_video",
+      "type": "video",
+      "section": "deel_3_vertaling_naar_jouw_werk",
+      "title": "Motorische beperking video",
+      "url": "https://www.youtube.com/watch?v=l4JyxyHyTxl"
+    },
+    {
+      "id": "d3_q08",
+      "type": "question",
+      "section": "deel_3_vertaling_naar_jouw_werk",
+      "title": "Motorisch - betere aanpak",
+      "question": "In het filmpje komt een praktische situatie naar voren. Na het lezen van de tips sheet in je mail, wat denk je dat een betere aanpak van deze situatie was geweest?",
+      "input_type": "long_text",
+      "required": true
+    },
+    {
+      "id": "d3_q09",
+      "type": "question",
+      "section": "deel_3_vertaling_naar_jouw_werk",
+      "title": "Oefening motorische klanten",
+      "question": "Neem met je collega's de tips door. Bedenk samen één actie waarmee jullie je werkplek inclusiever kunnen maken voor motorisch beperkte klanten.",
+      "input_type": "long_text",
+      "required": true
+    },
+    {
+      "id": "d3_q10",
+      "type": "question",
+      "section": "deel_3_vertaling_naar_jouw_werk",
+      "title": "Motorisch - telefonische toegankelijkheid",
+      "question": "Welke dingen zijn handig om te benoemen als een persoon belt en vraagt of het gebouw rolstoeltoegankelijk is?",
+      "input_type": "multiple_choice",
+      "required": true,
+      "max_selections": 4,
+      "options": [
+        {
+          "id": "A",
+          "text": "De breedte van de deur",
+          "is_correct": true
+        },
+        {
+          "id": "B",
+          "text": "Of er een opstapje is",
+          "is_correct": true
+        },
+        {
+          "id": "C",
+          "text": "Toegankelijk toilet",
+          "is_correct": true
+        },
+        {
+          "id": "D",
+          "text": "Een menu in braille"
+        },
+        {
+          "id": "E",
+          "text": "Hoge tafels",
+          "is_correct": true
+        },
+        {
+          "id": "F",
+          "text": "Hoe glad de vloer is"
+        }
+      ]
+    },
+    {
+      "id": "d3_q11",
+      "type": "question",
+      "section": "deel_3_vertaling_naar_jouw_werk",
+      "title": "Motorisch - kwetsend woord",
+      "question": "Welk woord kan over het algemeen als kwetsend worden ervaren door mensen in een rolstoel?",
+      "input_type": "single_choice",
+      "required": true,
+      "options": [
+        {
+          "id": "A",
+          "text": "Lopen"
+        },
+        {
+          "id": "B",
+          "text": "Invalide",
+          "is_correct": true
+        },
+        {
+          "id": "C",
+          "text": "Gehandicapt"
+        }
+      ]
+    },
+    {
+      "id": "d3_bijzonder_context",
+      "type": "content",
+      "section": "deel_3_vertaling_naar_jouw_werk",
+      "title": "Bijzonder uiterlijk",
+      "text": "Mensen met een bijzonder uiterlijk willen anderen soms geruststellen dat er niks mis met hen is. Jouw reactie kan invloed hebben op hoe iemand zich voelt."
+    },
+    {
+      "id": "d3_q13_video",
+      "type": "video",
+      "section": "deel_3_vertaling_naar_jouw_werk",
+      "title": "Bijzonder uiterlijk video",
+      "url": "https://www.youtube.com/watch?v=nEm7rdhISgow"
+    },
+    {
+      "id": "d3_q12",
+      "type": "question",
+      "section": "deel_3_vertaling_naar_jouw_werk",
+      "title": "Bijzonder uiterlijk - suggesties",
+      "question": "Wat zijn suggesties die je hebt kunnen opmaken uit de video?",
+      "input_type": "multiple_choice",
+      "required": true,
+      "options": [
+        {
+          "id": "A",
+          "text": "Niet staren",
+          "is_correct": true
+        },
+        {
+          "id": "B",
+          "text": "Niet medelijden uiten met mensen",
+          "is_correct": true
+        },
+        {
+          "id": "C",
+          "text": "Je kan best iets vragen maar op een respectvolle manier",
+          "is_correct": true
+        },
+        {
+          "id": "D",
+          "text": "Mensen een knipoog geven als ze binnen komen"
+        }
+      ]
+    },
+    {
+      "id": "d3_tipsheet",
+      "type": "content",
+      "section": "deel_3_vertaling_naar_jouw_werk",
+      "title": "Tips sheet",
+      "text": "Lees nu het tips sheet door om te kijken of er tips overeen komen met de suggesties. Print de PDF uit en hang deze op een goede plek op je werkplek."
+    },
+    {
+      "id": "d3_q13",
+      "type": "question",
+      "section": "deel_3_vertaling_naar_jouw_werk",
+      "title": "Bijzonder uiterlijk - nieuwsgierigheid",
+      "question": "Stel, je bent nieuwsgierig naar iemands uiterlijk. Wat is dan de beste manier van handelen?",
+      "input_type": "single_choice",
+      "required": true,
+      "options": [
+        {
+          "id": "A",
+          "text": "Er iets over vragen."
+        },
+        {
+          "id": "B",
+          "text": "Er naar staren."
+        },
+        {
+          "id": "C",
+          "text": "Niet op letten.",
+          "is_correct": true
+        },
+        {
+          "id": "D",
+          "text": "Wegkijken."
+        }
+      ]
+    },
+    {
+      "id": "d3_spraak_context",
+      "type": "content",
+      "section": "deel_3_vertaling_naar_jouw_werk",
+      "title": "Spraakbeperking",
+      "text": "Mensen met een spraakbeperking krijgen minder zelfvertrouwen als mensen proberen hun zinnen af te maken. Geef ruimte en reageer gepast."
+    },
+    {
+      "id": "d3_q15_video",
+      "type": "video",
+      "section": "deel_3_vertaling_naar_jouw_werk",
+      "title": "Spraakbeperking video",
+      "url": "https://www.youtube.com/watch?v=kOl0jm8LRv0"
+    },
+    {
+      "id": "d3_q14",
+      "type": "question",
+      "section": "deel_3_vertaling_naar_jouw_werk",
+      "title": "Spraak - stotteren",
+      "question": "Wat doe je als iemand de hele tijd stottert terwijl ze iets willen zeggen?",
+      "input_type": "single_choice",
+      "required": true,
+      "options": [
+        {
+          "id": "A",
+          "text": "Hun zin afmaken zodat je het gemakkelijker laat verlopen."
+        },
+        {
+          "id": "B",
+          "text": "Hun laten weten dat het dapper is wat ze doen.",
+          "is_correct": true
+        },
+        {
+          "id": "C",
+          "text": "Wachten tot ze zijn uitgepraat."
+        },
+        {
+          "id": "D",
+          "text": "Vragen: Wat wil je het liefst dat ik doe als je stottert?",
+          "is_correct": true
+        }
+      ]
+    },
+    {
+      "id": "d3_formuleren",
+      "type": "content",
+      "section": "deel_3_vertaling_naar_jouw_werk",
+      "title": "Eigen houding formuleren",
+      "text": "Als eind van de Mensenkenners training ga je formuleren hoe je jezelf inclusief zal opstellen."
+    },
+    {
+      "id": "d3_q15",
+      "type": "question",
+      "section": "deel_3_vertaling_naar_jouw_werk",
+      "title": "Eigen houding - visueel",
+      "question": "Als ik een klant met een visuele beperking zie, dan...",
+      "input_type": "long_text",
+      "required": true
+    },
+    {
+      "id": "d3_q16",
+      "type": "question",
+      "section": "deel_3_vertaling_naar_jouw_werk",
+      "title": "Eigen houding - auditief",
+      "question": "Als iemand met een auditieve beperking mij om hulp vraagt, dan...",
+      "input_type": "long_text",
+      "required": true
+    },
+    {
+      "id": "d3_q17",
+      "type": "question",
+      "section": "deel_3_vertaling_naar_jouw_werk",
+      "title": "Eigen houding - motorisch",
+      "question": "Als iemand met een motorische beperking belt met een vraag over toegankelijkheid, dan...",
+      "input_type": "long_text",
+      "required": true
+    },
+    {
+      "id": "d3_q18",
+      "type": "question",
+      "section": "deel_3_vertaling_naar_jouw_werk",
+      "title": "Eigen houding - opvallend uiterlijk",
+      "question": "Als er iemand met een opvallend uiterlijk binnenkomt, dan...",
+      "input_type": "long_text",
+      "required": true
+    },
+    {
+      "id": "d3_q19",
+      "type": "question",
+      "section": "deel_3_vertaling_naar_jouw_werk",
+      "title": "Eigen houding - spraakbeperking",
+      "question": "Als iemand met een spraakbeperking mij iets vraagt, dan...",
+      "input_type": "long_text",
+      "required": true
+    },
+    {
+      "id": "d3_q20",
+      "type": "question",
+      "section": "deel_3_vertaling_naar_jouw_werk",
+      "title": "Evaluatie deel 3 - leuk",
+      "question": "Wat vond je leuk aan deze les?",
+      "input_type": "long_text",
+      "required": true
+    },
+    {
+      "id": "d3_q21",
+      "type": "question",
+      "section": "deel_3_vertaling_naar_jouw_werk",
+      "title": "Evaluatie deel 3 - beter",
+      "question": "Wat kon er beter aan deze les?",
+      "input_type": "long_text",
+      "required": true
+    },
+    {
+      "id": "d3_end",
+      "type": "content",
+      "section": "deel_3_vertaling_naar_jouw_werk",
+      "title": "Einde",
+      "text": "Dit was het laatste deel van de Mensenkenners training. Je bent nu een Mensenkenner! Bedankt voor je tijd."
+    }
+  ]
+}

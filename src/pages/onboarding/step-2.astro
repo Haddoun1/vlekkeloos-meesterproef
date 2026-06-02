@@ -1,0 +1,33 @@
+---
+export const prerender = false;
+import MainLayout from "../../layouts/Layout-onboarding.astro";
+---
+
+<MainLayout title="Stap 2" 
+nextHref="/onboarding/step-3" 
+backHref="/onboarding/step-1"
+headingText="Waarom is dit belangrijk?"
+bodyText="8 op de 10 interacties in de openbare ruimte verloopt ongemakkelijk voor iemand met een beperking.
+Sociale inclusiviteit verbeteren is dus erg nodig. We moeten niet alleen de omgeving aanpassen, we moeten vooral onszelf aanpassen!"
+step={2} 
+totalSteps={5}
+stepId="onboarding_step-2"
+category="onboarding"
+>
+
+<img class="mockup"
+  src="../../public/images/Mensenkennerskaderroller.png"
+  alt="Mensenkenners logo"
+/>
+  
+</MainLayout>
+
+<style>
+  img {
+    width: 70%;
+    max-width: 400px;
+    margin-top: 1rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
+</style>

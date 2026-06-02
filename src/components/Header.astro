@@ -4,19 +4,22 @@
 
 <header>
   <a href="/" class="logo">
-    <img src="/src/assets/logohorizontaal.png" alt="Stichting Mensenkenners logo" class="logo-desktop" />
-    <img src="/src/assets/logovierkant.png" alt="Stichting Mensenkenners logo" class="logo-mobile" />
+    <picture>
+      <source srcset="/src/assets/logovierkant.png" media="(max-width: 1100px)" />
+      <img src="/src/assets/logohorizontaal.png" alt="Stichting Mensenkenners logo" />
+    </picture>
   </a>
 
-  <button class="hamburger" aria-label="Menu" aria-expanded="false" aria-controls="nav">
+  <button class="hamburger">
     <span></span>
     <span></span>
     <span></span>
   </button>
 
   <nav>
-    <a href="/over">Over Stichting Mensenkenners</a>
     <a href="/profiel">Mijn Profiel</a>
+    <a href="/over">Over Stichting Mensenkenners</a>
+    <a href="/meer">Meer Acties van Gemeente Amsterdam</a>
     <a href="/contact">Contact</a>
   </nav>
 </header>
@@ -31,19 +34,17 @@
     align-items: center;
     justify-content: space-between;
     padding: 1rem 2rem;
-    background-color: var(--color-cyan);
-    border-bottom: 1px solid #e5e5e5;
-    position: relative;
+    /* background-color: var(--color-green); */
+    /* border-bottom: 1px solid #e5e5e5; */
+    position: sticky;
+    top: 0;
+    z-index: 999;
   }
 
   .logo img {
     height: 40px;
     width: auto;
     display: block;
-  }
-
-  .logo img.logo-mobile {
-    display: none;
   }
 
   nav {
@@ -55,11 +56,15 @@
     color: var(--color-text);
     text-decoration: none;
     font-size: 0.95rem;
+    font-family: 'Plus Jakarta Sans Bold';
+    transition: all 0.3s ease;
   }
 
   nav a:hover {
-    color: #000;
-    text-decoration: underline;
+    /* color: #000;
+    text-decoration: underline; */
+
+    color: var(--color-green);
   }
 
   /* Hamburger button Dicht */
@@ -97,17 +102,9 @@
   }
 
   /* Mobile styles */
-  @media (max-width: 768px) {
+  @media (max-width: 1100px) {
     .hamburger {
       display: flex;
-    }
-
-    /* Swap logos on mobile */
-    .logo img.logo-desktop {
-      display: none;
-    }
-    .logo img.logo-mobile {
-      display: block;
     }
 
     nav {
