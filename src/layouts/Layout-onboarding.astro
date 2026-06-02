@@ -488,6 +488,7 @@ const {
 <script>
   // @ts-nocheck
   import { navigate } from "astro:transitions/client";
+  import { supabase } from "../lib/supabase";
 
   let goingBack = false;
   let controller = new AbortController();
@@ -510,10 +511,10 @@ const {
     goingBack = false;
   });
 
-  function setupTracking() {
+  async function setupTracking() {
     const main = document.querySelector("main");
     const nextButton = document.querySelector(".button-next");
-
+    const { data: { user } } = await supabase.auth.getUser();
     const stepId = main?.dataset.stepId;
     const category = main?.dataset.category;
     const startedAt = Date.now();
@@ -536,7 +537,7 @@ const {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          userId: localStorage.getItem("userId") || "anonymous",
+          userId: user?.id || "anonymous",
           email: localStorage.getItem("email") || null,
           name: localStorage.getItem("name") || null,
           startedAt: new Date(startedAt).toISOString(),
@@ -554,12 +555,12 @@ const {
     return saveProgress;
   }
 
-  function setupNavigation() {
+  async function setupNavigation() {
     controller.abort();
     controller = new AbortController();
     const signal = controller.signal;
 
-    const saveProgress = setupTracking();
+    const saveProgress = await setupTracking();
 
     const backBtn = document.getElementById("back-btn");
 
