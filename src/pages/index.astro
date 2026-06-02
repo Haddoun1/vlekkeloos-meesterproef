@@ -40,7 +40,7 @@ const recentCourses = [
     title: 'Onboarding',
     image: '',
     progress: 0,
-    href: '/onboarding/welkom',
+    href: '/onboarding/step-1',
     color: '#2241DD',
   },
 ];
@@ -93,23 +93,22 @@ const recentCourses = [
 
 <script>
   // @ts-nocheck
-  const userId = localStorage.getItem("userId");
+  import { supabase } from "../lib/supabase";
+  const { data: { user } } = await supabase.auth.getUser();
 
   async function loadProgress() {
-    if (!userId) return;
+    if (!user) return;
 
     const response = await fetch("/api/get-progress", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ userId })
+      body: JSON.stringify({ userId: user.id })
     });
 
     const result = await response.json();
     const rows = result.data || [];
-
-    console.log(rows.map(row => row.category));
 
     const totals = {
       deel_1: 36,
@@ -155,8 +154,6 @@ const recentCourses = [
 
   loadProgress();
 
-  const name = localStorage.getItem("firstName");
-
   const hour = new Date().getHours();
 
   let greeting = "";
@@ -169,8 +166,13 @@ const recentCourses = [
     greeting = "Goedenavond";
   }
 
-  document.getElementById("welcome").innerText = `${greeting}, ${name}! Ga verder waar je gebleven was.`;
+if (user) {
+  document.getElementById("welcome").innerText =
+    `${greeting}, ${user.user_metadata.name}! Ga verder waar je gebleven was.`;
+}
 
+// Voor het maken van de backend
+// https://chatgpt.com/c/6a1ea657-76d0-8397-851d-b3370b211cac
 </script>
 
 <style>
