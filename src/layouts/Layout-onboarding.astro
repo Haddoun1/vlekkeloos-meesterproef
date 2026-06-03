@@ -49,6 +49,7 @@ const {
   showProgress = true,
   showNext = true,
   mockupSrc = "",
+  showDashboardButton = true,
 } = Astro.props;
 
 // https://claude.ai/chat/8789b362-5b69-4d5c-9b16-a4b157d09820 button back niet op welkompagina, wel op rest van stappen
@@ -70,9 +71,13 @@ const {
     data-category={category} 
     >
     <div class="wrapper-dashboardBtn">
+  {showDashboardButton && (
+    <div class="wrapper-dashboardBtn">
       <a href="/index.html" class="back-button">
         Dashboard
       </a>
+    </div>
+  )}
     </div>
       <div class="logo-mobile">
         <img

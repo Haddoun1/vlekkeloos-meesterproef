@@ -307,9 +307,9 @@ if (user) {
   const { data: { user } } = await supabase.auth.getUser();
 
   const totals = {
-    deel_1: 36,
-    deel_2: 36,
-    deel_3: 36,
+    deel_1: 35,
+    deel_2: 35,
+    deel_3: 35,
     onboarding: 9
   };
 
@@ -389,9 +389,13 @@ if (user) {
   const hour = new Date().getHours();
   const greeting = hour < 12 ? "Goedemorgen" : hour < 18 ? "Goedemiddag" : "Goedenavond";
 
+  const userName = user?.user_metadata?.name || "";
+  const capitalizedUsername =
+  userName.charAt(0).toUpperCase() + userName.slice(1);
+
   if (user) {
     document.getElementById("welcome").innerText =
-      `${greeting}, ${user.user_metadata.name}! Ga verder waar je gebleven was.`;
+      `${greeting}, ${capitalizedUsername}! Ga verder waar je gebleven was.`;
   } else {
     document.getElementById("welcome").innerText = `${greeting}!`;
   }
