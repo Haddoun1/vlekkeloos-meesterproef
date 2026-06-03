@@ -192,9 +192,9 @@ const recentCourses = [
     const rows = result.data || [];
 
     const totals = {
-      deel_1: 36,
-      deel_2: 36,
-      deel_3: 36,
+      deel_1: 35,
+      deel_2: 35,
+      deel_3: 35,
       onboarding: 9
     };
 
@@ -288,9 +288,13 @@ document.querySelectorAll(".carousel-item").forEach((item) => {
     detail.classList.add("active");
   });
 });
+
+const userName = user?.user_metadata?.name
+const capitalizedUsername = userName.charAt(0).toUpperCase() + userName.slice(1)
+
 if (user) {
   document.getElementById("welcome").innerText =
-    `${greeting}, ${user.user_metadata.name}! Ga verder waar je gebleven was.`;
+    `${greeting}, ${capitalizedUsername}! Ga verder waar je gebleven was.`;
 }
 
 // Voor het maken van de backend
