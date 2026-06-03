@@ -79,7 +79,8 @@ html {
 	scroll-behavior: smooth;
 
 	color-scheme: light;
-	--color-text: #000000;
+	/* --color-text: #000000; */
+  --color-text: #222020;
 	--color-background: #ffffff;
 	--color-green: #2AB789;
 	--color-cyan: #B1F2D9;

@@ -9,27 +9,30 @@ import { supabase } from '../lib/supabase';
 const courses = [
   {
     id: "deel_1",
-    title: "Deel 1",
-    image: "",
+    title: "Bewustswording van jouw rol",
+    description: "In dit deel ga je veel leren over verschillende soorten beperkingen en over wat jouw rol is als medewerker!",
+    image: "../../public/images/Mensenkennerskaderdoof.png",
     progress: 0,
     href: "/deel-1/1",
-    color: "#FF94E1",
+    color: "var(--color-green)",
   },
   {
     id: "deel_2",
-    title: "Deel 2",
-    image: "",
+    title: "Leren door te ervaren",
+    description: "In dit deel ga je meer leren over verschillende soorten beperkingen door in de belevingswereld te stappen.",
+    image: "../../public/images/Mensenkennerskaderroller.png",
     progress: 0,
     href: "/deel-2/1",
-    color: "#FF6631",
+    color: "var(--color-pink)",
   },
   {
     id: "deel_3",
-    title: "Deel 3",
-    image: "",
+    title: "Vertaling naar jouw werk",
+    description: "In dit deel ga je leren hoe je jouw werplek concreet inclusief kunt maken!",
+    image: "../../public/images/Mensenkennerskaderspraak.png",
     progress: 0,
     href: "/deel-3/1",
-    color: "#E9F279",
+    color: "var(--color-yellow)",
   },
 ];
 
@@ -40,13 +43,13 @@ const recentCourses = [
     title: 'Onboarding',
     image: '',
     progress: 0,
-    href: '/onboarding/welkom',
+    href: '/onboarding/step-1',
     color: '#2241DD',
   },
 ];
 ---
 
-<MainLayout>
+<!-- <MainLayout>
   <section class="dashboard">
     {recentCourses.length > 0 && (
       <>
@@ -89,27 +92,104 @@ const recentCourses = [
     </div>
 
   </section>
+</MainLayout> -->
+
+<!-- {recentCourses.length > 0 && (
+  <>
+
+    <div class="carousel-wrapper">
+      <ul class="carousel">
+        {recentCourses.map((course) => (
+          <li class="carousel-item" data-course-id={course.id}>
+            <CourseCard
+              title={course.title}
+              image={course.image}
+              progress={course.progress}
+              href={course.href}
+              color={course.color}
+            />
+          </li>
+        ))}
+      </ul>
+    </div>
+  </>
+)} -->
+
+<MainLayout>
+  <section class="dashboard">
+
+    <div class="dashboard-left">
+      <div class="dashboard-title">
+        <h1 id="welcome"></h1>
+        <hr>
+      </div>
+
+      <div class="dashboard-cursus">
+        <h2>Mijn Cursussen</h2>
+        <div class="dashboard-buttons">
+          <button class="filter-button active" id="all-courses">Alle cursussen</button>
+          <hr>
+          <button class="filter-button" id="not-started">Niet begonnen</button>
+          <button class="filter-button" id="in-progress">Bezig</button>
+          <button class="filter-button" id="completed">Voltooid</button>
+        </div>
+
+        <div class="carousel-wrapper">
+          <ul class="carousel">
+            {courses.map((course) => (
+              <li class="carousel-item" data-course-id={course.id}>
+                <CourseCard
+                  title={course.title}
+                  description={course.description}
+                  image={course.image}
+                  progress={course.progress}
+                  href={course.href}
+                  color={course.color}
+                />
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <aside class="course-detail" id="course-detail">
+      <div class="detail-image">
+        <div class="detail-image-placeholder"></div>
+      </div>
+      <div class="detail-content">
+        <h3 id="detail-title"></h3>
+        <p class="detail-progress" id="detail-progress"></p>
+        <p class="detail-description" id="detail-description"></p>
+        <a href="#" class="detail-cta" id="detail-cta">Ga verder met deze cursus</a>
+        <!-- <div class="detail-chapters">
+          <h4>Hoofdstukken</h4>
+          <ul id="detail-chapter-list"></ul>
+        </div> -->
+      </div>
+    </aside>
+
+  </section>
 </MainLayout>
 
-<script>
+<!-- <script>
   // @ts-nocheck
-  const userId = localStorage.getItem("userId");
+  import { supabase } from "../lib/supabase";
+  const { data: { user } } = await supabase.auth.getUser();
 
   async function loadProgress() {
-    if (!userId) return;
+    if (!user) return;
 
     const response = await fetch("/api/get-progress", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ userId })
+      body: JSON.stringify({ userId: user.id })
     });
 
     const result = await response.json();
     const rows = result.data || [];
-
-    console.log(rows.map(row => row.category));
 
     const totals = {
       deel_1: 36,
@@ -155,8 +235,6 @@ const recentCourses = [
 
   loadProgress();
 
-  const name = localStorage.getItem("firstName");
-
   const hour = new Date().getHours();
 
   let greeting = "";
@@ -169,61 +247,385 @@ const recentCourses = [
     greeting = "Goedenavond";
   }
 
-  document.getElementById("welcome").innerText = `${greeting}, ${name}! Ga verder waar je gebleven was.`;
+  document.getElementById("welcome").innerText = `${greeting}, ${name}!`;
 
+//  Ga verder waar je gebleven was.
+
+const courseData = {
+  deel_1: {
+    title: "Deel 1",
+    href: "/deel-1/1",
+    description: "In dit deel ga je veel leren over verschillende soorten beperkingen en over wat jouw rol is als medewerker.",
+  },
+  deel_2: {
+    title: "Deel 2",
+    href: "/deel-2/1",
+    description: "Beschrijving van deel 2.",
+  },
+  deel_3: {
+    title: "Deel 3",
+    href: "/deel-3/1",
+    description: "Beschrijving van deel 3.",
+  },
+};
+
+const detail = document.getElementById("course-detail");
+
+document.querySelectorAll(".carousel-item").forEach((item) => {
+  item.addEventListener("click", (e) => {
+    e.preventDefault();
+    const courseId = item.dataset.courseId;
+    const data = courseData[courseId];
+    if (!data) return;
+
+    document.getElementById("detail-title").textContent = data.title;
+    document.getElementById("detail-description").textContent = data.description;
+    document.getElementById("detail-cta").href = data.href;
+
+    const progressText = item.querySelector("[data-progress-text]")?.textContent || "0%";
+    document.getElementById("detail-progress").textContent = progressText + " compleet";
+
+    detail.classList.add("active");
+  });
+});
+if (user) {
+  document.getElementById("welcome").innerText =
+    `${greeting}, ${user.user_metadata.name}! Ga verder waar je gebleven was.`;
+}
+
+// Voor het maken van de backend
+// https://chatgpt.com/c/6a1ea657-76d0-8397-851d-b3370b211cac
+</script> -->
+
+<script>
+  // @ts-nocheck
+  import { supabase } from "../lib/supabase";
+  const { data: { user } } = await supabase.auth.getUser();
+
+  const totals = {
+    deel_1: 36,
+    deel_2: 36,
+    deel_3: 36,
+    onboarding: 9
+  };
+
+  async function loadProgress() {
+    if (!user) return;
+
+    const response = await fetch("/api/get-progress", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId: user.id })
+    });
+
+    const result = await response.json();
+    const rows = result.data || [];
+
+    const completed = {
+      deel_1: new Set(),
+      deel_2: new Set(),
+      deel_3: new Set(),
+      onboarding: new Set()
+    };
+
+    rows.forEach((row) => {
+      if (row.category === "deel-1") completed.deel_1.add(row.step_id);
+      if (row.category === "deel-2") completed.deel_2.add(row.step_id);
+      if (row.category === "deel-3") completed.deel_3.add(row.step_id);
+      if (row.category === "onboarding") completed.onboarding.add(row.step_id);
+    });
+
+    Object.keys(completed).forEach((key) => {
+      const count = completed[key].size;
+      const total = totals[key];
+      const percentage = Math.round((count / total) * 100);
+
+      const card = document.querySelector(`[data-course-id="${key}"]`);
+      if (!card) return;
+
+      const progressText = card.querySelector("[data-progress-text]");
+      const progressBar = card.querySelector("[data-progress-bar]");
+
+      if (progressText) progressText.textContent = `${percentage}%`;
+      if (progressBar) progressBar.value = percentage;
+
+      // Zet status op het kaart-element voor filtering
+      let status = "not-started";
+      if (count > 0 && count < total) status = "in-progress";
+      if (count >= total) status = "completed";
+      card.dataset.status = status;
+    });
+  }
+
+  await loadProgress();
+
+  // --- Filterlogica ---
+  const filterButtons = document.querySelectorAll(".filter-button");
+  const carouselItems = document.querySelectorAll(".carousel-item");
+
+  filterButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      filterButtons.forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+
+      const filter = btn.id; // "all-courses" | "not-started" | "in-progress" | "completed"
+
+      carouselItems.forEach((item) => {
+        const status = item.dataset.status || "not-started";
+        if (filter === "all-courses" || status === filter) {
+          item.style.display = "";
+        } else {
+          item.style.display = "none";
+        }
+      });
+    });
+  });
+
+  // --- Begroeting ---
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? "Goedemorgen" : hour < 18 ? "Goedemiddag" : "Goedenavond";
+
+  if (user) {
+    document.getElementById("welcome").innerText =
+      `${greeting}, ${user.user_metadata.name}! Ga verder waar je gebleven was.`;
+  } else {
+    document.getElementById("welcome").innerText = `${greeting}!`;
+  }
+
+  // --- Detail panel ---
+  const courseData = {
+    deel_1: {
+      title: "Deel 1",
+      href: "/deel-1/1",
+      description: "In dit deel ga je veel leren over verschillende soorten beperkingen en over wat jouw rol is als medewerker.",
+    },
+    deel_2: {
+      title: "Deel 2",
+      href: "/deel-2/1",
+      description: "Beschrijving van deel 2.",
+    },
+    deel_3: {
+      title: "Deel 3",
+      href: "/deel-3/1",
+      description: "Beschrijving van deel 3.",
+    },
+  };
+
+  const detail = document.getElementById("course-detail");
+
+  document.querySelectorAll(".carousel-item").forEach((item) => {
+    item.addEventListener("click", (e) => {
+      e.preventDefault();
+      const courseId = item.dataset.courseId;
+      const data = courseData[courseId];
+      if (!data) return;
+
+      document.getElementById("detail-title").textContent = data.title;
+      document.getElementById("detail-description").textContent = data.description;
+      document.getElementById("detail-cta").href = data.href;
+
+      const progressText = item.querySelector("[data-progress-text]")?.textContent || "0%";
+      document.getElementById("detail-progress").textContent = progressText + " compleet";
+
+      detail.classList.add("active");
+    });
+  });
 </script>
 
 <style>
   .dashboard {
-    max-width: 1100px;
     margin: 0 auto;
     padding: 2rem;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    align-items: start;
+  }
+
+  @media (min-width: 900px) {
+    .dashboard {
+      grid-template-columns: 1fr 320px;
+    }
+  }
+
+  .dashboard-left {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    min-width: 0;
+  }
+
+  .dashboard-title {
+    display: flex;
+    flex-direction: column;
+    gap: var(--size-sm);
+
+    & hr {
+      border: 2px solid var(--color-green);
+      width: 200px;
+    }
+  }
+
+  .dashboard-cursus {
+    display: flex;
+    flex-direction: column;
+    gap: var(--size-sm);
+
+    .dashboard-buttons {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+
+      & .filter-button {
+        padding: 0.5rem 1rem;
+        border: 2px solid var(--color-green);
+        background-color: transparent;
+        color: var(--color-green);
+        /* border-radius: 4px; */
+        border-radius: 9999px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+        font-family: var(--font-bold);
+
+        &:hover {
+          background-color: var(--color-green);
+          color: var(--color-background);
+        }
+        
+        &.active {
+          background-color: var(--color-green);
+          color: var(--color-background);
+        }
+      }
+    }
+  }
+
+  .dashboard-cursus hr {
+    border: 1.6px solid var(--color-green);
   }
 
   h1, h2 {
-    margin: 0 0 1.5rem;
-    font-size: 2rem;
-    color: #333;
+    font-size: var(--size-2xl);
+    color: var(--color-text);
   }
 
-  h2 {
-    margin-top: 2rem;
+  @media (min-width: 768px) {
+    h1 {
+      font-size: var(--size-3xl);
+    }
+
+    h2 {
+      font-size: var(--size-2xl);
+    }
   }
 
-  /* Carousel */
   .carousel-wrapper {
-    position: relative;
+    margin-top: 1rem;
   }
 
   .carousel {
     list-style: none;
-    padding: 2rem 0;
+    padding: 0;
     margin: 0;
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr;
     gap: 1rem;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scroll-behavior: smooth;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-  }
-
-  .carousel::-webkit-scrollbar {
-    display: none;
   }
 
   .carousel-item {
-    flex: 0 0 200px;
-    scroll-snap-align: start;
+    min-width: 0;
+    display: flex;
   }
 
-  @media (min-width: 768px) {
-    .carousel-item {
-      flex: 0 0 350px;
+  @media (min-width: 600px) {
+    .carousel {
+      grid-template-columns: repeat(2, 1fr);
     }
+  }
+  @media (min-width: 1024px) {
+    .carousel {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
 
-    h1, h2 {
-      margin-bottom: 0rem;
+  /* aside / detail panel */
+  .course-detail {
+    display: none;
+    flex-direction: column;
+    gap: 1rem;
+    background: var(--color-background);
+    border: 2px solid rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    padding: 1.5rem;
+    position: sticky;
+    top: 2rem;
+
+    height:100%;
+  }
+
+  .course-detail.active {
+    display: flex;
+  }
+
+  .detail-image {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .detail-image-placeholder {
+    width: 100%;
+    height: 100%;
+    background: #ddd;
+  }
+
+  .detail-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    flex: 1;
+  }
+
+  .detail-content h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: var(--color-text);
+  }
+
+  .detail-progress {
+    color: var(--color-green);
+    font-size: 0.9rem;
+    margin: 0;
+    font-family: var(--font-bold);
+  }
+
+  .detail-description {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin: 0;
+    color: var(--color-text);
+    font-family: var(--font-medium);
+  }
+
+  .detail-cta {
+    margin-top: auto;
+    display: block;
+    text-align: center;
+    padding: 0.75rem;
+    background: var(--color-green);
+    color: var(--color-text);
+    /* border-radius: 6px; */
+    border-radius: 9999px;
+    text-decoration: none;
+    font-family: var(--font-bold);
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background-color: color-mix(in srgb, var(--color-green) 85%, black);
+      scale: 1.02;
     }
   }
 </style>

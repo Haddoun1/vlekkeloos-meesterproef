@@ -135,9 +135,13 @@
   }
 
   /* Mobile styles */
-  @media (max-width: 1100px) {
+  @media (max-width: 768px) {
     .hamburger {
       display: flex;
+    }
+
+    nav hr {
+      display: none;
     }
 
     nav {
@@ -150,6 +154,9 @@
       gap: 0;
       background-color: var(--color-cyan);
       padding: 1rem 2rem;
+      text-align: center;
+
+      border-bottom: 1px solid transparent;
     }
 
     nav.open {

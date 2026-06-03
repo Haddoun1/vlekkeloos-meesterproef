@@ -237,85 +237,86 @@ const progressPct = Math.round((currentStep / totalSteps) * 100);
 
 
 <script>
-  //@ts-nocheck
+  // @ts-nocheck
+  import { supabase } from "../../lib/supabase";
+
   const main = document.querySelector("main.content-col");
+  const navNext = document.getElementById("nav-next");
+
   const stepId = main?.dataset.stepId;
   const category = main?.dataset.category;
   const startedAt = new Date();
+
   let alreadySaved = false;
 
+  async function saveProgress() {
+    if (alreadySaved) return;
+    if (!stepId || !category) return;
+
+    alreadySaved = true;
+
+    const endedAt = new Date();
+    const durationSeconds = Math.round((endedAt - startedAt) / 1000);
+
+    const { data: { user } } = await supabase.auth.getUser();
+
+const response = await fetch("/api/track-step", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    userId: user?.id || "anonymous",
+    email: user?.email || null,
+    name: user?.user_metadata?.name || null,
+    stepId,
+    category,
+    startedAt: startedAt.toISOString(),
+    endedAt: endedAt.toISOString(),
+    durationSeconds,
+  }),
+});
+
+const result = await response.json();
+
+}
+
+  if (navNext) {
+    navNext.addEventListener("click", async (e) => {
+      e.preventDefault();
+
+      await saveProgress();
+
+      window.location.href = navNext.href;
+    });
+  }
+
   const mcBlock = document.querySelector("[data-multiple-choice]");
+
   if (mcBlock) {
     const checkboxes = mcBlock.querySelectorAll("input[type='checkbox']");
-    const errorEl   = document.getElementById("mc-error");
-    const navNext   = document.getElementById("nav-next");
+    const errorEl = document.getElementById("mc-error");
 
-    function updateMC() {
-      const checked = [...checkboxes].filter(cb => cb.checked);
-      if (checked.length > 2) {
-        const event = window._lastChangedCb;
-        if (event) event.checked = false;
-        errorEl && (errorEl.hidden = false);
-        return;
-      }
-      errorEl && (errorEl.hidden = true);
-    }
+    checkboxes.forEach((checkbox) => {
+      checkbox.addEventListener("change", (e) => {
+        const checked = [...checkboxes].filter((cb) => cb.checked);
 
-    checkboxes.forEach(cb => {
-      cb.addEventListener("change", (e) => {
-        window._lastChangedCb = e.target.checked ? e.target : null;
-
-        const checked = [...checkboxes].filter(cb => cb.checked);
         if (checked.length > 2) {
           e.target.checked = false;
+
           if (errorEl) {
             errorEl.hidden = false;
             clearTimeout(errorEl._timer);
-            errorEl._timer = setTimeout(() => { errorEl.hidden = true; }, 3000);
+            errorEl._timer = setTimeout(() => {
+              errorEl.hidden = true;
+            }, 3000);
           }
         } else {
           if (errorEl) errorEl.hidden = true;
         }
       });
     });
-
-    if (navNext) {
-      navNext.addEventListener("click", (e) => {
-        const checked = [...checkboxes].filter(cb => cb.checked);
-      });
-    }
   }
-
-  async function saveProgress() {
-    if (alreadySaved) return;
-    alreadySaved = true;
-    const endedAt = new Date();
-    await fetch("/api/track-step", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        userId: localStorage.getItem("userId") || "anonymous",
-        email:  localStorage.getItem("email")  || null,
-        name:   localStorage.getItem("name")   || null,
-        stepId, category,
-        startedAt: startedAt.toISOString(),
-        endedAt:   endedAt.toISOString(),
-        durationSeconds: Math.round((endedAt - startedAt) / 1000),
-      }),
-    });
-  }
-
-  window.addEventListener("beforeunload", () => {
-    navigator.sendBeacon("/api/track-step", JSON.stringify({
-      userId: localStorage.getItem("userId") || "anonymous",
-      email:  localStorage.getItem("email")  || null,
-      name:   localStorage.getItem("name")   || null,
-      stepId, category,
-      startedAt: startedAt.toISOString(),
-      endedAt:   new Date().toISOString(),
-      durationSeconds: Math.round((new Date() - startedAt) / 1000),
-    }));
-  });
 </script>
 
 
