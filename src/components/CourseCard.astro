@@ -169,4 +169,44 @@ const {
     min-width: 3rem;
     text-align: right;
   }
+
+  @media (min-width: 768px) {
+    .course-card {
+      padding: var(--size-2xl);
+
+      /* & .image-wrapper {
+        width: 50%;
+      } */
+
+      & .card-title {
+        /* & h2 {
+          font-size: var(--size-2xl);
+        } */
+
+        & p{
+          font-size: 0.9rem;
+        }
+      }
+    }
+  }
+
+  /* @media (max-width: 600px) {
+    .course-card {
+      padding: var(--size-lg);
+
+      & .image-wrapper {
+        width: 80%;
+      }
+
+      & .card-title {
+        & h2 {
+          font-size: var(--size-lg);
+        }
+
+        & p{
+          font-size: var(--size-sm);
+        }
+      }
+    }
+  } */
 </style>
