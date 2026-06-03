@@ -8,13 +8,22 @@ import { supabase } from '../lib/supabase';
 
 const courses = [
   {
+    id: "onboarding",
+    title: 'Onboarding',
+    image: '../../public/images/mockupmensenkenners.png',
+     description: "Welkom bij de onboarding! In deze cursus maken we je wegwijs in het platform en leggen we uit wat je kunt verwachten in de verschillende delen van de cursus.",
+    progress: 0,
+    href: '/onboarding/step-1',
+    color: 'var(--color-green)',
+  },
+  {
     id: "deel_1",
     title: "Bewustswording van jouw rol",
     description: "In dit deel ga je veel leren over verschillende soorten beperkingen en over wat jouw rol is als medewerker!",
     image: "../../public/images/Mensenkennerskaderdoof.png",
     progress: 0,
     href: "/deel-1/1",
-    color: "var(--color-green)",
+    color: "var(--color-pink)",
   },
   {
     id: "deel_2",
@@ -23,7 +32,7 @@ const courses = [
     image: "../../public/images/Mensenkennerskaderroller.png",
     progress: 0,
     href: "/deel-2/1",
-    color: "var(--color-pink)",
+    color: "var(--color-yellow)",
   },
   {
     id: "deel_3",
@@ -32,7 +41,7 @@ const courses = [
     image: "../../public/images/Mensenkennerskaderspraak.png",
     progress: 0,
     href: "/deel-3/1",
-    color: "var(--color-yellow)",
+    color: "var(--color-red)",
   },
 ];
 
@@ -41,10 +50,11 @@ const recentCourses = [
   {
     id: "onboarding",
     title: 'Onboarding',
-    image: '',
+    image: '../../public/images/Mensenkennerskaderdoof.png',
+    description: "Welkom bij de onboarding! In deze cursus maken we je wegwijs in het platform en leggen we uit wat je kunt verwachten in de verschillende delen van de cursus.",
     progress: 0,
     href: '/onboarding/step-1',
-    color: '#2241DD',
+    color: 'var(--color-blue)',
   },
 ];
 ---
@@ -394,6 +404,11 @@ if (user) {
 
   // --- Detail panel ---
   const courseData = {
+    onboarding: {
+      title: "Onboarding",
+      href: "/onboarding/step-1",
+      description: "Welkom bij de onboarding! In deze cursus maken we je wegwijs in het platform en leggen we uit wat je kunt verwachten in de verschillende delen van de cursus.",
+    },
     deel_1: {
       title: "Deel 1",
       href: "/deel-1/1",
@@ -559,9 +574,9 @@ if (user) {
     border-radius: 12px;
     padding: 1.5rem;
     position: sticky;
-    top: 2rem;
+    top: 5rem;
 
-    height:100%;
+    height:82vh;
   }
 
   .course-detail.active {
