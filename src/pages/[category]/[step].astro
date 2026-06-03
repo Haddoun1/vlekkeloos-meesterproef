@@ -64,10 +64,11 @@ if (item.id?.endsWith("_submit")) {
 const progressPct = Math.round((currentStep / totalSteps) * 100);
 
 const categoryColorMap: Record<string, string> = {
-  "deel-1": "#B1F2D9",   
-  "deel-2": "#FF94E1",   
-  "deel-3": "#E9F279",   
-  "intro":  "#B1F2D9",   
+  "deel-1": "#FF94E1",   // pink
+  "deel-2": "#E9F279",   // yellow
+  "deel-3": "#FF6631",   // red
+  "intro":  "#B1F2D9",   // cyan (fallback for intro)
+  // add more slugs → hex as needed
 };
 const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
 ---
@@ -427,29 +428,39 @@ body {
   font-family: var(--font-semi-bold);
   font-size: var(--size-sm);
   letter-spacing: 0.06em;
-  background: var(--color-cyan);
-  border: 1px solid rgba(0,0,0,0.08);
+  background: color-mix(in srgb, var(--color-accent) 35%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-accent) 60%, transparent);
   border-radius: 99px;
   padding: 0.25rem 0.85rem;
   color: var(--color-text);
   margin: 0;
   line-height: 1.4;
   text-decoration: none;
+  transition: background 0.18s, color 0.18s, transform 0.12s, box-shadow 0.18s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
 
-  &&::before {
-    content: "←";
-    display: inline-block;
-    margin-left: 0.4rem;
-    transition: transform 0.2s;
-  }
-
-  &&:hover {
-  background: var(--color-green);
-  color: white;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 14px rgba(42,183,137,0.25);
+.back-button::before {
+  content: "←";
+  display: inline-block;
   transition: transform 0.2s;
 }
+
+.back-button:hover {
+  background: var(--color-accent);
+  border-color: color-mix(in srgb, var(--color-accent) 80%, black);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--color-accent) 50%, transparent);
+}
+
+.back-button:hover::before {
+  transform: translateX(-2px);
+}
+
+.back-button:active {
+  transform: scale(0.97);
 }
 
 .card {
