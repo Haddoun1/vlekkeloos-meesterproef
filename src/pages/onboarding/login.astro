@@ -30,7 +30,7 @@ export const prerender = false;
     alt="Mensenkenners logo"
   />
 
-  <form class="login-form">
+  <form class="login-form" method="post">
     <!-- <div class="buttons-container">
         <button class="button-login active">
           inloggen
@@ -113,7 +113,7 @@ export const prerender = false;
 
     console.log("Ingelogd als:", data.user.id);
 
-    window.location.href = "/onboarding/step-1";
+    window.location.replace("/onboarding/step-1");
   });
 </script>
 
