@@ -80,8 +80,12 @@ const progressPct = Math.round((currentStep / totalSteps) * 100);
   <main class="content-col" data-step-id={item.id} data-category={categorySlug}>
 
     <header class="page-header">
+      <a href="/index.html" class="back-button">
+          Dashboard
+      </a>
       <p class="category-pill">{category}</p>
          <span class="step-fraction">{currentStep}<span class="step-total">/{totalSteps}</span></span>
+         
     </header>
 
     <section class="card">
@@ -409,6 +413,35 @@ body {
   color: var(--color-text);
   margin: 0;
   line-height: 1.4;
+}
+
+.back-button {
+  font-family: var(--font-semi-bold);
+  font-size: var(--size-sm);
+  letter-spacing: 0.06em;
+  background: var(--color-cyan);
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 99px;
+  padding: 0.25rem 0.85rem;
+  color: var(--color-text);
+  margin: 0;
+  line-height: 1.4;
+  text-decoration: none;
+
+  &&::before {
+    content: "←";
+    display: inline-block;
+    margin-left: 0.4rem;
+    transition: transform 0.2s;
+  }
+
+  &&:hover {
+  background: var(--color-green);
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(42,183,137,0.25);
+  transition: transform 0.2s;
+}
 }
 
 .card {

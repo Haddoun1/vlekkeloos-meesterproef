@@ -69,6 +69,11 @@ const {
     data-step-id={stepId}
     data-category={category} 
     >
+    <div class="wrapper-dashboardBtn">
+      <a href="/index.html" class="back-button">
+        Dashboard
+      </a>
+    </div>
       <div class="logo-mobile">
         <img
           src="/images/Mensenkenners-logo-hori.png"
@@ -227,6 +232,7 @@ const {
 
   .logo-desktop {
     display: none;
+    padding: .3rem;
   }
 
   /* ── Text & progress ── */
@@ -281,6 +287,41 @@ const {
   }
 
   /* ── Buttons ── */
+
+  .wrapper-dashboardBtn {
+    display: flex;
+    align-self: flex-start;
+  }
+
+  .back-button {
+    font-family: var(--font-semi-bold);
+    font-size: var(--size-sm);
+    letter-spacing: 0.06em;
+    background: var(--color-cyan);
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 99px;
+    padding: 0.25rem 0.85rem;
+    color: var(--color-text);
+    margin: 0;
+    text-decoration: none;
+    max-width:fit-content;
+
+    &&::before {
+      content: "←";
+      display: inline-block;
+      margin-left: 0.2rem;
+      transition: transform 0.2s;
+    }
+
+    &&:hover {
+    background: var(--color-green);
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(42,183,137,0.25);
+    transition: transform 0.2s;
+  }
+}
+
   .buttons-onboarding {
     display: flex;
     flex-direction: column;
