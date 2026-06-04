@@ -281,26 +281,26 @@ const recentCourses = [
       detail.dataset.openCourse = courseId;
 
       document.getElementById("detail-title").textContent = data.title;
-      document.getElementById("detail-description").textContent =
-        data.description;
+
+      document.getElementById("detail-description").textContent = data.description;
+
       document.getElementById("detail-cta").href = data.href;
-      document
-        .getElementById("detail-cta")
-        .style.setProperty("background-color", data.color);
-      document
-        .getElementById("detail-progress")
-        .style.setProperty("color", data.color);
+
+      document.getElementById("detail-cta").style.setProperty("background-color", data.color);
+
+      document.getElementById("detail-progress").style.setProperty("color", data.color);
 
       const placeholder = document.querySelector(".detail-image-placeholder");
+
       placeholder.style.backgroundImage = `url('${data.image}')`;
+
       placeholder.style.backgroundSize = "cover";
+
       placeholder.style.backgroundPosition = "center";
 
-      const progressText =
-        item.querySelector("[data-progress-text]")?.textContent || "0%";
-      document.getElementById("detail-progress").textContent =
-        progressText + " compleet";
+      const progressText = item.querySelector("[data-progress-text]")?.textContent || "0%";
 
+      document.getElementById("detail-progress").textContent = progressText + " compleet";
       detail.classList.add("active");
     });
   });
