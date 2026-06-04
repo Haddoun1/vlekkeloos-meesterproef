@@ -5,8 +5,14 @@
 <header>
   <a href="/" class="logo">
     <picture>
-      <source srcset="/src/assets/logovierkant.png" media="(max-width: 1100px)" />
-      <img src="/src/assets/logohorizontaal.png" alt="Stichting Mensenkenners logo" />
+      <source
+        srcset="/src/assets/logovierkant.png"
+        media="(max-width: 1100px)"
+      />
+      <img
+        src="/src/assets/logohorizontaal.png"
+        alt="Stichting Mensenkenners logo"
+      />
     </picture>
   </a>
 
@@ -17,16 +23,27 @@
   </button>
 
   <nav>
-    <a href="https://www.stichtingmensenkenners.nl/" target="_blank" rel="noopener noreferrer">Over Stichting Mensenkenners</a>
-    <a href="/meer">Meer Acties van Gemeente Amsterdam</a>
-    <a href="https://www.ink.team/projects/mensenkenners" target="_blank" rel="noopener noreferrer">Contact</a>
-    <hr>
+    <a
+      href="https://www.stichtingmensenkenners.nl/"
+      target="_blank"
+      rel="noopener noreferrer">Over Stichting Mensenkenners</a
+    >
+    <a 
+      href="https://www.amsterdam.nl/iedereen-doet-mee/"
+      target="_blank"
+      rel="noopener noreferrer">Meer Acties van Gemeente Amsterdam</a>
+    <a
+      href="https://www.ink.team/projects/mensenkenners"
+      target="_blank"
+      rel="noopener noreferrer">Contact</a
+    >
+    <hr />
     <a href="/profiel" class="profile-link">Mijn Profiel</a>
   </nav>
 </header>
 
 <style>
-  body{
+  body {
     margin: 0;
   }
 
@@ -35,11 +52,15 @@
     align-items: center;
     justify-content: space-between;
     padding: 1rem 2rem;
-    /* background-color: var(--color-green); */
-    /* border-bottom: 1px solid #e5e5e5; */
     position: sticky;
     top: 0;
     z-index: 999;
+    background: radial-gradient(
+    circle at 0% 0%,
+    rgb(181 219 206 / 0.4) 0%,
+    transparent
+    );
+    backdrop-filter: blur(5px);
   }
 
   .logo img {
@@ -52,7 +73,6 @@
     display: flex;
     gap: 2rem;
     align-items: center;
-
     & hr {
       border: 1px solid var(--color-text);
       height: 30px;
@@ -63,16 +83,13 @@
     color: var(--color-text);
     text-decoration: none;
     font-size: 0.95rem;
-    font-family: 'Plus Jakarta Sans Bold';
+    font-family: "Plus Jakarta Sans Bold";
     transition: all 0.3s ease;
     border-bottom: 2px solid transparent;
     padding: var(--size-xs) 0;
   }
 
   nav a:hover {
-    /* color: #000;
-    text-decoration: underline; */
-
     border-bottom: 2px solid var(--color-green);
     color: var(--color-green);
   }
@@ -81,23 +98,21 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-
-
     &::before {
-        content: '';
-        display: inline-block;
-        width: 24px;
-        height: 24px;
-        background-color: currentColor;
+      content: "";
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      background-color: currentColor;
 
-        -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='black' stroke-width='1.5'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z'/%3E%3C/svg%3E");
-        mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='black' stroke-width='1.5'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z'/%3E%3C/svg%3E");
+      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='black' stroke-width='1.5'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z'/%3E%3C/svg%3E");
+      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='black' stroke-width='1.5'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z'/%3E%3C/svg%3E");
 
-        -webkit-mask-repeat: no-repeat;
-        mask-repeat: no-repeat;
-        -webkit-mask-size: contain;
-        mask-size: contain;
-      }
+      -webkit-mask-repeat: no-repeat;
+      mask-repeat: no-repeat;
+      -webkit-mask-size: contain;
+      mask-size: contain;
+    }
   }
 
   /* Hamburger button Dicht */
@@ -120,7 +135,9 @@
     width: 100%;
     background-color: var(--color-text);
     border-radius: 2px;
-    transition: transform 0.3s ease, opacity 0.3s ease;
+    transition:
+      transform 0.3s ease,
+      opacity 0.3s ease;
   }
 
   /* Open */
@@ -175,12 +192,12 @@
 </style>
 
 <script>
-  const hamburger = document.querySelector('.hamburger');
-  const nav = document.querySelector('nav');
+  const hamburger = document.querySelector(".hamburger");
+  const nav = document.querySelector("nav");
 
-  hamburger?.addEventListener('click', () => {
-    const isOpen = nav?.classList.toggle('open');
-    hamburger.classList.toggle('open');
-    hamburger.setAttribute('aria-expanded', String(isOpen));
+  hamburger?.addEventListener("click", () => {
+    const isOpen = nav?.classList.toggle("open");
+    hamburger.classList.toggle("open");
+    hamburger.setAttribute("aria-expanded", String(isOpen));
   });
 </script>
