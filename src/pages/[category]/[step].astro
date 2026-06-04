@@ -64,11 +64,10 @@ if (item.id?.endsWith("_submit")) {
 const progressPct = Math.round((currentStep / totalSteps) * 100);
 
 const categoryColorMap: Record<string, string> = {
-  "deel-1": "#FF94E1",   // pink
-  "deel-2": "#E9F279",   // yellow
-  "deel-3": "#FF6631",   // red
-  "intro":  "#B1F2D9",   // cyan (fallback for intro)
-  // add more slugs → hex as needed
+  "deel-1": "#FF94E1",  
+  "deel-2": "#E9F279",  
+  "deel-3": "#FF6631",  
+  "intro":  "#B1F2D9",  
 };
 const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
 ---
