@@ -1,0 +1,34 @@
+---
+export const prerender = false;
+import MainLayout from "../../layouts/Layout-onboarding.astro";
+import QuestionSingle from "../../components/QuestionSingle.astro";
+---
+
+<MainLayout
+  title="Stap 4"
+  nextHref="/onboarding/step-5"
+  backHref="/onboarding/step-3"
+  headingText="Ervaring"
+  bodyText="Hoe vaak heb je contact met mensen met een beperking?"
+  step={4}
+  totalSteps={9}
+  stepId="onboarding_step-4"
+  category="onboarding"
+  variant="steps-quiz"
+>
+  <QuestionSingle
+    slot="question"
+    name="contact_frequentie"
+    options={[
+      "Bijna nooit",
+      "Soms",
+      "Regelmatig",
+      "Dagelijks",
+    ]}
+  />
+
+  <img class="mockup"
+    src="/images/Mensenkennerskaderdoof.png"
+    alt="Mensenkenners logo"
+  />
+</MainLayout>

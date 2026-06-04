@@ -1,0 +1,112 @@
+---
+import MainLayout from "../../layouts/Layout-onboarding.astro";
+import { supabase } from "../../lib/supabase";
+
+export const prerender = false;
+---
+
+<MainLayout
+  title="register"
+  nextHref="/onboarding/step-1"
+  backHref="/onboarding/welkom-no-loader"
+  headingText=""
+  bodyText=""
+  step={1}
+  totalSteps={5}
+  showProgress={false}
+  showBack={false}
+  showNext={false}
+  mockupSrc="/images/Mensenkennerskaderdoof.png"
+showDashboardButton={false}
+  variant="register"
+>
+  <img
+    class="logo-desktop-register"
+    src="/images/Mensenkenners-logo-hori.png"
+    alt="Mensenkenners logo"
+  />
+
+  <form class="register-form">
+    <fieldset>
+      <div class="title-register">
+        <legend>Registreer</legend>
+      </div>
+
+      <div class="container-name">
+        <label for="email">
+          E-mailadres
+          <input type="email" id="email" name="email" required />
+          <p class="error">Vul hier je e-mailadres in.</p>
+        </label>
+
+        <label for="first-name">
+          Voornaam
+          <input type="text" id="first-name" name="first-name" required />
+          <p class="error">Vul hier je voornaam in.</p>
+        </label>
+
+        <label for="last-name">
+          Achternaam
+          <input type="text" id="last-name" name="last-name" required />
+          <p class="error">Vul hier je achternaam in.</p>
+        </label>
+
+        <label for="password">
+          Wachtwoord
+          <input type="password" id="password" name="password" required />
+          <p class="error">Vul hier je wachtwoord in.</p>
+        </label>
+      </div>
+
+      <p class="register-link">
+        Heb je al een account? <a href="/onboarding/login">Inloggen</a>
+      </p>
+    </fieldset>
+
+    <div class="buttons-onboarding">
+      <a class="button-back" href="/onboarding/register" id="back-btn">
+        <button type="button">Ga terug</button>
+      </a>
+      <button type="submit">Registreer</button>
+    </div>
+  </form>
+</MainLayout>
+
+<script>
+  // @ts-nocheck
+  import { supabase } from "../../lib/supabase";
+
+  const form = document.querySelector(".register-form");
+  const emailInput = document.getElementById("email");
+  const passwordInput = document.getElementById("password");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const email = emailInput.value.trim();
+    const password = passwordInput.value.trim();
+    const name = document.getElementById("first-name").value.trim();
+    const surname = document.getElementById("last-name").value.trim();
+
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          name: name,
+          surname: surname,
+        },
+      },
+    });
+
+    if (error) {
+      console.error("Register error:", error.message);
+      alert("Registreren mislukt: " + error.message);
+      return;
+    }
+
+    console.log("Account aangemaakt:", data.user?.id);
+
+    window.location.href = "/onboarding/login";
+  });
+</script>

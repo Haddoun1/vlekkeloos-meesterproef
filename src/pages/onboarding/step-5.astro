@@ -1,0 +1,37 @@
+---
+export const prerender = false;
+import MainLayout from "../../layouts/Layout-onboarding.astro";
+import QuestionMulti from "../../components/QuestionMulti.astro";
+---
+
+<MainLayout
+  title="Stap 5"
+  nextHref="/onboarding/step-6"
+  backHref="/onboarding/step-4"
+  headingText="Ervaring"
+  bodyText="Met welke groepen heb je ervaring?"
+  step={5}
+  totalSteps={9}
+  stepId="onboarding_step-5"
+  category="onboarding"
+  variant="steps-quiz"
+>
+  <QuestionMulti
+    slot="question"
+    name="ervaring_groepen"
+    options={[
+      "Visuele beperking",
+      "Auditieve beperking",
+      "Motorische beperking",
+      "Niet-zichtbare beperking",
+      "Verstandelijke beperking",
+      "Psychische aandoening",
+      "Geen ervaring",
+    ]}
+  />
+
+  <img class="mockup"
+    src="/images/Mensenkennerskaderdoof.png"
+    alt="Mensenkenners logo"
+  />
+</MainLayout>

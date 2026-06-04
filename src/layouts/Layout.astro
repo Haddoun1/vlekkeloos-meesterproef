@@ -1,23 +1,34 @@
-<!doctype html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
-	</head>
-	<body>
-		<slot />
-	</body>
+---
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+const { title } = Astro.props;
+---
+<html lang="nl">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{title}</title>
+    <link rel="stylesheet" href="/styles/global.css">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon.svg?v=2">
+
+  </head>
+  
+  <body>
+    <Header />
+    <main class="container">
+      <slot />
+    </main>
+
+    <Footer />
+  </body>
 </html>
 
 <style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
+  html{
+    background: #f7f8f7;
+    background-image: var(--gradient-bg-cyan);
+  }
 </style>
+
+<!-- Bron: https://chatgpt.com/c/6a195d63-9e38-83eb-a00b-9b631d2b3a69 -->
