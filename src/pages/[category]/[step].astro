@@ -86,7 +86,11 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     </div>
   </aside>
 
-  <main class="content-col">
+  <main
+  class="content-col"
+  data-step-id={String(currentStep)}
+  data-category={categorySlug}
+  >
 
     <header class="page-header">
       <a href="/index.html" class="back-button">
@@ -911,3 +915,5 @@ body {
   }
 }
 </style>
+
+<!-- Bron: https://chatgpt.com/c/6a195d63-9e38-83eb-a00b-9b631d2b3a69 -->

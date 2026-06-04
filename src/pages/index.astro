@@ -10,7 +10,7 @@ const courses = [
   {
     id: "onboarding",
     title: "Onboarding",
-    image: "../../public/images/mockupmensenkenners.png",
+    image: "/images/mockupmensenkenners.png",
     description:
       "Welkom bij de onboarding! In deze cursus maken we je wegwijs in het platform en leggen we uit wat je kunt verwachten in de verschillende delen van de cursus.",
     progress: 0,
@@ -22,7 +22,7 @@ const courses = [
     title: "Bewustswording van jouw rol",
     description:
       "In dit deel ga je veel leren over verschillende soorten beperkingen en over wat jouw rol is als medewerker!",
-    image: "../../public/images/Mensenkennerskaderdoof.png",
+    image: "/images/Mensenkennerskaderdoof.png",
     progress: 0,
     href: "/deel-1/1",
     color: "var(--color-pink)",
@@ -32,7 +32,7 @@ const courses = [
     title: "Leren door te ervaren",
     description:
       "In dit deel ga je meer leren over verschillende soorten beperkingen door in de belevingswereld te stappen.",
-    image: "../../public/images/Mensenkennerskaderroller.png",
+    image: "images/Mensenkennerskaderroller.png",
     progress: 0,
     href: "/deel-2/1",
     color: "var(--color-yellow)",
@@ -42,7 +42,7 @@ const courses = [
     title: "Vertaling naar jouw werk",
     description:
       "In dit deel ga je leren hoe je jouw werplek concreet inclusief kunt maken!",
-    image: "../../public/images/Mensenkennerskaderspraak.png",
+    image: "/images/Mensenkennerskaderspraak.png",
     progress: 0,
     href: "/deel-3/1",
     color: "var(--color-red)",
@@ -54,7 +54,7 @@ const recentCourses = [
   {
     id: "onboarding",
     title: "Onboarding",
-    image: "../../public/images/Mensenkennerskaderdoof.png",
+    image: "/images/Mensenkennerskaderdoof.png",
     description:
       "Welkom bij de onboarding! In deze cursus maken we je wegwijs in het platform en leggen we uit wat je kunt verwachten in de verschillende delen van de cursus.",
     progress: 0,
@@ -129,9 +129,9 @@ const recentCourses = [
   } = await supabase.auth.getUser();
 
   const totals = {
-    deel_1: 35,
-    deel_2: 35,
-    deel_3: 35,
+    deel_1: 36,
+    deel_2: 36,
+    deel_3: 36,
     onboarding: 9,
   };
 
@@ -144,8 +144,15 @@ const recentCourses = [
       body: JSON.stringify({ userId: user.id }),
     });
 
+    console.log("USER:", user);
+
     const result = await response.json();
+
+    console.log("RESULT:", result);
+
     const rows = result.data || [];
+
+    console.log("ROWS:", rows);
 
     const completed = {
       deel_1: new Set(),
@@ -154,17 +161,28 @@ const recentCourses = [
       onboarding: new Set(),
     };
 
+    const categoryToCourseId = {
+      onboarding: "onboarding",
+      "deel-1": "deel_1",
+      "deel-2": "deel_2",
+      "deel-3": "deel_3",
+    };
+
     rows.forEach((row) => {
-      if (row.category === "deel-1") completed.deel_1.add(row.step_id);
-      if (row.category === "deel-2") completed.deel_2.add(row.step_id);
-      if (row.category === "deel-3") completed.deel_3.add(row.step_id);
-      if (row.category === "onboarding") completed.onboarding.add(row.step_id);
+      const courseId = categoryToCourseId[row.category];
+
+      if (courseId && completed[courseId]) {
+        completed[courseId].add(row.step_id);
+      }
     });
 
     Object.keys(completed).forEach((key) => {
       const count = completed[key].size;
       const total = totals[key];
-      const percentage = Math.round((count / total) * 100);
+      const percentage = Math.min(
+      100,
+      Math.round((count / total) * 100)
+    );
 
       const card = document.querySelector(`[data-course-id="${key}"]`);
       if (!card) return;

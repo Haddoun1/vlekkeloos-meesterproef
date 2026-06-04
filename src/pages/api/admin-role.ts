@@ -1,82 +1,115 @@
+// Importeert het type voor een Astro API-route.
+// Hierdoor weet TypeScript dat dit bestand een API-endpoint bevat.
 import type { APIRoute } from "astro";
+
+// Importeert een gewone Supabase client.
+// Deze gebruiken we later met de Service Role Key.
 import { createClient } from "@supabase/supabase-js";
+
+// Importeert de server-side Supabase client.
+// Hiermee kunnen we controleren welke gebruiker momenteel is ingelogd.
 import { createSupabaseServerClient } from "../../lib/supabaseServer";
 
+// Deze functie wordt uitgevoerd wanneer een POST-request
+// naar /api/admin-role wordt gestuurd.
 export const POST: APIRoute = async (context) => {
-const supabase = createSupabaseServerClient(context);
 
-const {
-    data: { user },
-} = await supabase.auth.getUser();
+    // Maakt een server-side Supabase client aan.
+    const supabase = createSupabaseServerClient(context);
 
-if (!user) {
-    return new Response(JSON.stringify({ message: "Niet ingelogd" }), {
-    status: 401,
-    });
-}
+    // Haalt de momenteel ingelogde gebruiker op.
+    const {
+        data: { user },
+    } = await supabase.auth.getUser();
 
-const adminClient = createClient(
-    import.meta.env.PUBLIC_SUPABASE_URL,
-    import.meta.env.SUPABASE_SERVICE_ROLE_KEY,
-    {
-    auth: {
-        persistSession: false,
-    },
+    // Als niemand is ingelogd stoppen we direct.
+    if (!user) {
+        return new Response(JSON.stringify({ message: "Niet ingelogd" }), {
+            status: 401,
+        });
     }
-);
 
-const { data: currentProfile } = await adminClient
-    .from("profiles")
-    .select("role")
-    .eq("id", user.id)
-    .single();
+    // Maakt een admin-client aan met de Service Role Key.
+    // Deze heeft meer rechten dan een gewone gebruiker
+    // en mag gegevens van andere gebruikers aanpassen.
+    const adminClient = createClient(
+        import.meta.env.PUBLIC_SUPABASE_URL,
+        import.meta.env.SUPABASE_SERVICE_ROLE_KEY,
+        {
+            auth: {
+                // Voorkomt dat deze client sessies opslaat.
+                persistSession: false,
+            },
+        }
+    );
 
-if (currentProfile?.role !== "admin") {
-    return new Response(JSON.stringify({ message: "Geen admin rechten" }), {
-    status: 403,
-    });
-}
+    // Controleert welke rol de huidige gebruiker heeft.
+    const { data: currentProfile } = await adminClient
+        .from("profiles")
+        .select("role")
+        .eq("id", user.id)
+        .single();
 
-const { email, action } = await context.request.json();
+    // Alleen admins mogen rollen aanpassen.
+    if (currentProfile?.role !== "admin") {
+        return new Response(JSON.stringify({ message: "Geen admin rechten" }), {
+            status: 403,
+        });
+    }
 
-if (!email || !["add", "remove"].includes(action)) {
-    return new Response(JSON.stringify({ message: "Ongeldige input" }), {
-    status: 400,
-    });
-}
+    // Leest de verstuurde JSON uit het verzoek.
+    const { email, action } = await context.request.json();
 
-const newRole = action === "add" ? "admin" : "user";
+    // Controleert of een geldig e-mailadres en actie zijn meegestuurd.
+    // Toegestane acties zijn "add" en "remove".
+    if (!email || !["add", "remove"].includes(action)) {
+        return new Response(JSON.stringify({ message: "Ongeldige input" }), {
+            status: 400,
+        });
+    }
 
-const { data: targetProfile, error: findError } = await adminClient
-    .from("profiles")
-    .select("id, email, role")
-    .eq("email", email)
-    .single();
+    // Bepaalt welke rol moet worden opgeslagen.
+    // add = admin maken
+    // remove = terugzetten naar gewone gebruiker
+    const newRole = action === "add" ? "admin" : "user";
 
-if (findError || !targetProfile) {
-    return new Response(JSON.stringify({ message: "Gebruiker niet gevonden" }), {
-    status: 404,
-    });
-}
+    // Zoekt het profiel van de gebruiker op basis van e-mailadres.
+    const { data: targetProfile, error: findError } = await adminClient
+        .from("profiles")
+        .select("id, email, role")
+        .eq("email", email)
+        .single();
 
-const { error: updateError } = await adminClient
-    .from("profiles")
-    .update({ role: newRole })
-    .eq("email", email);
+    // Als het profiel niet bestaat geven we een foutmelding terug.
+    if (findError || !targetProfile) {
+        return new Response(JSON.stringify({ message: "Gebruiker niet gevonden" }), {
+            status: 404,
+        });
+    }
 
-if (updateError) {
-    return new Response(JSON.stringify({ message: updateError.message }), {
-    status: 500,
-    });
-}
+    // Past de rol van de gebruiker aan in de database.
+    const { error: updateError } = await adminClient
+        .from("profiles")
+        .update({ role: newRole })
+        .eq("email", email);
 
-return new Response(
-    JSON.stringify({
-    message:
-        action === "add"
-        ? `${email} is nu admin.`
-        : `${email} is geen admin meer.`,
-    }),
-    { status: 200 }
-);
+    // Als het updaten mislukt geven we de fout terug.
+    if (updateError) {
+        return new Response(JSON.stringify({ message: updateError.message }), {
+            status: 500,
+        });
+    }
+
+    // Geeft een succesmelding terug naar de browser.
+    return new Response(
+        JSON.stringify({
+            message:
+                action === "add"
+                    ? `${email} is nu admin.`
+                    : `${email} is geen admin meer.`,
+        }),
+        { status: 200 }
+    );
 };
+
+// 
