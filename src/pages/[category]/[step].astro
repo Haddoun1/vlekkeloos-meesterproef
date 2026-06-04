@@ -62,11 +62,20 @@ if (item.id?.endsWith("_submit")) {
 }
 
 const progressPct = Math.round((currentStep / totalSteps) * 100);
+
+const categoryColorMap: Record<string, string> = {
+  "deel-1": "#FF94E1",   // pink
+  "deel-2": "#E9F279",   // yellow
+  "deel-3": "#FF6631",   // red
+  "intro":  "#B1F2D9",   // cyan (fallback for intro)
+  // add more slugs → hex as needed
+};
+const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
 ---
 
 <link rel="stylesheet" href="/styles/global.css" />
 
-<div class="page-shell">
+<div class="page-shell" style={`--color-accent: ${accentColor}`}>
 
   <aside class="sidebar-left" aria-label="Voortgang">
     <div class="progress-block">
@@ -77,11 +86,19 @@ const progressPct = Math.round((currentStep / totalSteps) * 100);
     </div>
   </aside>
 
-  <main class="content-col" data-step-id={item.id} data-category={categorySlug}>
+  <main
+  class="content-col"
+  data-step-id={String(currentStep)}
+  data-category={categorySlug}
+  >
 
     <header class="page-header">
+      <a href="/index.html" class="back-button">
+          Dashboard
+      </a>
       <p class="category-pill">{category}</p>
          <span class="step-fraction">{currentStep}<span class="step-total">/{totalSteps}</span></span>
+         
     </header>
 
     <section class="card">
@@ -402,13 +419,52 @@ body {
   font-size: var(--size-sm);
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  background: rgba(0,0,0,0.07);
-  border: 1px solid rgba(0,0,0,0.08);
+  background: color-mix(in srgb, var(--color-accent) 35%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-accent) 60%, transparent);
   border-radius: 99px;
   padding: 0.25rem 0.85rem;
   color: var(--color-text);
   margin: 0;
   line-height: 1.4;
+}
+
+.back-button {
+  font-family: var(--font-semi-bold);
+  font-size: var(--size-sm);
+  letter-spacing: 0.06em;
+  background: color-mix(in srgb, var(--color-accent) 35%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-accent) 60%, transparent);
+  border-radius: 99px;
+  padding: 0.25rem 0.85rem;
+  color: var(--color-text);
+  margin: 0;
+  line-height: 1.4;
+  text-decoration: none;
+  transition: background 0.18s, color 0.18s, transform 0.12s, box-shadow 0.18s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.back-button::before {
+  content: "←";
+  display: inline-block;
+  transition: transform 0.2s;
+}
+
+.back-button:hover {
+  background: var(--color-accent);
+  border-color: color-mix(in srgb, var(--color-accent) 80%, black);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--color-accent) 50%, transparent);
+}
+
+.back-button:hover::before {
+  transform: translateX(-2px);
+}
+
+.back-button:active {
+  transform: scale(0.97);
 }
 
 .card {
@@ -518,8 +574,8 @@ body {
 
 .text-input:focus,
 .text-area:focus {
-  border-color: var(--color-green);
-  box-shadow: 0 0 0 3px rgba(42,183,137,0.18);
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 30%, transparent);
 }
 
 .mc-hint {
@@ -576,9 +632,9 @@ body {
 }
 
 .option-label:has(.option-input:checked) {
-  background: var(--color-cyan);
+  background: color-mix(in srgb, var(--color-accent) 50%, white);
   border-color: rgba(0,0,0,0.3);
-  box-shadow: 0 2px 12px rgba(42,183,137,0.2);
+  box-shadow: 0 2px 12px color-mix(in srgb, var(--color-accent) 40%, transparent);
 }
 
 .option-label:has(.option-input:checked) .option-key {
@@ -693,10 +749,10 @@ body {
 }
 
 .rating-option:has(.option-input:checked) .rating-pip {
-  background: var(--color-cyan);
+  background: var(--color-accent);
   border-color: rgba(0,0,0,0.3);
   transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(42,183,137,0.2);
+  box-shadow: 0 4px 10px color-mix(in srgb, var(--color-accent) 40%, transparent);
 }
 
 .action-row {
@@ -721,15 +777,15 @@ body {
 }
 
 .btn--primary {
-  background: var(--color-cyan);
+  background: var(--color-accent);
   color: var(--color-text);
   border: 1.5px solid rgba(0,0,0,0.15);
 }
 
 .btn--primary:hover {
-  background: var(--color-green);
+  background: color-mix(in srgb, var(--color-accent) 70%, black);
   color: white;
-  box-shadow: 0 4px 14px rgba(42,183,137,0.3);
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--color-accent) 50%, transparent);
   transform: translateY(-1px);
 }
 
@@ -780,16 +836,16 @@ body {
   align-items: center;
   gap: 0.35rem;
   transition: background 0.18s, color 0.18s, transform 0.12s, box-shadow 0.18s;
-  background: var(--color-cyan);
+  background: var(--color-accent);
   color: var(--color-text);
   border: 1.5px solid rgba(0,0,0,0.12);
 }
 
 .nav-btn:hover {
-  background: var(--color-green);
+  background: color-mix(in srgb, var(--color-accent) 70%, black);
   color: white;
   transform: translateY(-1px);
-  box-shadow: 0 4px 14px rgba(42,183,137,0.25);
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--color-accent) 50%, transparent);
 }
 
 .nav-btn:active {
@@ -859,3 +915,5 @@ body {
   }
 }
 </style>
+
+<!-- Bron: https://chatgpt.com/c/6a195d63-9e38-83eb-a00b-9b631d2b3a69 -->

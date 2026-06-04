@@ -49,6 +49,8 @@ const {
   showProgress = true,
   showNext = true,
   mockupSrc = "",
+  variant = "",
+  showDashboardButton = true,
 } = Astro.props;
 
 // https://claude.ai/chat/8789b362-5b69-4d5c-9b16-a4b157d09820 button back niet op welkompagina, wel op rest van stappen
@@ -60,15 +62,25 @@ const {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <link rel="stylesheet" href="/styles/global.css" />
+    <link rel="stylesheet" href="/styles/onboarding.css" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2" />
     <ClientRouter />
   </head>
 
   <body>
-    <main class="container"     
+    <main class={`container ${variant}`}     
     data-step-id={stepId}
     data-category={category} 
     >
+    <div class="wrapper-dashboardBtn">
+  {showDashboardButton && (
+    <div class="wrapper-dashboardBtn">
+      <a href="/index.html" class="back-button">
+        Dashboard
+      </a>
+    </div>
+  )}
+    </div>
       <div class="logo-mobile">
         <img
           src="/images/Mensenkenners-logo-hori.png"
@@ -142,14 +154,8 @@ const {
   </body>
 </html>
 
-<style>
+<!-- <style>
   html {
-    /* background-image: radial-gradient(
-      circle at 0% 0%,
-      rgb(181 219 206 / 0.4) 0%,
-      transparent
-    ); */
-
     background-image: var(--gradient-bg-cyan);
     animation: pulse 2s ease-in-out infinite;
   }
@@ -227,6 +233,7 @@ const {
 
   .logo-desktop {
     display: none;
+    padding: .3rem;
   }
 
   /* ── Text & progress ── */
@@ -272,15 +279,50 @@ const {
   }
 
   .progress.done-small {
-    background-color: var(--color-cyan-dark);
+    background-color: var(--color-green);
   }
 
   .progress.done {
     width: 15%;
-    background-color: var(--color-cyan-dark);
+    background-color: var(--color-green);
   }
 
   /* ── Buttons ── */
+
+  .wrapper-dashboardBtn {
+    display: flex;
+    align-self: flex-start;
+  }
+
+  .back-button {
+    font-family: var(--font-semi-bold);
+    font-size: var(--size-sm);
+    letter-spacing: 0.06em;
+    background: var(--color-green);
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 99px;
+    padding: 0.25rem 0.85rem;
+    color: var(--color-text);
+    margin: 0;
+    text-decoration: none;
+    max-width:fit-content;
+
+    &&::before {
+      content: "←";
+      display: inline-block;
+      margin-left: 0.2rem;
+      transition: transform 0.2s;
+    }
+
+    &&:hover {
+    background: #137f5b;
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(42,183,137,0.25);
+    transition: transform 0.2s;
+  }
+}
+
   .buttons-onboarding {
     display: flex;
     flex-direction: column;
@@ -304,8 +346,7 @@ const {
   }
 
   .button-next button {
-    /* background-color: var(--color-cyan); */
-    background-color: var(--color-cyan-dark);
+    background-color: var(--color-green);
     color: var(--color-background);
     transition:
       background-color 0.3s ease,
@@ -318,14 +359,14 @@ const {
 
   .button-back button {
     background-color: var(--color-background);
-    color: var(--color-cyan-dark);
-    border: 2px solid var(--color-cyan-dark);
+    color: var(--color-green);
+    border: 2px solid var(--color-green);
     transition:
       background-color 0.3s ease,
       color 0.3s ease;
 
     &:hover {
-      background-color: var(--color-cyan-dark);
+      background-color: var(--color-green);
       color: var(--color-background);
     }
   }
@@ -403,7 +444,6 @@ const {
       gap: var(--size-2xl);
     }
 
-    /* Linker kolom: slot-inhoud (bv. afbeelding/illustratie) */
     .panel-left {
       display: flex;
       flex: 1;
@@ -416,7 +456,6 @@ const {
       }
     }
 
-    /* Rechter kolom: logo + tekst + knoppen */
     .panel-right {
       flex: 1;
       display: flex;
@@ -482,7 +521,7 @@ const {
       }
     }
   }
-</style>
+</style> -->
 
 <!-- https://claude.ai/chat/c67f7248-9580-489f-a97f-bb6489468314 het terugnavigeren met view transitions voor de backbuttons -->
 <script>
@@ -502,6 +541,8 @@ const {
   });
 
   document.addEventListener("astro:after-swap", () => {
+    // Astro reset <html>, zet klasse terug op basis van goingBack
+
     if (goingBack) {
       document.documentElement.classList.add("is-going-back");
     } else {
@@ -595,4 +636,48 @@ const {
   }
 
   document.addEventListener("astro:page-load", setupNavigation);
+
+  const main = document.querySelector("main");
+  const nextButton = document.querySelector(".button-next");
+
+  const stepId = main?.dataset.stepId;
+  const category = main?.dataset.category;
+
+  const startedAt = Date.now();
+
+  async function saveProgress() {
+    if (!stepId || !category) return;
+    
+    console.log("Next button clicked");
+    const endedAt = Date.now();
+    const durationSeconds = Math.round((new Date() - startedAt) / 1000);
+
+    console.log("Saving progress...", { stepId, category, durationSeconds });
+
+    const response = await fetch("/api/track-step", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userId: localStorage.getItem("userId") || "anonymous",
+        email: localStorage.getItem("email") || null,
+        name: localStorage.getItem("name") || null,
+        startedAt: new Date(startedAt).toISOString(),
+        endedAt: new Date(endedAt).toISOString(),
+        stepId,
+        category,
+        durationSeconds,
+      }),
+    });
+
+    const result = await response.json();
+    console.log("API response:", result);
+  }
+  
+
+  nextButton.addEventListener("click", saveProgress)
+
+  console.log(stepId);
+  console.log(category);
 </script>

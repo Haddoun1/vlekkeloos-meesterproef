@@ -1,0 +1,56 @@
+---
+// Deze pagina mag niet vooraf statisch gebouwd worden.
+// We moeten namelijk kunnen controleren of een formulier is verstuurd.
+export const prerender = false;
+
+// Importeert de server-side Supabase client.
+// Hiermee kunnen we veilig inloggen op de server.
+import { createSupabaseServerClient } from "../../lib/supabaseServer";
+
+let errorMessage = "";
+
+// Controleert of het formulier werd verstuurd.
+if (Astro.request.method === "POST") {
+  // Leest alle velden uit het formulier.
+  const formData = await Astro.request.formData();
+
+  // Haalt het e-mailadres op uit het formulier.
+  const email = String(formData.get("email"));
+
+  // Haalt het wachtwoord op uit het formulier.
+  const password = String(formData.get("password"));
+
+  // Maakt een server-side Supabase client aan.
+  const supabase = createSupabaseServerClient(Astro);
+
+  // Probeert in te loggen met e-mail en wachtwoord.
+  const { error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
+
+  // Als de login mislukt, tonen we een foutmelding.
+  if (error) {
+    errorMessage = "Login mislukt";
+  } else {
+    // Als de login lukt, sturen we de gebruiker
+    // direct door naar het admin dashboard.
+    return Astro.redirect("/admin");
+  }
+}
+---
+
+<form method="POST">
+  <h1>Admin login</h1>
+    <input name="email" type="email" placeholder="E-mail" required />
+    <input name="password" type="password" placeholder="Wachtwoord" required />
+    <button type="submit"> Inloggen </button>
+  </form>
+  {errorMessage && <p>{errorMessage}</p>}
+
+  <style>
+    p {
+      color: red;
+    }
+  </style>
+</form>

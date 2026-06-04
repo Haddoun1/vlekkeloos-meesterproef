@@ -14,6 +14,7 @@ import QuestionSingle from "../../components/QuestionSingle.astro";
   totalSteps={9}
   stepId="onboarding_step-4"
   category="onboarding"
+  variant="steps-quiz"
 >
   <QuestionSingle
     slot="question"
@@ -27,33 +28,7 @@ import QuestionSingle from "../../components/QuestionSingle.astro";
   />
 
   <img class="mockup"
-    src="../../public/images/Mensenkennerskaderdoof.png"
+    src="/images/Mensenkennerskaderdoof.png"
     alt="Mensenkenners logo"
   />
 </MainLayout>
-
-<style>
-  :global(.panel-left) {
-    display: none !important;
-  }
-
-  :global(.panel-right) {
-    margin: 2em 0 auto 0;
-    height: 100%;
-  }
-
-  @media (min-width: 768px) {
-    :global(.panel-left) {
-      display: flex !important;
-    }
-
-    :global(.panel-right) {
-        margin: 0 auto;
-        height: 100%;
-    }
-  }
-
-  .mockup{
-    max-width: 400px !important;
-  }
-</style>

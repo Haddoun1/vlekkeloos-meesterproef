@@ -6,116 +6,81 @@ export const prerender = false;
 ---
 
 <MainLayout
-title="register"
-nextHref="/onboarding/step-1"
-backHref="/onboarding/welkom-no-loader"
-headingText=""
-bodyText=""
-step={1}
-totalSteps={5}
-showProgress={false}
-showBack={false}
-showNext={false}
-mockupSrc="/images/Mensenkennerskaderdoof.png"
+  title="register"
+  nextHref="/onboarding/step-1"
+  backHref="/onboarding/welkom-no-loader"
+  headingText=""
+  bodyText=""
+  step={1}
+  totalSteps={5}
+  showProgress={false}
+  showBack={false}
+  showNext={false}
+  mockupSrc="/images/Mensenkennerskaderdoof.png"
+showDashboardButton={false}
+  variant="register"
 >
-
-<!-- <img class="mockup"
-    src="../../public/images/Mensenkennerskaderdoof.png"
-    alt="Mensenkenners logo"
-/> -->
-
-<img
+  <img
     class="logo-desktop-register"
     src="/images/Mensenkenners-logo-hori.png"
     alt="Mensenkenners logo"
-/>
+  />
 
-<form class="register-form">
-    <!-- <div class="buttons-container">
-        <button class="button-register active">
-        inloggen
-        </button>
-    
-        <button class="button-register not-active">
-        registreren
-        </button>
-    </div> -->
+  <form class="register-form">
     <fieldset>
-    <div class="title-register">
+      <div class="title-register">
         <legend>Registreer</legend>
-    </div>
+      </div>
 
+      <div class="container-name">
+        <label for="email">
+          E-mailadres
+          <input type="email" id="email" name="email" required />
+          <p class="error">Vul hier je e-mailadres in.</p>
+        </label>
 
-<div class="container-name">
-<label for="email">
-    E-mailadres
-    <input
-    type="email"
-    id="email"
-    name="email"
-    required
-    />
-    <p class="error">Vul hier je e-mailadres in.</p>
-</label>
+        <label for="first-name">
+          Voornaam
+          <input type="text" id="first-name" name="first-name" required />
+          <p class="error">Vul hier je voornaam in.</p>
+        </label>
 
-<label for="first-name">
-    Voornaam
-    <input
-    type="text"
-    id="first-name"
-    name="first-name"
-    required
-    />
-    <p class="error">Vul hier je voornaam in.</p>
-</label>
+        <label for="last-name">
+          Achternaam
+          <input type="text" id="last-name" name="last-name" required />
+          <p class="error">Vul hier je achternaam in.</p>
+        </label>
 
-<label for="last-name">
-    Achternaam
-    <input
-    type="text"
-    id="last-name"
-    name="last-name"
-    required
-    />
-    <p class="error">Vul hier je achternaam in.</p>
-</label>
+        <label for="password">
+          Wachtwoord
+          <input type="password" id="password" name="password" required />
+          <p class="error">Vul hier je wachtwoord in.</p>
+        </label>
+      </div>
 
-<label for="password">
-    Wachtwoord
-    <input
-    type="password"
-    id="password"
-    name="password"
-    required
-    />
-    <p class="error">Vul hier je wachtwoord in.</p>
-</label>
-</div>
-
-    <p class="register-link">
+      <p class="register-link">
         Heb je al een account? <a href="/onboarding/login">Inloggen</a>
-    </p>
+      </p>
     </fieldset>
 
     <div class="buttons-onboarding">
-    <a class="button-back" href="/onboarding/register" id="back-btn">
+      <a class="button-back" href="/onboarding/register" id="back-btn">
         <button type="button">Ga terug</button>
-    </a>
-    <button type="submit">Registreer</button>
+      </a>
+      <button type="submit">Registreer</button>
     </div>
-
-</form>
+  </form>
 </MainLayout>
 
 <script>
-// @ts-nocheck
-import { supabase } from "../../lib/supabase";
+  // @ts-nocheck
+  import { supabase } from "../../lib/supabase";
 
-const form = document.querySelector(".register-form");
-const emailInput = document.getElementById("email");
-const passwordInput = document.getElementById("password");
+  const form = document.querySelector(".register-form");
+  const emailInput = document.getElementById("email");
+  const passwordInput = document.getElementById("password");
 
-form.addEventListener("submit", async (e) => {
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
     const email = emailInput.value.trim();
@@ -124,264 +89,24 @@ form.addEventListener("submit", async (e) => {
     const surname = document.getElementById("last-name").value.trim();
 
     const { data, error } = await supabase.auth.signUp({
-    email,
-    password,
-    options: {
+      email,
+      password,
+      options: {
         data: {
-        name: name,
-        surname: surname,
+          name: name,
+          surname: surname,
         },
-    },
+      },
     });
 
     if (error) {
-    console.error("Register error:", error.message);
-    alert("Registreren mislukt: " + error.message);
-    return;
+      console.error("Register error:", error.message);
+      alert("Registreren mislukt: " + error.message);
+      return;
     }
 
     console.log("Account aangemaakt:", data.user?.id);
 
     window.location.href = "/onboarding/login";
-});
+  });
 </script>
-
-<style>
-.error {
-    color: #b43f3f;
-    display: none;
-    font-size: 1em;
-    margin-top: .3em;
-}
-
-label:has(input:user-invalid) .error {
-    display:block;
-}
-
-img {
-    width: 70%;
-    max-width: 400px;
-    margin-top: 1rem;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.buttons-container {
-    display: flex;
-    gap: 0.5rem;
-    margin: 1rem 0;
-
-    & button {
-    padding: 0.4rem 1.5rem;
-    border: none;
-    font-size: var(--size-xs);
-    border-radius: 50px;
-    cursor: pointer;
-    font-weight: bold;
-    width: 100%;
-    }
-
-    & button.active {
-    background-color: var(--color-cyan-dark);
-    color: var(--color-background);
-    }
-
-    & button.not-active {
-    background-color: var(--color-background);
-    color: var(--color-cyan-dark);
-    }
-}
-form{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    height: 100%;
-}
-fieldset {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    border: none;
-    margin: var(--size-xl) 0;
-    width: 100%;
-
-    & .title-register {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
-    & p {
-        font-size: var(--size-sm);
-        font-family: var(--font-light);
-        text-align: center;
-        max-width: 70vw;
-
-        color:#525252;
-    }
-    }
-
-    & legend {
-    font-size: var(--size-lg);
-    font-family: var(--font-extra-bold);
-    text-align: center;
-    margin-bottom: 0rem;
-    }
-
-}
-
-label {
-    display: flex;
-    flex-direction: column;
-    gap: 0.2em;
-    font-size: var(--size-sm);
-    font-family: var(--font-light);
-    color:#525252;
-
-    & input {
-    padding: 0.75em 1em;
-    border: 1px solid #e5e5e5;
-    background-color: rgb(255 255 255 / 0.8);
-    /* border-radius: 4px; */
-    border-radius: 25px;
-    font-size: var(--size-sm);
-    }
-}
-
-.container-name {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    width: 100%;
-}
-
-.register-link {
-    margin-top: -1em;
-    font-size: var(--size-sm);
-    font-family: var(--font-light);
-    text-align: center;
-
-    & a {
-    margin-left: 0.25rem;
-    color: var(--color-cyan-dark);
-    text-decoration: none;
-    font-weight: bold;
-    }
-}
-
-button[type="submit"] {
-    width: 100%;
-    padding: var(--size-xs) var(--size-2xl);
-    border-radius: 25px;
-    border: none;
-    font-weight: 600;
-    cursor: pointer;
-    background-color: var(--color-cyan-dark);
-    color: var(--color-background);
-
-    /* margin-top:6em; */
-}
-
-.buttons-onboarding {
-    display: flex;
-    flex-direction: column;
-    gap: var(--size-xxs);
-    width: 100%;
-    margin-top: 2em;
-}
-
-.button-back {
-    width: 100%;
-
-    & button {
-    width: 100%;
-    padding: var(--size-xs) var(--size-2xl);
-    border-radius: 25px;
-    border: 2px solid var(--color-cyan-dark);
-    background-color: var(--color-background);
-    color: var(--color-cyan-dark);
-    font-weight: 600;
-    cursor: pointer;
-    }
-}
-
-.logo-desktop-register {
-    display: none;
-    width: 150px;
-    margin: 0;
-    margin-right: auto;
-}
-
-:global(.panel-right) {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-
-    & :global(.buttons-onboarding) {
-    display: none;
-    margin:0 !important;
-    }
-}
-
-:global(.mockup){
-    display: none;
-    max-width: 400px;
-    margin-top: auto;
-    margin-bottom: auto;
-    }
-
-@media (min-width: 768px) {
-    :global(.content) {
-    flex-direction: row-reverse;
-    }
-
-    :global(.logo-desktop) {
-    display: none !important;
-    }
-
-    fieldset {
-    & .title-register {
-        align-items: flex-start;
-        & p {
-        text-align: left;
-        max-width: 100%;
-        }
-    }
-
-    label{
-        & input {
-        padding: 0.75em 1.5em;
-        }
-    }
-    }
-
-    :global(.panel-left){
-    margin: auto 0;
-    }
-
-    :global(.mockup){
-    display: block;
-    }
-
-    .register-link {
-    text-align: left;
-    }
-
-    /* .register-form {
-    width: 75%;
-    } */
-
-    .logo-desktop-register {
-    display: block;
-    }
-}
-
-@media (min-width: 1024px) {
-    .logo-desktop-register {
-    width: 200px;
-    }
-}
-
-</style>
