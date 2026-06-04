@@ -132,7 +132,7 @@ const recentCourses = [
     deel_1: 35,
     deel_2: 35,
     deel_3: 35,
-    onboarding: 9
+    onboarding: 9,
   };
 
   async function loadProgress() {
@@ -214,7 +214,7 @@ const recentCourses = [
 
   const userName = user?.user_metadata?.name || "";
   const capitalizedUsername =
-  userName.charAt(0).toUpperCase() + userName.slice(1);
+    userName.charAt(0).toUpperCase() + userName.slice(1);
 
   if (user) {
     document.getElementById("welcome").innerText =
@@ -305,7 +305,6 @@ const recentCourses = [
     });
   });
 </script>
-
 
 <style>
   .dashboard {
