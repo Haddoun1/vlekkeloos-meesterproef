@@ -1,25 +1,27 @@
 ---
 // @ts-nocheck
 export const prerender = false;
-import MainLayout from '../layouts/Layout.astro';
-import CourseCard from '../components/CourseCard.astro';
+import MainLayout from "../layouts/Layout.astro";
+import CourseCard from "../components/CourseCard.astro";
 
-import { supabase } from '../lib/supabase';
+import { supabase } from "../lib/supabase";
 
 const courses = [
   {
     id: "onboarding",
-    title: 'Onboarding',
-    image: '../../public/images/mockupmensenkenners.png',
-     description: "Welkom bij de onboarding! In deze cursus maken we je wegwijs in het platform en leggen we uit wat je kunt verwachten in de verschillende delen van de cursus.",
+    title: "Onboarding",
+    image: "../../public/images/mockupmensenkenners.png",
+    description:
+      "Welkom bij de onboarding! In deze cursus maken we je wegwijs in het platform en leggen we uit wat je kunt verwachten in de verschillende delen van de cursus.",
     progress: 0,
-    href: '/onboarding/step-1',
-    color: 'var(--color-green)',
+    href: "/onboarding/step-1",
+    color: "var(--color-green)",
   },
   {
     id: "deel_1",
     title: "Bewustswording van jouw rol",
-    description: "In dit deel ga je veel leren over verschillende soorten beperkingen en over wat jouw rol is als medewerker!",
+    description:
+      "In dit deel ga je veel leren over verschillende soorten beperkingen en over wat jouw rol is als medewerker!",
     image: "../../public/images/Mensenkennerskaderdoof.png",
     progress: 0,
     href: "/deel-1/1",
@@ -28,7 +30,8 @@ const courses = [
   {
     id: "deel_2",
     title: "Leren door te ervaren",
-    description: "In dit deel ga je meer leren over verschillende soorten beperkingen door in de belevingswereld te stappen.",
+    description:
+      "In dit deel ga je meer leren over verschillende soorten beperkingen door in de belevingswereld te stappen.",
     image: "../../public/images/Mensenkennerskaderroller.png",
     progress: 0,
     href: "/deel-2/1",
@@ -37,7 +40,8 @@ const courses = [
   {
     id: "deel_3",
     title: "Vertaling naar jouw werk",
-    description: "In dit deel ga je leren hoe je jouw werplek concreet inclusief kunt maken!",
+    description:
+      "In dit deel ga je leren hoe je jouw werplek concreet inclusief kunt maken!",
     image: "../../public/images/Mensenkennerskaderspraak.png",
     progress: 0,
     href: "/deel-3/1",
@@ -49,96 +53,32 @@ const courses = [
 const recentCourses = [
   {
     id: "onboarding",
-    title: 'Onboarding',
-    image: '../../public/images/Mensenkennerskaderdoof.png',
-    description: "Welkom bij de onboarding! In deze cursus maken we je wegwijs in het platform en leggen we uit wat je kunt verwachten in de verschillende delen van de cursus.",
+    title: "Onboarding",
+    image: "../../public/images/Mensenkennerskaderdoof.png",
+    description:
+      "Welkom bij de onboarding! In deze cursus maken we je wegwijs in het platform en leggen we uit wat je kunt verwachten in de verschillende delen van de cursus.",
     progress: 0,
-    href: '/onboarding/step-1',
-    color: 'var(--color-blue)',
+    href: "/onboarding/step-1",
+    color: "var(--color-blue)",
   },
 ];
 ---
 
-<!-- <MainLayout>
-  <section class="dashboard">
-    {recentCourses.length > 0 && (
-      <>
-        <h2 id="welcome">Ga verder waar je gebleven was</h2>
-
-        <div class="carousel-wrapper">
-          <ul class="carousel">
-            {recentCourses.map((course) => (
-              <li class="carousel-item" data-course-id={course.id}>
-                <CourseCard
-                  title={course.title}
-                  image={course.image}
-                  progress={course.progress}
-                  href={course.href}
-                  color={course.color}
-                />
-              </li>
-            ))}
-          </ul>
-        </div>
-      </>
-    )}
-
-    <h1>Mijn Cursussen</h1>
-
-    <div class="carousel-wrapper">
-      <ul class="carousel">
-        {courses.map((course) => (
-          <li class="carousel-item" data-course-id={course.id}>
-            <CourseCard
-              title={course.title}
-              image={course.image}
-              progress={course.progress}
-              href={course.href}
-              color={course.color}
-            />
-          </li>
-        ))}
-      </ul>
-    </div>
-
-  </section>
-</MainLayout> -->
-
-<!-- {recentCourses.length > 0 && (
-  <>
-
-    <div class="carousel-wrapper">
-      <ul class="carousel">
-        {recentCourses.map((course) => (
-          <li class="carousel-item" data-course-id={course.id}>
-            <CourseCard
-              title={course.title}
-              image={course.image}
-              progress={course.progress}
-              href={course.href}
-              color={course.color}
-            />
-          </li>
-        ))}
-      </ul>
-    </div>
-  </>
-)} -->
-
 <MainLayout>
   <section class="dashboard">
-
     <div class="dashboard-left">
       <div class="dashboard-title">
         <h1 id="welcome"></h1>
-        <hr>
+        <hr />
       </div>
 
       <div class="dashboard-cursus">
         <h2>Mijn Cursussen</h2>
         <div class="dashboard-buttons">
-          <button class="filter-button active" id="all-courses">Alle cursussen</button>
-          <hr>
+          <button class="filter-button active" id="all-courses"
+            >Alle cursussen</button
+          >
+          <hr />
           <button class="filter-button" id="not-started">Niet begonnen</button>
           <button class="filter-button" id="in-progress">Bezig</button>
           <button class="filter-button" id="completed">Voltooid</button>
@@ -146,18 +86,20 @@ const recentCourses = [
 
         <div class="carousel-wrapper">
           <ul class="carousel">
-            {courses.map((course) => (
-              <li class="carousel-item" data-course-id={course.id}>
-                <CourseCard
-                  title={course.title}
-                  description={course.description}
-                  image={course.image}
-                  progress={course.progress}
-                  href={course.href}
-                  color={course.color}
-                />
-              </li>
-            ))}
+            {
+              courses.map((course) => (
+                <li class="carousel-item" data-course-id={course.id}>
+                  <CourseCard
+                    title={course.title}
+                    description={course.description}
+                    image={course.image}
+                    progress={course.progress}
+                    href={course.href}
+                    color={course.color}
+                  />
+                </li>
+              ))
+            }
           </ul>
         </div>
       </div>
@@ -171,156 +113,26 @@ const recentCourses = [
         <h3 id="detail-title"></h3>
         <p class="detail-progress" id="detail-progress"></p>
         <p class="detail-description" id="detail-description"></p>
-        <a href="#" class="detail-cta" id="detail-cta">Ga verder met deze cursus</a>
-        <!-- <div class="detail-chapters">
-          <h4>Hoofdstukken</h4>
-          <ul id="detail-chapter-list"></ul>
-        </div> -->
+        <a href="#" class="detail-cta" id="detail-cta"
+          >Ga verder met deze cursus</a
+        >
       </div>
     </aside>
-
   </section>
 </MainLayout>
-
-<!-- <script>
-  // @ts-nocheck
-  import { supabase } from "../lib/supabase";
-  const { data: { user } } = await supabase.auth.getUser();
-
-  async function loadProgress() {
-    if (!user) return;
-
-    const response = await fetch("/api/get-progress", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ userId: user.id })
-    });
-
-    const result = await response.json();
-    const rows = result.data || [];
-
-    const totals = {
-      deel_1: 35,
-      deel_2: 35,
-      deel_3: 35,
-      onboarding: 9
-    };
-
-    const completed = {
-      deel_1: new Set(),
-      deel_2: new Set(),
-      deel_3: new Set(),
-      onboarding: new Set()
-    };
-
-  rows.forEach((row) => {
-    if (row.category === "deel-1") completed.deel_1.add(row.step_id);
-    if (row.category === "deel-2") completed.deel_2.add(row.step_id);
-    if (row.category === "deel-3") completed.deel_3.add(row.step_id);
-    if (row.category === "onboarding") completed.onboarding.add(row.step_id);
-  });
-
-    Object.keys(completed).forEach((key) => {
-      const percentage = Math.round(
-        (completed[key].size / totals[key]) * 100
-      );
-
-      const card = document.querySelector(`[data-course-id="${key}"]`);
-      if (!card) return;
-
-      const progressText = card.querySelector("[data-progress-text]");
-      const progressBar = card.querySelector("[data-progress-bar]");
-
-      if (progressText) {
-        progressText.textContent = `${percentage}%`;
-      }
-
-      if (progressBar) {
-        progressBar.value = percentage;
-      }
-          });
-        }
-
-  loadProgress();
-
-  const hour = new Date().getHours();
-
-  let greeting = "";
-
-  if (hour < 12) {
-    greeting = "Goedemorgen";
-  } else if (hour < 18) {
-    greeting = "Goedemiddag";
-  } else {
-    greeting = "Goedenavond";
-  }
-
-  document.getElementById("welcome").innerText = `${greeting}, ${name}!`;
-
-//  Ga verder waar je gebleven was.
-
-const courseData = {
-  deel_1: {
-    title: "Deel 1",
-    href: "/deel-1/1",
-    description: "In dit deel ga je veel leren over verschillende soorten beperkingen en over wat jouw rol is als medewerker.",
-  },
-  deel_2: {
-    title: "Deel 2",
-    href: "/deel-2/1",
-    description: "Beschrijving van deel 2.",
-  },
-  deel_3: {
-    title: "Deel 3",
-    href: "/deel-3/1",
-    description: "Beschrijving van deel 3.",
-  },
-};
-
-const detail = document.getElementById("course-detail");
-
-document.querySelectorAll(".carousel-item").forEach((item) => {
-  item.addEventListener("click", (e) => {
-    e.preventDefault();
-    const courseId = item.dataset.courseId;
-    const data = courseData[courseId];
-    if (!data) return;
-
-    document.getElementById("detail-title").textContent = data.title;
-    document.getElementById("detail-description").textContent = data.description;
-    document.getElementById("detail-cta").href = data.href;
-
-    const progressText = item.querySelector("[data-progress-text]")?.textContent || "0%";
-    document.getElementById("detail-progress").textContent = progressText + " compleet";
-
-    detail.classList.add("active");
-  });
-});
-
-const userName = user?.user_metadata?.name
-const capitalizedUsername = userName.charAt(0).toUpperCase() + userName.slice(1)
-
-if (user) {
-  document.getElementById("welcome").innerText =
-    `${greeting}, ${capitalizedUsername}! Ga verder waar je gebleven was.`;
-}
-
-// Voor het maken van de backend
-// https://chatgpt.com/c/6a1ea657-76d0-8397-851d-b3370b211cac
-</script> -->
 
 <script>
   // @ts-nocheck
   import { supabase } from "../lib/supabase";
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   const totals = {
-    deel_1: 36,
-    deel_2: 36,
-    deel_3: 36,
-    onboarding: 9
+    deel_1: 35,
+    deel_2: 35,
+    deel_3: 35,
+    onboarding: 9,
   };
 
   async function loadProgress() {
@@ -329,7 +141,7 @@ if (user) {
     const response = await fetch("/api/get-progress", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId: user.id })
+      body: JSON.stringify({ userId: user.id }),
     });
 
     const result = await response.json();
@@ -339,7 +151,7 @@ if (user) {
       deel_1: new Set(),
       deel_2: new Set(),
       deel_3: new Set(),
-      onboarding: new Set()
+      onboarding: new Set(),
     };
 
     rows.forEach((row) => {
@@ -397,11 +209,16 @@ if (user) {
 
   // --- Begroeting ---
   const hour = new Date().getHours();
-  const greeting = hour < 12 ? "Goedemorgen" : hour < 18 ? "Goedemiddag" : "Goedenavond";
+  const greeting =
+    hour < 12 ? "Goedemorgen" : hour < 18 ? "Goedemiddag" : "Goedenavond";
+
+  const userName = user?.user_metadata?.name || "";
+  const capitalizedUsername =
+    userName.charAt(0).toUpperCase() + userName.slice(1);
 
   if (user) {
     document.getElementById("welcome").innerText =
-      `${greeting}, ${user.user_metadata.name}! Ga verder waar je gebleven was.`;
+      `${greeting}, ${capitalizedUsername}! Ga verder waar je gebleven was.`;
   } else {
     document.getElementById("welcome").innerText = `${greeting}!`;
   }
@@ -411,22 +228,34 @@ if (user) {
     onboarding: {
       title: "Onboarding",
       href: "/onboarding/step-1",
-      description: "Welkom bij de onboarding! In deze cursus maken we je wegwijs in het platform en leggen we uit wat je kunt verwachten in de verschillende delen van de cursus.",
+      description:
+        "Welkom bij de onboarding! In deze cursus maken we je wegwijs in het platform en leggen we uit wat je kunt verwachten in de verschillende delen van de cursus.",
+      image: "../../public/images/mockupmensenkenners.png",
+      color: "var(--color-green)",
     },
     deel_1: {
-      title: "Deel 1",
+      title: "Bewustswording van jouw rol",
       href: "/deel-1/1",
-      description: "In dit deel ga je veel leren over verschillende soorten beperkingen en over wat jouw rol is als medewerker.",
+      description:
+        "In dit deel ga je veel leren over verschillende soorten beperkingen en over wat jouw rol is als medewerker.",
+      image: "../../public/images/Mensenkennerskaderdoof.png",
+      color: "var(--color-pink)",
     },
     deel_2: {
-      title: "Deel 2",
+      title: "Leren door te ervaren",
       href: "/deel-2/1",
-      description: "Beschrijving van deel 2.",
+      description:
+        "In dit deel ga je meer leren over verschillende soorten beperkingen door in de belevingswereld te stappen.",
+      image: "../../public/images/Mensenkennerskaderroller.png",
+      color: "var(--color-yellow)",
     },
     deel_3: {
-      title: "Deel 3",
+      title: "Vertaling naar jouw werk",
       href: "/deel-3/1",
-      description: "Beschrijving van deel 3.",
+      description:
+        "In dit deel ga je leren hoe je jouw werplek concreet inclusief kunt maken!",
+      image: "../../public/images/Mensenkennerskaderspraak.png",
+      color: "var(--color-red)",
     },
   };
 
@@ -439,31 +268,59 @@ if (user) {
       const data = courseData[courseId];
       if (!data) return;
 
+      // Als dezelfde cursus nogmaals wordt geklikt, sluit het panel
+      if (
+        detail.classList.contains("active") &&
+        detail.dataset.openCourse === courseId
+      ) {
+        detail.classList.remove("active");
+        detail.dataset.openCourse = "";
+        return;
+      }
+
+      detail.dataset.openCourse = courseId;
+
       document.getElementById("detail-title").textContent = data.title;
+
       document.getElementById("detail-description").textContent = data.description;
+
       document.getElementById("detail-cta").href = data.href;
 
-      const progressText = item.querySelector("[data-progress-text]")?.textContent || "0%";
-      document.getElementById("detail-progress").textContent = progressText + " compleet";
+      document.getElementById("detail-cta").style.setProperty("background-color", data.color);
 
+      document.getElementById("detail-progress").style.setProperty("color", data.color);
+
+      const placeholder = document.querySelector(".detail-image-placeholder");
+
+      placeholder.style.backgroundImage = `url('${data.image}')`;
+
+      placeholder.style.backgroundSize = "cover";
+
+      placeholder.style.backgroundPosition = "center";
+
+      const progressText = item.querySelector("[data-progress-text]")?.textContent || "0%";
+
+      document.getElementById("detail-progress").textContent = progressText + " compleet";
       detail.classList.add("active");
     });
   });
 </script>
 
+
 <style>
   .dashboard {
     margin: 0 auto;
     padding: 2rem;
-    display: grid;
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
     gap: 2rem;
     align-items: start;
   }
 
-  @media (min-width: 900px) {
+  @media (min-width: 768px) {
     .dashboard {
-      grid-template-columns: 1fr 320px;
+      flex-direction: row;
+      align-items: start;
     }
   }
 
@@ -472,6 +329,8 @@ if (user) {
     flex-direction: column;
     gap: 2rem;
     min-width: 0;
+    flex: 1;
+    width: 100%;
   }
 
   .dashboard-title {
@@ -500,7 +359,6 @@ if (user) {
         border: 2px solid var(--color-green);
         background-color: transparent;
         color: var(--color-green);
-        /* border-radius: 4px; */
         border-radius: 9999px;
         cursor: pointer;
         font-size: 0.9rem;
@@ -511,7 +369,7 @@ if (user) {
           background-color: var(--color-green);
           color: var(--color-background);
         }
-        
+
         &.active {
           background-color: var(--color-green);
           color: var(--color-background);
@@ -524,7 +382,8 @@ if (user) {
     border: 1.6px solid var(--color-green);
   }
 
-  h1, h2 {
+  h1,
+  h2 {
     font-size: var(--size-2xl);
     color: var(--color-text);
   }
@@ -557,11 +416,12 @@ if (user) {
     display: flex;
   }
 
-  @media (min-width: 600px) {
+  @media (min-width: 768px) {
     .carousel {
       grid-template-columns: repeat(2, 1fr);
     }
   }
+
   @media (min-width: 1024px) {
     .carousel {
       grid-template-columns: repeat(3, 1fr);
@@ -570,34 +430,67 @@ if (user) {
 
   /* aside / detail panel */
   .course-detail {
-    display: none;
+    display: flex;
     flex-direction: column;
     gap: 1rem;
     background: var(--color-background);
     border: 2px solid rgba(0, 0, 0, 0.1);
     border-radius: 12px;
-    padding: 1.5rem;
-    position: sticky;
-    top: 5rem;
+    width: 100%;
+    opacity: 0;
+    overflow: hidden;
+    height: 0;
+    padding: 0;
+    transition:
+      height 0.4s ease,
+      opacity 0.4s ease,
+      padding 0.4s ease;
+  }
 
-    height:82vh;
+  @media (min-width: 768px) {
+    .course-detail {
+      width: 0;
+      min-width: 0;
+      height: 82vh;
+      position: sticky;
+      top: 5rem;
+      transform: translateX(100%);
+      transition:
+        width 0.4s ease,
+        opacity 0.4s ease,
+        transform 0.4s ease,
+        padding 0.4s ease;
+    }
   }
 
   .course-detail.active {
-    display: flex;
+    opacity: 1;
+    height: auto;
+    padding: 1.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .course-detail.active {
+      width: 320px;
+      min-width: 320px;
+      height: 82vh;
+      transform: translateX(0);
+      padding: 1.5rem;
+    }
   }
 
   .detail-image {
     width: 100%;
-    aspect-ratio: 16 / 9;
     border-radius: 8px;
+    height: 200px;
     overflow: hidden;
   }
 
   .detail-image-placeholder {
     width: 100%;
-    height: 100%;
-    background: #ddd;
+    height: 200px;
+    background-size: cover;
+    background-position: center;
   }
 
   .detail-content {
@@ -614,7 +507,6 @@ if (user) {
   }
 
   .detail-progress {
-    color: var(--color-green);
     font-size: 0.9rem;
     margin: 0;
     font-family: var(--font-bold);
@@ -635,7 +527,6 @@ if (user) {
     padding: 0.75rem;
     background: var(--color-green);
     color: var(--color-text);
-    /* border-radius: 6px; */
     border-radius: 9999px;
     text-decoration: none;
     font-family: var(--font-bold);
@@ -645,6 +536,24 @@ if (user) {
     &:hover {
       background-color: color-mix(in srgb, var(--color-green) 85%, black);
       scale: 1.02;
+    }
+  }
+  
+  @media (min-width: 768px) {
+    .dashboard:has(.course-detail.active) .carousel {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .dashboard:has(.course-detail.active) .carousel {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1440px) {
+    .dashboard:has(.course-detail.active) .carousel {
+      grid-template-columns: repeat(3, 1fr);
     }
   }
 </style>
