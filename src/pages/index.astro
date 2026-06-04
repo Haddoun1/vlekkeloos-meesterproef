@@ -328,7 +328,7 @@ if (user) {
     deel_1: 35,
     deel_2: 35,
     deel_3: 35,
-    onboarding: 9
+    onboarding: 9,
   };
 
   async function loadProgress() {
@@ -410,7 +410,7 @@ if (user) {
 
   const userName = user?.user_metadata?.name || "";
   const capitalizedUsername =
-  userName.charAt(0).toUpperCase() + userName.slice(1);
+    userName.charAt(0).toUpperCase() + userName.slice(1);
 
   if (user) {
     document.getElementById("welcome").innerText =
@@ -969,7 +969,7 @@ if (user) {
       scale: 1.02;
     }
   }
-
+  
   @media (min-width: 768px) {
     .dashboard:has(.course-detail.active) .carousel {
       grid-template-columns: 1fr;
