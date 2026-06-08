@@ -1,0 +1,156 @@
+---
+const currentYear = new Date().getFullYear();
+
+const courses = [
+  { title: 'Onboarding', href: '/onboarding/step-1' },
+  { title: 'Bewustwording van jouw rol', href: '/deel-1/1' },
+  { title: 'Leren door te ervaren', href: '/deel-2/1' },
+  { title: 'Vertaling naar jouw werk', href: '/deel-3/1' },
+];
+---
+
+<footer>
+  <div class="footer-inner">
+
+    <div class="footer-brand">
+      <img
+        src="/src/assets/logohorizontaal.png"
+        alt="Stichting Mensenkenners logo"
+      />
+      <p class="brand-tagline">Leer in jouw eigen tempo.</p>
+    </div>
+
+    <nav class="footer-nav" aria-label="Cursusnavigatie">
+      <p class="footer-nav-title">Cursussen</p>
+      <ul>
+        {courses.map((c) => (
+          <li><a href={c.href}>{c.title}</a></li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class="footer-links">
+      <p class="footer-nav-title">Account</p>
+      <ul>
+        <li><a href="/profiel">Mijn Profiel</a></li>
+        <li><a href="/voortgang">Voortgang</a></li>
+        <li><a href="/instellingen">Instellingen</a></li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="footer-bottom">
+    <span>© {currentYear} Mensenkenners</span>
+    <span class="divider" aria-hidden="true">·</span>
+    <a href="/privacy">Privacy</a>
+    <span class="divider" aria-hidden="true">·</span>
+    <a href="https://www.stichtingmensenkenners.nl/contact">Contact</a>
+    <span class="divider" aria-hidden="true">·</span>
+    <p>Made by Alex, Arvid, Choice, Kelly & Naoufal</p>
+  </div>
+</footer>
+
+<style>
+  footer {
+    margin-top: 4rem;
+    background-color: #B1F2D9;
+    color: #1a1a1a;
+    font-family: 'Segoe UI', sans-serif;
+  }
+
+  .footer-inner{
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 3rem 2rem 2rem;
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr;
+    gap: 2.5rem;
+  }
+
+  /* Brand */
+  .footer-brand {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .footer-brand img {
+    max-width: 250px;
+    height: auto;
+  }
+
+  .brand-tagline {
+    margin: 0;
+    font-size: 0.875rem;
+    color: #555;
+  }
+
+  /* Nav columns */
+  .footer-nav-title {
+    margin: 0 0 0.75rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: black;
+  }
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  a {
+    color: #333;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.15s ease;
+  }
+
+  a:hover {
+    color: #2AB789;
+  }
+
+  /* Bottom bar */
+  .footer-bottom {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 1.25rem 2rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.12);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.8rem;
+    color: #555;
+  }
+
+  .footer-bottom p {
+    margin: 0;
+  }
+
+  .footer-bottom a {
+    color: #555;
+    font-size: 0.8rem;
+  }
+
+  .footer-bottom a:hover {
+    color: #000;
+  }
+
+  .divider {
+    color: #999;
+  }
+
+  /* Responsive */
+  @media (max-width: 640px) {
+    .footer-inner {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+  }
+</style>
