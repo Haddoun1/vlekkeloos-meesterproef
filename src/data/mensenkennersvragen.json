@@ -245,7 +245,7 @@
       "Category": "Module 2"
     },
     {
-      "id": "m2_end",
+      "id": "m2_submit",
       "type": "content",
       "section": "module_2_perspectief_inlevingsvermogen",
       "title": "Module 2 afgerond",
@@ -536,7 +536,7 @@
       "Category": "Module 4"
     },
     {
-      "id": "m4_end",
+      "id": "m4_submit",
       "type": "content",
       "section": "module_4_praktijksituaties_toepassing",
       "title": "Afronding",
@@ -544,7 +544,7 @@
       "Category": "Module 4"
     },
     {
-      "id": "m1_end",
+      "id": "m1_submit",
       "type": "content",
       "section": "module_1_inclusief_contact",
       "title": "Module 1 afgerond",
@@ -552,7 +552,7 @@
       "Category": "Module 1"
     },
     {
-      "id": "m3_end",
+      "id": "m3_submit",
       "type": "content",
       "section": "module_3_toegankelijkheid_werkplek",
       "title": "Module 3 afgerond",
