@@ -18,7 +18,7 @@ const courses = [
     color: "var(--color-green)",
   },
   {
-    id: "deel_1",
+    id: "module_1",
     title: "Module 1: Inclusief contact",
     description:
       "In deze module oefen je met basisprincipes die in veel situaties toepasbaar zijn.",
@@ -28,7 +28,7 @@ const courses = [
     color: "var(--color-pink)",
   },
   {
-    id: "deel_2",
+    id: "module_2",
     title: "Module 2: Perspectief en inlevingsvermogen",
     description:
       "In deze module sta je stil bij situaties waarin bezoekers de wereld anders ervaren.",
@@ -38,7 +38,7 @@ const courses = [
     color: "var(--color-yellow)",
   },
   {
-    id: "deel_3",
+    id: "module_3",
     title: "Module 3: Toegankelijkheid van jouw werkplek",
     description:
       "In deze module ga je leren hoe je jouw werplek concreet inclusief kunt maken.",
@@ -48,7 +48,7 @@ const courses = [
     color: "var(--color-red)",
   },
   {
-    id: "deel_4",
+    id: "module_4",
     title: "Module 4: Praktijksituaties en toepassing",
     description:
       "In deze module oefen je met herkenbare situaties.",
@@ -139,9 +139,10 @@ const recentCourses = [
   } = await supabase.auth.getUser();
 
   const totals = {
-    deel_1: 36,
-    deel_2: 36,
-    deel_3: 36,
+    module_1: 5,
+    module_2: 9,
+    module_3: 6,
+    module_4: 8,
     onboarding: 9,
   };
 
@@ -165,17 +166,19 @@ const recentCourses = [
     console.log("ROWS:", rows);
 
     const completed = {
-      deel_1: new Set(),
-      deel_2: new Set(),
-      deel_3: new Set(),
+      module_1: new Set(),
+      module_2: new Set(),
+      module_3: new Set(),
+      module_4: new Set(),
       onboarding: new Set(),
     };
 
     const categoryToCourseId = {
       onboarding: "onboarding",
-      "deel-1": "deel_1",
-      "deel-2": "deel_2",
-      "deel-3": "deel_3",
+      "module-1": "module_1",
+      "module-2": "module_2",
+      "module-3": "module_3",
+      "module-4": "module_4",
     };
 
     rows.forEach((row) => {
@@ -261,7 +264,7 @@ const recentCourses = [
       image: "../../public/images/mockupmensenkenners.png",
       color: "var(--color-green)",
     },
-    deel_1: {
+    module_1: {
       title: "Module 1: Inclusief Contact",
       href: "/module-1/1",
       description:
@@ -269,7 +272,7 @@ const recentCourses = [
       image: "../../public/images/Mensenkennerskaderdoof.png",
       color: "var(--color-pink)",
     },
-    deel_2: {
+    module_2: {
       title: "Module 2: Perspectief en inlevingsvermogen",
       href: "/module-2/1",
       description:
@@ -277,7 +280,7 @@ const recentCourses = [
       image: "../../public/images/Mensenkennerskaderroller.png",
       color: "var(--color-yellow)",
     },
-    deel_3: {
+    module_3: {
       title: "Toegankelijkheid van jouw werkplek",
       href: "/module-3/1",
       description:
@@ -285,7 +288,7 @@ const recentCourses = [
       image: "../../public/images/Mensenkennerskaderspraak.png",
       color: "var(--color-red)",
     },
-      deel_4: {
+      module_4: {
       title: "Module 4: Praktijksituaties en toepassing",
       href: "/module-4/1",
       description:

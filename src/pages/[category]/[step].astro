@@ -69,10 +69,12 @@ const ratings = Array.from(
 );
 
 let nextSectionUrl = null;
+
 if (item.id?.endsWith("_submit")) {
-  if (item.id === "intro_submit") nextSectionUrl = "/Module-1/1";
-  if (item.id === "d1_submit") nextSectionUrl = "/Module-2/1";
-  if (item.id === "d2_submit") nextSectionUrl = "/Module-3/1";
+  if (item.id === "intro_submit") nextSectionUrl = "/module-1/1";
+  if (item.id === "m1_submit") nextSectionUrl = "/module-2/1";
+  if (item.id === "m2_submit") nextSectionUrl = "/module-3/1";
+  if (item.id === "m3_submit") nextSectionUrl = "/module-4/1";
 }
 
 const progressPct = Math.round((currentStep / totalSteps) * 100);
