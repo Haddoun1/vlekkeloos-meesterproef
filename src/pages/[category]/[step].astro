@@ -977,7 +977,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
 
   .rating-row {
     display: flex;
-    gap: 0.4rem;
+    justify-content: space-between;
     flex-wrap: wrap;
   }
 
@@ -1065,7 +1065,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
   .rating-option:has(.option-input:checked) .rating-pip {
     background: var(--color-accent);
     border-color: rgba(0, 0, 0, 0.3);
-    transform: translateY(-2px);
+    padding: 0.5rem 0.75rem;
     box-shadow: 0 4px 10px
       color-mix(in srgb, var(--color-accent) 40%, transparent);
   }
