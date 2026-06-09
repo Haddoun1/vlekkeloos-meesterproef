@@ -39,6 +39,7 @@
     >
     <hr />
     <a href="/profiel" class="profile-link">Mijn Profiel</a>
+    <button class="logout"></button>
   </nav>
 </header>
 
@@ -114,6 +115,36 @@
       mask-size: contain;
     }
   }
+
+.logout {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: black;
+  transition: color 0.25s ease;
+
+  &::after {
+    content: "";
+    display: block;
+    width: 40px;
+    height: 40px;
+
+    background-color: black;
+
+    -webkit-mask: url("/src/assets/logout.svg") center/contain no-repeat;
+    mask: url("/src/assets/logout.svg") center/contain no-repeat;
+
+    transition: background-color 0.3s ease;
+  }
+
+  &:hover {
+    border-bottom: 2px solid var(--color-green);
+
+    &::after {
+      background-color: var(--color-green);
+    }
+  }
+}
 
   /* Hamburger button Dicht */
   .hamburger {
@@ -192,6 +223,9 @@
 </style>
 
 <script>
+  import { createClient } from '@supabase/supabase-js'
+  const supabase = createClient('https://ydrfkbvvpvnfawagitpk.supabase.co', 'sb_publishable_mbrE91Iw1nji7h3s-PliTg_p0cOzjWg')
+
   const hamburger = document.querySelector(".hamburger");
   const nav = document.querySelector("nav");
 
@@ -200,4 +234,28 @@
     hamburger.classList.toggle("open");
     hamburger.setAttribute("aria-expanded", String(isOpen));
   });
+
+  async function signOut() {
+  const { error } = await supabase.auth.signOut()
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const logBtn = document.querySelector(".logout")
+
+  logBtn?.addEventListener("click", async () => {
+    const { error } = await supabase.auth.signOut()
+
+    if (error) {
+      console.error("Logout error:", error.message)
+      return
+    }
+
+    window.location.href = "/onboarding/login"
+  })
+})
+
 </script>
+
+<!-- Bronnen:
+https://supabase.com/docs/guides/auth/signout 
+-->

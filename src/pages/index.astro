@@ -4,7 +4,10 @@ export const prerender = false;
 import MainLayout from "../layouts/Layout.astro";
 import CourseCard from "../components/CourseCard.astro";
 
+import { createClient } from '@supabase/supabase-js'
 import { supabase } from "../lib/supabase";
+
+const supabase = createClient('https://your-project-id.supabase.co', 'sb_publishable_...')
 
 const courses = [
   {
