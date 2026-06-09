@@ -57,36 +57,17 @@
     const { data, error } = await supabase
       .from("course_progress")
 
-      .insert({
-
-        // Unieke gebruiker die de stap heeft bezocht.
-        // Als niemand is ingelogd gebruiken we "anonymous".
-        user_id: body.userId || "anonymous",
-
-        // E-mailadres van de gebruiker.
-        email: body.email || null,
-
-        // Naam van de gebruiker.
-        name: body.name || null,
-
-        // ID van de huidige stap.
-        step_id: body.stepId,
-
-        // Naam van de cursus of categorie.
-        category: body.category,
-
-        // Tijdstip waarop de gebruiker de stap begon.
-        started_at:
-          body.startedAt || new Date().toISOString(),
-
-        // Tijdstip waarop de gebruiker de stap verliet.
-        ended_at:
-          body.endedAt || new Date().toISOString(),
-
-        // Tijdsduur op deze stap in seconden.
-        duration_seconds:
-          body.durationSeconds || 0,
-      })
+.insert({
+  user_id: body.userId || "anonymous",
+  email: body.email || null,
+  name: body.name || null,
+  step_id: body.stepId,
+  category: body.category,
+  current_url: body.currentUrl || null,
+  started_at: body.startedAt || new Date().toISOString(),
+  ended_at: body.endedAt || new Date().toISOString(),
+  duration_seconds: body.durationSeconds || 0,
+})
 
       // Geeft het nieuw opgeslagen record direct terug.
       .select();
