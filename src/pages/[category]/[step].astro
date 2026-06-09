@@ -68,11 +68,34 @@ const ratings = Array.from(
   (_, i) => minRating + i,
 );
 
+const hasCorrectOptions =
+  item.type === "question" &&
+  ["single_choice", "multiple_choice"].includes(item.input_type) &&
+  options.some((option) => typeof option === "object" && option.is_correct === true);
+
+const isOpenReflectionQuestion =
+  item.type === "question" &&
+  ["long_text", "sentence_completion"].includes(item.input_type);
+
+const isCheckableQuestion =
+  item.type === "question" &&
+  (hasCorrectOptions || item.input_type === "matching" || isOpenReflectionQuestion);
+
+const maxSelections = item.max_selections || 2;
+const exampleAnswer =
+  item.example_answer ||
+  item.model_answer ||
+  item.sample_answer ||
+  item.explanation ||
+  "Er is nog geen voorbeeldantwoord ingesteld voor deze vraag. Voeg bijvoorbeeld `example_answer` toe aan deze vraag in de JSON.";
+
 let nextSectionUrl = null;
+
 if (item.id?.endsWith("_submit")) {
-  if (item.id === "intro_submit") nextSectionUrl = "/Module-1/1";
-  if (item.id === "d1_submit") nextSectionUrl = "/Module-2/1";
-  if (item.id === "d2_submit") nextSectionUrl = "/Module-3/1";
+  if (item.id === "intro_submit") nextSectionUrl = "/module-1/1";
+  if (item.id === "m1_submit") nextSectionUrl = "/module-2/1";
+  if (item.id === "m2_submit") nextSectionUrl = "/module-3/1";
+  if (item.id === "m3_submit") nextSectionUrl = "/module-4/1";
 }
 
 const progressPct = Math.round((currentStep / totalSteps) * 100);
@@ -108,20 +131,51 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
   </defs>
 </svg>
 
-<!-- ── Accessibility simulator ─────────────────────────────────── -->
-<div class="a11y-fab-wrap" id="a11yFabWrap">
+<!-- Vertraagde cursor stip (motorieke beperking simulatie) -->
+<div class="a11y-cursor-dot" id="a11yCursorDot" aria-hidden="true"></div>
 
-  <!-- Floating toggle button -->
-  <button class="a11y-fab" id="a11yFab" aria-expanded="false" aria-controls="a11yPanel" aria-label="Toegankelijkheid simuleren">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-      <circle cx="12" cy="5" r="1.5"/><path d="M7 9h10M10 9v10M14 9v10"/>
-    </svg>
-    <span class="a11y-fab-label">Toegankelijkheid</span>
-    <span class="a11y-active-dot" id="a11yActiveDot" hidden></span>
-  </button>
+<!-- Nav overlay (backdrop) -->
+<div class="nav-overlay" id="navOverlay"></div>
 
-  <!-- Slide-down panel -->
-  <div class="a11y-panel" id="a11yPanel" hidden>
+<!-- Slide-in nav panel -->
+<nav class="nav-panel" id="navPanel" aria-label="Vragennavigatie">
+  <div class="nav-panel-header">
+    <span class="nav-panel-title">{category}</span>
+    <button class="nav-close-btn" id="navCloseBtn" aria-label="Sluit menu"
+      >&#10005</button
+    >
+  </div>
+  <ul class="nav-list">
+    {
+      categoryItems.map((navItem, idx) => (
+        <li>
+          <a
+            href={`/${categorySlug}/${idx + 1}`}
+            class={idx + 1 === currentStep ? "active" : ""}
+          >
+            <span class="nav-step-num">{idx + 1}</span>
+            <span class="nav-step-title">
+              {navItem.title || navItem.question || `Stap ${idx + 1}`}
+            </span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>
+
+<!-- Setting overlay (backdrop) -->
+<div class="setting-overlay" id="settingOverlay"></div>
+
+<!-- Slide-in setting panel (from right) — contains accessibility simulator -->
+<nav class="setting-panel" id="settingPanel" aria-label="Instellingen">
+  <div class="setting-panel-header">
+    <span class="setting-panel-title">Instellingen</span>
+    <button class="setting-close-btn" id="settingCloseBtn" aria-label="Sluit instellingen"
+      >&#10005</button
+    >
+  </div>
+  <div class="setting-content">
 
     <div class="a11y-section">
       <div class="a11y-section-title">Kleuren &amp; contrast</div>
@@ -173,7 +227,6 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
           <span class="a11y-val" id="blurVal">0</span>
         </div>
       </div>
-
     </div>
 
     <div class="a11y-section">
@@ -189,7 +242,6 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
           <button class="a11y-chip" data-val="4">Extreem</button>
         </div>
       </div>
-
     </div>
 
     <div class="a11y-section">
@@ -217,39 +269,6 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     </div>
 
   </div>
-</div>
-<!-- Vertraagde cursor stip (motorieke beperking simulatie) -->
-<div class="a11y-cursor-dot" id="a11yCursorDot" aria-hidden="true"></div>
-<!-- ── /Accessibility simulator ────────────────────────────────── -->
-
-<!-- Nav overlay (backdrop) -->
-<div class="nav-overlay" id="navOverlay"></div>
-
-<!-- Slide-in nav panel -->
-<nav class="nav-panel" id="navPanel" aria-label="Vragennavigatie">
-  <div class="nav-panel-header">
-    <span class="nav-panel-title">{category}</span>
-    <button class="nav-close-btn" id="navCloseBtn" aria-label="Sluit menu"
-      >&#10005</button
-    >
-  </div>
-  <ul class="nav-list">
-    {
-      categoryItems.map((navItem, idx) => (
-        <li>
-          <a
-            href={`/${categorySlug}/${idx + 1}`}
-            class={idx + 1 === currentStep ? "active" : ""}
-          >
-            <span class="nav-step-num">{idx + 1}</span>
-            <span class="nav-step-title">
-              {navItem.title || navItem.question || `Stap ${idx + 1}`}
-            </span>
-          </a>
-        </li>
-      ))
-    }
-  </ul>
 </nav>
 
 <div class="page-shell" style={`--color-accent: ${accentColor}`}>
@@ -259,6 +278,8 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     class="content-col"
     data-step-id={String(currentStep)}
     data-category={categorySlug}
+    data-requires-check={isCheckableQuestion ? "true" : "false"}
+    data-input-type={item.input_type || ""}
   >
     <header class="page-header">
       <a href="/index.html" class="back-button"> Dashboard </a>
@@ -269,6 +290,14 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
         aria-label="Open vragennavigatie"
       >
         {currentStep}<span class="step-total">/{totalSteps}</span>
+      </button>
+
+      <button
+        class="setting-btn"
+        id="settingBtn"
+        aria-label="Open instellingen"
+      >
+        &#9881;
       </button>
     </header>
 
@@ -321,7 +350,13 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
                 return (
                   <li>
                     <label class="option-label">
-                      <input type="radio" name={item.id} value={text} class="option-input" />
+                      <input
+                        type="radio"
+                        name={item.id}
+                        value={text}
+                        class="option-input"
+                        data-correct={typeof option === "object" && option.is_correct === true ? "true" : "false"}
+                      />
                       <span class="option-key">{String.fromCharCode(65 + index)}</span>
                       <span class="option-text">{text}</span>
                     </label>
@@ -332,8 +367,8 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
           )}
 
           {item.input_type === "multiple_choice" && (
-            <div data-multiple-choice>
-              <p class="mc-hint">Selecteer maximaal 2 opties</p>
+            <div data-multiple-choice data-max-selections={maxSelections}>
+              <p class="mc-hint">Selecteer maximaal {maxSelections} opties</p>
               <ul class="options-list" role="group">
                 {options.map((option, index) => {
                   const text = typeof option === "string" ? option : option.text;
@@ -345,6 +380,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
                           name={item.id}
                           value={text}
                           class="option-input"
+                          data-correct={typeof option === "object" && option.is_correct === true ? "true" : "false"}
                         />
                         <span class="option-key">
                           {String.fromCharCode(65 + index)}
@@ -362,7 +398,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
                 id="mc-error"
                 hidden
               >
-                Je kunt maximaal 2 opties selecteren.
+                Je kunt maximaal {maxSelections} opties selecteren.
               </div>
             </div>
           )}
@@ -417,6 +453,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
                       class="matching-select"
                       name={`${item.id}-${index}`}
                       required={item.required}
+                      data-correct-answer={pair.answer}
                     >
                       <option value="">Kies een antwoord</option>
                       {(item.pairs || []).map((answerPair) => (
@@ -426,6 +463,23 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
                   </div>
                 ))}
               </div>
+            </div>
+          )}
+
+          {isCheckableQuestion && (
+            <div class="question-check-row">
+              <button type="button" class="btn btn--primary" id="check-answer-btn">
+                Check antwoord
+              </button>
+              <div
+                class="answer-feedback"
+                id="answer-feedback"
+                role="status"
+                aria-live="polite"
+                hidden
+                data-explanation={item.explanation || ""}
+                data-example-answer={exampleAnswer}
+              />
             </div>
           )}
         </div>
@@ -485,6 +539,9 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
 
   const main = document.querySelector("main.content-col");
   const navNext = document.getElementById("nav-next");
+  const checkAnswerBtn = document.getElementById("check-answer-btn");
+  const answerFeedback = document.getElementById("answer-feedback");
+  const requiresCheck = main?.dataset.requiresCheck === "true";
 
   const stepId = main?.dataset.stepId;
   const category = main?.dataset.category;
@@ -525,13 +582,266 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     const result = await response.json();
   }
 
+  function setNextEnabled(enabled) {
+    if (!navNext || !requiresCheck) return;
+
+    navNext.dataset.checked = enabled ? "true" : "false";
+    navNext.setAttribute("aria-disabled", enabled ? "false" : "true");
+    navNext.classList.toggle("nav-btn--disabled", !enabled);
+  }
+
+  setNextEnabled(false);
+
   if (navNext) {
     navNext.addEventListener("click", async (e) => {
       e.preventDefault();
+
+      if (requiresCheck && navNext.dataset.checked !== "true") {
+        answerFeedback.hidden = false;
+        answerFeedback.className = "answer-feedback answer-feedback--warning";
+        answerFeedback.textContent = "Check eerst je antwoord voordat je verdergaat.";
+        return;
+      }
+
       await saveProgress();
       window.location.href = navNext.href;
     });
   }
+
+  function escapeHtml(value) {
+    return String(value || "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+
+  function getOptionLabel(input) {
+    const label = input.closest(".option-label");
+    const key = label?.querySelector(".option-key")?.textContent?.trim();
+    const text = label?.querySelector(".option-text")?.textContent?.trim() || input.value;
+    return key ? `${key}. ${text}` : text;
+  }
+
+  function getCorrectOptionLabels() {
+    const correctInputs = document.querySelectorAll(
+      ".question-block input[data-correct='true']",
+    );
+    return [...correctInputs].map(getOptionLabel);
+  }
+
+  function markChoiceFeedback() {
+    const choiceInputs = document.querySelectorAll(
+      ".question-block input[data-correct]",
+    );
+
+    choiceInputs.forEach((input) => {
+      const label = input.closest(".option-label");
+      if (!label) return;
+
+      label.classList.remove("option-label--correct", "option-label--incorrect");
+
+      if (input.dataset.correct === "true") {
+        label.classList.add("option-label--correct");
+      }
+
+      if (input.checked && input.dataset.correct !== "true") {
+        label.classList.add("option-label--incorrect");
+      }
+    });
+  }
+
+  function getMatchingCorrections() {
+    const matchingSelects = document.querySelectorAll(".matching-select[data-correct-answer]");
+
+    return [...matchingSelects]
+      .filter((select) => select.value !== select.dataset.correctAnswer)
+      .map((select) => {
+        const prompt = select
+          .closest(".matching-row")
+          ?.querySelector(".matching-prompt span:last-child")
+          ?.textContent
+          ?.trim();
+
+        return {
+          prompt,
+          correctAnswer: select.dataset.correctAnswer,
+        };
+      });
+  }
+
+  function getOpenQuestionResult() {
+    const openInput = document.querySelector(
+      ".question-block textarea, .question-block input[type='text']",
+    );
+
+    if (!openInput) return null;
+
+    if (!openInput.value.trim()) {
+      return {
+        valid: false,
+        message: "Vul eerst je antwoord in.",
+      };
+    }
+
+    return {
+      valid: true,
+      correct: true,
+      isOpenQuestion: true,
+    };
+  }
+
+  function getQuestionResult() {
+    const inputType = main?.dataset.inputType;
+
+    if (["long_text", "sentence_completion"].includes(inputType)) {
+      return getOpenQuestionResult();
+    }
+
+    const selectedRadio = document.querySelector(".question-block input[type='radio']:checked");
+    const radioOptions = document.querySelectorAll(".question-block input[type='radio'][data-correct]");
+
+    if (radioOptions.length > 0) {
+      if (!selectedRadio) {
+        return {
+          valid: false,
+          message: "Kies eerst een antwoord.",
+        };
+      }
+
+      return {
+        valid: true,
+        correct: selectedRadio.dataset.correct === "true",
+        correctOptions: getCorrectOptionLabels(),
+      };
+    }
+
+    const checkboxOptions = document.querySelectorAll(".question-block input[type='checkbox'][data-correct]");
+    const checkedBoxes = [...checkboxOptions].filter((checkbox) => checkbox.checked);
+    const correctBoxes = [...checkboxOptions].filter((checkbox) => checkbox.dataset.correct === "true");
+
+    if (checkboxOptions.length > 0) {
+      if (checkedBoxes.length === 0) {
+        return {
+          valid: false,
+          message: "Kies eerst minimaal één antwoord.",
+        };
+      }
+
+      const allSelectedAreCorrect = checkedBoxes.every((checkbox) => checkbox.dataset.correct === "true");
+      const allCorrectSelected = correctBoxes.every((checkbox) => checkbox.checked);
+
+      return {
+        valid: true,
+        correct: allSelectedAreCorrect && allCorrectSelected,
+        correctOptions: getCorrectOptionLabels(),
+      };
+    }
+
+    const matchingSelects = document.querySelectorAll(".matching-select[data-correct-answer]");
+
+    if (matchingSelects.length > 0) {
+      const unanswered = [...matchingSelects].some((select) => !select.value);
+
+      if (unanswered) {
+        return {
+          valid: false,
+          message: "Koppel eerst alle antwoorden.",
+        };
+      }
+
+      const allCorrect = [...matchingSelects].every(
+        (select) => select.value === select.dataset.correctAnswer,
+      );
+
+      return {
+        valid: true,
+        correct: allCorrect,
+        matchingCorrections: getMatchingCorrections(),
+      };
+    }
+
+    return {
+      valid: true,
+      correct: true,
+    };
+  }
+
+  function lockQuestionInputs() {
+    const inputs = document.querySelectorAll(
+      ".question-block input, .question-block textarea, .question-block select",
+    );
+
+    inputs.forEach((input) => {
+      input.disabled = true;
+    });
+  }
+
+  checkAnswerBtn?.addEventListener("click", () => {
+    const result = getQuestionResult();
+
+    answerFeedback.hidden = false;
+
+    if (!result.valid) {
+      answerFeedback.className = "answer-feedback answer-feedback--warning";
+      answerFeedback.textContent = result.message;
+      return;
+    }
+
+    const explanation = answerFeedback.dataset.explanation;
+    const exampleAnswer = answerFeedback.dataset.exampleAnswer;
+
+    if (result.isOpenQuestion) {
+      answerFeedback.className = "answer-feedback answer-feedback--example";
+      answerFeedback.innerHTML = `
+        <p>${escapeHtml(exampleAnswer)}</p>
+      `;
+    } else if (result.correct) {
+      markChoiceFeedback();
+      answerFeedback.className = "answer-feedback answer-feedback--correct";
+      answerFeedback.textContent = explanation
+        ? `Goed! ${explanation}`
+        : "Goed! Dit antwoord klopt.";
+    } else {
+      markChoiceFeedback();
+      answerFeedback.className = "answer-feedback answer-feedback--incorrect";
+
+      const correctOptions = result.correctOptions || [];
+      const matchingCorrections = result.matchingCorrections || [];
+
+      let feedbackHtml = explanation
+        ? `<strong>Niet helemaal.</strong><p>${escapeHtml(explanation)}</p>`
+        : "<strong>Niet helemaal.</strong>";
+
+      if (correctOptions.length > 0) {
+        feedbackHtml += `
+          <p><strong>Het juiste antwoord${correctOptions.length > 1 ? "en waren" : " was"}:</strong></p>
+          <ul>${correctOptions.map((option) => `<li>${escapeHtml(option)}</li>`).join("")}</ul>
+        `;
+      }
+
+      if (matchingCorrections.length > 0) {
+        feedbackHtml += `
+          <p><strong>Juiste koppelingen:</strong></p>
+          <ul>
+            ${matchingCorrections
+              .map(
+                (item) => `<li>${escapeHtml(item.prompt)}: ${escapeHtml(item.correctAnswer)}</li>`,
+              )
+              .join("")}
+          </ul>
+        `;
+      }
+
+      answerFeedback.innerHTML = feedbackHtml;
+    }
+
+    lockQuestionInputs();
+    checkAnswerBtn.disabled = true;
+    checkAnswerBtn.textContent = "Gecheckt";
+    setNextEnabled(true);
+  });
 
   const mcBlock = document.querySelector("[data-multiple-choice]");
 
@@ -542,8 +852,9 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     checkboxes.forEach((checkbox) => {
       checkbox.addEventListener("change", (e) => {
         const checked = [...checkboxes].filter((cb) => cb.checked);
+        const maxSelections = Number(mcBlock.dataset.maxSelections || 2);
 
-        if (checked.length > 2) {
+        if (checked.length > maxSelections) {
           e.target.checked = false;
 
           if (errorEl) {
@@ -586,19 +897,36 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
   navCloseBtn?.addEventListener("click", closeNav);
   navOverlay?.addEventListener("click", closeNav);
 
+  // ── Setting nav ────────────────────────────────────────────────
+  const settingBtn = document.getElementById("settingBtn");
+  const settingPanel = document.getElementById("settingPanel");
+  const settingOverlay = document.getElementById("settingOverlay");
+  const settingCloseBtn = document.getElementById("settingCloseBtn");
+
+  function openSetting() {
+    settingPanel?.classList.add("open");
+    settingOverlay?.classList.add("open");
+    settingBtn?.classList.add("open");
+    settingBtn?.setAttribute("aria-expanded", "true");
+  }
+
+  function closeSetting() {
+    settingPanel?.classList.remove("open");
+    settingOverlay?.classList.remove("open");
+    settingBtn?.classList.remove("open");
+    settingBtn?.setAttribute("aria-expanded", "false");
+  }
+
+  settingBtn?.addEventListener("click", () =>
+    settingPanel?.classList.contains("open") ? closeSetting() : openSetting(),
+  );
+  settingCloseBtn?.addEventListener("click", closeSetting);
+  settingOverlay?.addEventListener("click", closeSetting);
+
   // ── Accessibility simulator ────────────────────────────────────
 
-  const a11yFab     = document.getElementById("a11yFab");
-  const a11yPanel   = document.getElementById("a11yPanel");
-  const a11yDot     = document.getElementById("a11yActiveDot");
-  const a11yReset   = document.getElementById("a11yReset");
-
-  // Toggle panel open/close
-  a11yFab?.addEventListener("click", () => {
-    const isOpen = !a11yPanel.hidden;
-    a11yPanel.hidden = isOpen;
-    a11yFab.setAttribute("aria-expanded", String(!isOpen));
-  });
+  const a11yDot   = document.getElementById("a11yActiveDot");
+  const a11yReset = document.getElementById("a11yReset");
 
   // ── State ──────────────────────────────────────────────────────
   const sim = {
@@ -614,11 +942,9 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     "cb-achromatopsia": "url(#cb-achromatopsia)",
   };
 
-  // Apply all simulation values to <html>
   function applyAll() {
     const root = document.documentElement;
 
-    // CSS filter on <html> (contrast + brightness + blur + colour-blindness)
     let f = "";
     if (sim.contrast   !== 100) f += `contrast(${sim.contrast}%) `;
     if (sim.brightness !== 100) f += `brightness(${sim.brightness}%) `;
@@ -626,7 +952,6 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     if (sim.colorblind !== "none") f += colorblindMap[sim.colorblind];
     root.style.filter = f.trim();
 
-    // Active indicator dot
     const active =
       sim.contrast !== 100 || sim.brightness !== 100 || sim.blur > 0 ||
       sim.colorblind !== "none" || sim.dyslexia > 0 || sim.tremor > 0 || sim.cursorDelay > 0;
@@ -643,7 +968,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     }
   }
 
-  // ── Dyslexia (from leraar's code) ─────────────────────────────
+  // ── Dyslexia ───────────────────────────────────────────────────
   let textNodes = [];
   let dyslexiaInterval = null;
 
@@ -652,7 +977,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
     while (walker.nextNode()) {
       const node = walker.currentNode;
-      if (node.nodeValue.trim() && !node.parentElement?.closest(".a11y-fab-wrap")) {
+      if (node.nodeValue.trim() && !node.parentElement?.closest(".setting-panel")) {
         const words = [];
         let re = /\w+/g, m;
         while ((m = re.exec(node.nodeValue)) !== null)
@@ -706,7 +1031,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     }, 80);
   }
 
-  // ── Cursor delay (motorieke beperking) ────────────────────────
+  // ── Cursor delay ───────────────────────────────────────────────
   const cursorDot = document.getElementById("a11yCursorDot");
 
   function followCursor(e) {
@@ -728,7 +1053,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     applyAll();
   }
 
-
+  // ── Slider helper ──────────────────────────────────────────────
   function makeSlider(id, valId, key, suffix, decimals) {
     const el  = document.getElementById(id);
     const out = document.getElementById(valId);
@@ -742,10 +1067,10 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     });
   }
 
-  makeSlider("contrastRange",    "contrastVal",    "contrast",    "%",  0);
-  makeSlider("brightnessRange",  "brightnessVal",  "brightness",  "%",  0);
-  makeSlider("blurRange",        "blurVal",        "blur",        "",   1);
-  makeSlider("tremorRange",      "tremorVal",      "tremor",      "",   1);
+  makeSlider("contrastRange",   "contrastVal",   "contrast",   "%", 0);
+  makeSlider("brightnessRange", "brightnessVal", "brightness", "%", 0);
+  makeSlider("blurRange",       "blurVal",       "blur",       "",  1);
+  makeSlider("tremorRange",     "tremorVal",     "tremor",     "",  1);
 
   // ── Radio group helper ─────────────────────────────────────────
   function makeRadioGroup(id, key, onChange) {
@@ -760,9 +1085,9 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     });
   }
 
-  makeRadioGroup("schemeGroup",     "scheme",     setColorScheme);
+  makeRadioGroup("schemeGroup",     "scheme",      setColorScheme);
   makeRadioGroup("colorblindGroup", "colorblind");
-  makeRadioGroup("dyslexiaGroup", "dyslexia", (val) => {
+  makeRadioGroup("dyslexiaGroup",   "dyslexia",    (val) => {
     findTextNodes();
     const [chance, tempo] = dyslexiaConfig[val];
     messUpWords(chance, tempo);
@@ -779,10 +1104,10 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     });
 
     [
-      ["contrastRange",    "contrastVal",    100,  "%"],
-      ["brightnessRange",  "brightnessVal",  100,  "%"],
-      ["blurRange",        "blurVal",        0,    ""],
-      ["tremorRange",      "tremorVal",      0,    ""],
+      ["contrastRange",   "contrastVal",   100, "%"],
+      ["brightnessRange", "brightnessVal", 100, "%"],
+      ["blurRange",       "blurVal",       0,   ""],
+      ["tremorRange",     "tremorVal",     0,   ""],
     ].forEach(([rid, vid, val, suf]) => {
       const el = document.getElementById(rid);
       const out = document.getElementById(vid);
@@ -813,241 +1138,6 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     background: var(--gradient-bg-cyan);
     min-height: 100vh;
   }
-
-  /* ════════════════════════════════════════════
-     ACCESSIBILITY SIMULATOR
-  ════════════════════════════════════════════ */
-
-  .a11y-fab-wrap {
-    position: fixed;
-    top: 1.25rem;
-    right: 1.25rem;
-    z-index: 400;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 0.5rem;
-  }
-
-  /* Floating action button */
-  .a11y-fab {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.45rem 1rem 0.45rem 0.7rem;
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(0, 0, 0, 0.12);
-    border-radius: 99px;
-    font-family: var(--font-semi-bold);
-    font-size: var(--size-sm);
-    color: var(--color-text);
-    cursor: pointer;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
-    transition: box-shadow 0.18s, transform 0.12s;
-    position: relative;
-  }
-
-  .a11y-fab:hover {
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-    transform: translateY(-1px);
-  }
-
-  .a11y-fab-label {
-    font-family: var(--font-semi-bold);
-    font-size: var(--size-sm);
-  }
-
-  .a11y-active-dot {
-    position: absolute;
-    top: 4px;
-    right: 4px;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: #ff6631;
-    border: 2px solid white;
-  }
-
-  /* Slide-down panel */
-  .a11y-panel {
-    width: 340px;
-    max-height: calc(100vh - 6rem);
-    overflow-y: auto;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(14px);
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    border-radius: 16px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
-  }
-
-  .a11y-panel[hidden] {
-    display: none;
-  }
-
-  /* Sections */
-  .a11y-section {
-    padding: 14px 16px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.07);
-  }
-
-  .a11y-section:last-of-type {
-    border-bottom: none;
-  }
-
-  .a11y-section-title {
-    font-family: var(--font-semi-bold);
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: rgba(0, 0, 0, 0.4);
-    margin-bottom: 10px;
-  }
-
-  /* Control rows */
-  .a11y-row {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    margin-bottom: 8px;
-  }
-
-  .a11y-row:last-child {
-    margin-bottom: 0;
-  }
-
-  .a11y-label {
-    font-family: var(--font-semi-bold);
-    font-size: var(--size-sm);
-    color: var(--color-text);
-    min-width: 120px;
-    padding-top: 2px;
-    flex-shrink: 0;
-  }
-
-  .a11y-label small {
-    display: block;
-    font-family: var(--font-light);
-    font-size: 11px;
-    color: rgba(0, 0, 0, 0.45);
-    margin-top: 1px;
-  }
-
-  /* Slider */
-  .a11y-slider-wrap {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex: 1;
-  }
-
-  .a11y-slider-wrap input[type="range"] {
-    flex: 1;
-    height: 4px;
-    accent-color: var(--color-text);
-    cursor: pointer;
-  }
-
-  .a11y-val {
-    font-family: var(--font-semi-bold);
-    font-size: 11px;
-    color: rgba(0, 0, 0, 0.45);
-    min-width: 34px;
-    text-align: right;
-  }
-
-  /* Chip radio buttons */
-  .a11y-radios {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px;
-    flex: 1;
-  }
-
-  .a11y-chip {
-    font-family: var(--font-semi-bold);
-    font-size: 11px;
-    padding: 3px 9px;
-    border: 1px solid rgba(0, 0, 0, 0.15);
-    border-radius: 99px;
-    background: transparent;
-    color: var(--color-text);
-    cursor: pointer;
-    transition: background 0.15s, border-color 0.15s;
-  }
-
-  .a11y-chip:hover {
-    background: rgba(0, 0, 0, 0.06);
-  }
-
-  .a11y-chip.active {
-    background: var(--color-text);
-    color: white;
-    border-color: var(--color-text);
-  }
-
-  /* Footer */
-  .a11y-footer {
-    padding: 10px 16px 12px;
-    border-top: 1px solid rgba(0, 0, 0, 0.07);
-  }
-
-  .a11y-reset {
-    font-family: var(--font-semi-bold);
-    font-size: var(--size-sm);
-    color: rgba(0, 0, 0, 0.45);
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0;
-    transition: color 0.15s;
-  }
-
-  .a11y-reset:hover {
-    color: var(--color-text);
-  }
-
-  /* Cursor vertraging */
-  body.cursor-delayed {
-    cursor: none;
-  }
-
-  .a11y-cursor-dot {
-    display: none;
-    width: 14px;
-    height: 14px;
-    background: red;
-    border-radius: 50%;
-    position: fixed;
-    z-index: 9999;
-    pointer-events: none;
-    translate:
-      calc(var(--client-x, -100) * 1px)
-      calc(var(--client-y, -100) * 1px);
-    margin-left: -7px;
-    margin-top: -7px;
-  }
-
-  body.cursor-delayed .a11y-cursor-dot {
-    display: block;
-  }
-
-  /* Mobile: panel goes full-width */
-  @media (max-width: 400px) {
-    .a11y-fab-wrap {
-      right: 0.75rem;
-      left: 0.75rem;
-      align-items: stretch;
-    }
-
-    .a11y-panel {
-      width: 100%;
-    }
-  }
-
-  /* ════════════════════════════════════════════
-     ORIGINAL STYLES (unchanged)
-  ════════════════════════════════════════════ */
 
   /* ── Nav overlay ─────────────────────────────────────────────── */
 
@@ -1176,6 +1266,233 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     color: var(--color-text);
   }
 
+  /* ── Setting overlay ─────────────────────────────────────────── */
+
+  .setting-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.25);
+    z-index: 250;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+  }
+
+  .setting-overlay.open {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  /* ── Setting panel (slides in from right) ────────────────────── */
+
+  .setting-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: 300px;
+    background: var(--color-accent);
+    z-index: 300;
+    display: flex;
+    flex-direction: column;
+    transform: translateX(100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+  }
+
+  .setting-panel.open {
+    transform: translateX(0);
+    box-shadow: -4px 0 32px rgba(0, 0, 0, 0.15);
+  }
+
+  .setting-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 1.25rem 1rem;
+    border-bottom: 1.5px solid rgba(0, 0, 0, 0.12);
+    flex-shrink: 0;
+    background: rgba(255, 255, 255);
+  }
+
+  .setting-panel-title {
+    font-family: var(--font-semi-bold);
+    font-size: var(--size-sm);
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    opacity: 0.6;
+  }
+
+  .setting-close-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.1);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    color: var(--color-text);
+    transition: background 0.15s;
+    flex-shrink: 0;
+  }
+
+  .setting-close-btn:hover {
+    background: rgba(0, 0, 0, 0.22);
+  }
+
+  .setting-content {
+    flex: 1;
+    background: rgba(255, 255, 255);
+    overflow-y: auto;
+  }
+
+  /* ── Accessibility simulator (inside setting-content) ────────── */
+
+  .a11y-section {
+    padding: 14px 16px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+  }
+
+  .a11y-section:last-of-type {
+    border-bottom: none;
+  }
+
+  .a11y-section-title {
+    font-family: var(--font-semi-bold);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgba(0, 0, 0, 0.4);
+    margin-bottom: 10px;
+  }
+
+  .a11y-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+
+  .a11y-row:last-child {
+    margin-bottom: 0;
+  }
+
+  .a11y-label {
+    font-family: var(--font-semi-bold);
+    font-size: var(--size-sm);
+    color: var(--color-text);
+    min-width: 100px;
+    padding-top: 2px;
+    flex-shrink: 0;
+  }
+
+  .a11y-label small {
+    display: block;
+    font-family: var(--font-light);
+    font-size: 11px;
+    color: rgba(0, 0, 0, 0.45);
+    margin-top: 1px;
+  }
+
+  .a11y-slider-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+  }
+
+  .a11y-slider-wrap input[type="range"] {
+    flex: 1;
+    height: 4px;
+    accent-color: var(--color-text);
+    cursor: pointer;
+  }
+
+  .a11y-val {
+    font-family: var(--font-semi-bold);
+    font-size: 11px;
+    color: rgba(0, 0, 0, 0.45);
+    min-width: 30px;
+    text-align: right;
+  }
+
+  .a11y-radios {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    flex: 1;
+  }
+
+  .a11y-chip {
+    font-family: var(--font-semi-bold);
+    font-size: 11px;
+    padding: 3px 9px;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 99px;
+    background: transparent;
+    color: var(--color-text);
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+  }
+
+  .a11y-chip:hover {
+    background: rgba(0, 0, 0, 0.06);
+  }
+
+  .a11y-chip.active {
+    background: var(--color-text);
+    color: white;
+    border-color: var(--color-text);
+  }
+
+  .a11y-footer {
+    padding: 10px 16px 14px;
+    border-top: 1px solid rgba(0, 0, 0, 0.07);
+  }
+
+  .a11y-reset {
+    font-family: var(--font-semi-bold);
+    font-size: var(--size-sm);
+    color: rgba(0, 0, 0, 0.45);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    transition: color 0.15s;
+  }
+
+  .a11y-reset:hover {
+    color: var(--color-text);
+  }
+
+  /* Cursor vertraging */
+  body.cursor-delayed {
+    cursor: none;
+  }
+
+  .a11y-cursor-dot {
+    display: none;
+    width: 14px;
+    height: 14px;
+    background: red;
+    border-radius: 50%;
+    position: fixed;
+    z-index: 9999;
+    pointer-events: none;
+    translate:
+      calc(var(--client-x, -100) * 1px)
+      calc(var(--client-y, -100) * 1px);
+    margin-left: -7px;
+    margin-top: -7px;
+  }
+
+  body.cursor-delayed .a11y-cursor-dot {
+    display: block;
+  }
+
   /* ── Hamburger button ────────────────────────────────────────── */
 
   .hamburger-btn {
@@ -1207,28 +1524,36 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     transform: scale(1.07);
   }
 
-  .hamburger-btn .bar {
-    width: 18px;
-    height: 2px;
-    background: var(--color-text);
-    border-radius: 2px;
+  /* ── Setting button ──────────────────────────────────────────── */
+
+  .setting-btn {
+    font-family: var(--font-semi-bold);
+    font-size: var(--size-lg);
+    letter-spacing: 0.06em;
+    background: color-mix(in srgb, var(--color-accent) 35%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-accent) 60%, transparent);
+    border-radius: 999px;
+    padding: 0.15rem 0.45rem;
+    color: var(--color-text);
+    margin-left: auto;
+    line-height: 1.4;
+    text-decoration: none;
     transition:
-      transform 0.22s ease,
-      opacity 0.18s ease;
-    transform-origin: center;
+      background 0.18s,
+      color 0.18s,
+      transform 0.12s,
+      box-shadow 0.18s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2rem;
+    cursor: pointer;
   }
 
-  .hamburger-btn.open .bar:nth-child(1) {
-    transform: translateY(7px) rotate(45deg);
-  }
-
-  .hamburger-btn.open .bar:nth-child(2) {
-    opacity: 0;
-    transform: scaleX(0);
-  }
-
-  .hamburger-btn.open .bar:nth-child(3) {
-    transform: translateY(-7px) rotate(-45deg);
+  .setting-btn:hover {
+    background: var(--color-accent);
+    box-shadow: 0 4px 14px
+      color-mix(in srgb, var(--color-accent) 50%, transparent);
+    transform: scale(1.07);
   }
 
   /* ── Page shell ──────────────────────────────────────────────── */
@@ -1565,7 +1890,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
 
   .rating-row {
     display: flex;
-    gap: 0.4rem;
+    justify-content: space-between;
     flex-wrap: wrap;
   }
 
@@ -1653,9 +1978,80 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
   .rating-option:has(.option-input:checked) .rating-pip {
     background: var(--color-accent);
     border-color: rgba(0, 0, 0, 0.3);
-    transform: translateY(-2px);
+    padding: 0.5rem 0.75rem;
     box-shadow: 0 4px 10px
       color-mix(in srgb, var(--color-accent) 40%, transparent);
+  }
+
+  .question-check-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    padding-top: 0.5rem;
+  }
+
+  .answer-feedback {
+    border-radius: 12px;
+    padding: 0.85rem 1rem;
+    font-family: var(--font-semi-bold);
+    font-size: var(--size-base);
+    line-height: 1.45;
+    border: 1.5px solid rgba(0,0,0,0.12);
+  }
+
+  .answer-feedback[hidden] {
+    display: none;
+  }
+
+  .answer-feedback--correct {
+    background: #ecfff7;
+    border-color: #2fbf7f;
+    color: #126341;
+  }
+
+  .answer-feedback--incorrect {
+    background: #fff0ed;
+    border-color: #ff6631;
+    color: #9f2b00;
+    padding-left: 2vw;
+  }
+
+  .answer-feedback--warning {
+    background: #fff8df;
+    border-color: #e0aa00;
+    color: #725500;
+  }
+
+  .answer-feedback--example {
+    background: #f5f7ff;
+    border-color: #8796ff;
+    color: #20285c;
+  }
+
+  .answer-feedback p {
+    margin: 0.35rem 0 0;
+  }
+
+  .answer-feedback ul {
+    margin: 0.35rem 0 0;
+    padding-left: 1.3rem;
+  }
+
+  .option-label--correct {
+    border-color: #2fbf7f;
+    background: #ecfff7;
+  }
+
+  .option-label--incorrect {
+    border-color: #ff6631;
+    background: #fff0ed;
+  }
+
+  .btn:disabled {
+    opacity: 0.55;
+    cursor: default;
+    transform: none;
+    box-shadow: none;
   }
 
   .action-row {
