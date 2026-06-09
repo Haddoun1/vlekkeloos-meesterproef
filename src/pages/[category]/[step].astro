@@ -68,6 +68,27 @@ const ratings = Array.from(
   (_, i) => minRating + i,
 );
 
+const hasCorrectOptions =
+  item.type === "question" &&
+  ["single_choice", "multiple_choice"].includes(item.input_type) &&
+  options.some((option) => typeof option === "object" && option.is_correct === true);
+
+const isOpenReflectionQuestion =
+  item.type === "question" &&
+  ["long_text", "sentence_completion"].includes(item.input_type);
+
+const isCheckableQuestion =
+  item.type === "question" &&
+  (hasCorrectOptions || item.input_type === "matching" || isOpenReflectionQuestion);
+
+const maxSelections = item.max_selections || 2;
+const exampleAnswer =
+  item.example_answer ||
+  item.model_answer ||
+  item.sample_answer ||
+  item.explanation ||
+  "Er is nog geen voorbeeldantwoord ingesteld voor deze vraag. Voeg bijvoorbeeld `example_answer` toe aan deze vraag in de JSON.";
+
 let nextSectionUrl = null;
 
 if (item.id?.endsWith("_submit")) {
@@ -129,6 +150,8 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     class="content-col"
     data-step-id={String(currentStep)}
     data-category={categorySlug}
+    data-requires-check={isCheckableQuestion ? "true" : "false"}
+    data-input-type={item.input_type || ""}
   >
     <header class="page-header">
       <a href="/index.html" class="back-button"> Dashboard </a>
@@ -191,7 +214,13 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
                 return (
                   <li>
                     <label class="option-label">
-                      <input type="radio" name={item.id} value={text} class="option-input" />
+                      <input
+                        type="radio"
+                        name={item.id}
+                        value={text}
+                        class="option-input"
+                        data-correct={typeof option === "object" && option.is_correct === true ? "true" : "false"}
+                      />
                       <span class="option-key">{String.fromCharCode(65 + index)}</span>
                       <span class="option-text">{text}</span>
                     </label>
@@ -202,8 +231,8 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
           )}
 
           {item.input_type === "multiple_choice" && (
-            <div data-multiple-choice>
-              <p class="mc-hint">Selecteer maximaal 2 opties</p>
+            <div data-multiple-choice data-max-selections={maxSelections}>
+              <p class="mc-hint">Selecteer maximaal {maxSelections} opties</p>
               <ul class="options-list" role="group">
                 {options.map((option, index) => {
                   const text = typeof option === "string" ? option : option.text;
@@ -215,6 +244,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
                           name={item.id}
                           value={text}
                           class="option-input"
+                          data-correct={typeof option === "object" && option.is_correct === true ? "true" : "false"}
                         />
                         <span class="option-key">
                           {String.fromCharCode(65 + index)}
@@ -232,7 +262,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
                 id="mc-error"
                 hidden
               >
-                Je kunt maximaal 2 opties selecteren.
+                Je kunt maximaal {maxSelections} opties selecteren.
               </div>
             </div>
           )}
@@ -287,6 +317,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
                       class="matching-select"
                       name={`${item.id}-${index}`}
                       required={item.required}
+                      data-correct-answer={pair.answer}
                     >
                       <option value="">Kies een antwoord</option>
                       {(item.pairs || []).map((answerPair) => (
@@ -296,6 +327,23 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
                   </div>
                 ))}
               </div>
+            </div>
+          )}
+
+          {isCheckableQuestion && (
+            <div class="question-check-row">
+              <button type="button" class="btn btn--primary" id="check-answer-btn">
+                Check antwoord
+              </button>
+              <div
+                class="answer-feedback"
+                id="answer-feedback"
+                role="status"
+                aria-live="polite"
+                hidden
+                data-explanation={item.explanation || ""}
+                data-example-answer={exampleAnswer}
+              />
             </div>
           )}
         </div>
@@ -355,6 +403,9 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
 
   const main = document.querySelector("main.content-col");
   const navNext = document.getElementById("nav-next");
+  const checkAnswerBtn = document.getElementById("check-answer-btn");
+  const answerFeedback = document.getElementById("answer-feedback");
+  const requiresCheck = main?.dataset.requiresCheck === "true";
 
   const stepId = main?.dataset.stepId;
   const category = main?.dataset.category;
@@ -395,13 +446,267 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     const result = await response.json();
   }
 
+  function setNextEnabled(enabled) {
+    if (!navNext || !requiresCheck) return;
+
+    navNext.dataset.checked = enabled ? "true" : "false";
+    navNext.setAttribute("aria-disabled", enabled ? "false" : "true");
+    navNext.classList.toggle("nav-btn--disabled", !enabled);
+  }
+
+  setNextEnabled(false);
+
   if (navNext) {
     navNext.addEventListener("click", async (e) => {
       e.preventDefault();
+
+      if (requiresCheck && navNext.dataset.checked !== "true") {
+        answerFeedback.hidden = false;
+        answerFeedback.className = "answer-feedback answer-feedback--warning";
+        answerFeedback.textContent = "Check eerst je antwoord voordat je verdergaat.";
+        return;
+      }
+
       await saveProgress();
       window.location.href = navNext.href;
     });
   }
+
+  function escapeHtml(value) {
+    return String(value || "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+
+  function getOptionLabel(input) {
+    const label = input.closest(".option-label");
+    const key = label?.querySelector(".option-key")?.textContent?.trim();
+    const text = label?.querySelector(".option-text")?.textContent?.trim() || input.value;
+    return key ? `${key}. ${text}` : text;
+  }
+
+  function getCorrectOptionLabels() {
+    const correctInputs = document.querySelectorAll(
+      ".question-block input[data-correct='true']",
+    );
+
+    return [...correctInputs].map(getOptionLabel);
+  }
+
+  function markChoiceFeedback() {
+    const choiceInputs = document.querySelectorAll(
+      ".question-block input[data-correct]",
+    );
+
+    choiceInputs.forEach((input) => {
+      const label = input.closest(".option-label");
+      if (!label) return;
+
+      label.classList.remove("option-label--correct", "option-label--incorrect");
+
+      if (input.dataset.correct === "true") {
+        label.classList.add("option-label--correct");
+      }
+
+      if (input.checked && input.dataset.correct !== "true") {
+        label.classList.add("option-label--incorrect");
+      }
+    });
+  }
+
+  function getMatchingCorrections() {
+    const matchingSelects = document.querySelectorAll(".matching-select[data-correct-answer]");
+
+    return [...matchingSelects]
+      .filter((select) => select.value !== select.dataset.correctAnswer)
+      .map((select) => {
+        const prompt = select
+          .closest(".matching-row")
+          ?.querySelector(".matching-prompt span:last-child")
+          ?.textContent
+          ?.trim();
+
+        return {
+          prompt,
+          correctAnswer: select.dataset.correctAnswer,
+        };
+      });
+  }
+
+  function getOpenQuestionResult() {
+    const openInput = document.querySelector(
+      ".question-block textarea, .question-block input[type='text']",
+    );
+
+    if (!openInput) return null;
+
+    if (!openInput.value.trim()) {
+      return {
+        valid: false,
+        message: "Vul eerst je antwoord in.",
+      };
+    }
+
+    return {
+      valid: true,
+      correct: true,
+      isOpenQuestion: true,
+    };
+  }
+
+  function getQuestionResult() {
+    const inputType = main?.dataset.inputType;
+
+    if (["long_text", "sentence_completion"].includes(inputType)) {
+      return getOpenQuestionResult();
+    }
+
+    const selectedRadio = document.querySelector(".question-block input[type='radio']:checked");
+    const radioOptions = document.querySelectorAll(".question-block input[type='radio'][data-correct]");
+
+    if (radioOptions.length > 0) {
+      if (!selectedRadio) {
+        return {
+          valid: false,
+          message: "Kies eerst een antwoord.",
+        };
+      }
+
+      return {
+        valid: true,
+        correct: selectedRadio.dataset.correct === "true",
+        correctOptions: getCorrectOptionLabels(),
+      };
+    }
+
+    const checkboxOptions = document.querySelectorAll(".question-block input[type='checkbox'][data-correct]");
+    const checkedBoxes = [...checkboxOptions].filter((checkbox) => checkbox.checked);
+    const correctBoxes = [...checkboxOptions].filter((checkbox) => checkbox.dataset.correct === "true");
+
+    if (checkboxOptions.length > 0) {
+      if (checkedBoxes.length === 0) {
+        return {
+          valid: false,
+          message: "Kies eerst minimaal één antwoord.",
+        };
+      }
+
+      const allSelectedAreCorrect = checkedBoxes.every((checkbox) => checkbox.dataset.correct === "true");
+      const allCorrectSelected = correctBoxes.every((checkbox) => checkbox.checked);
+
+      return {
+        valid: true,
+        correct: allSelectedAreCorrect && allCorrectSelected,
+        correctOptions: getCorrectOptionLabels(),
+      };
+    }
+
+    const matchingSelects = document.querySelectorAll(".matching-select[data-correct-answer]");
+
+    if (matchingSelects.length > 0) {
+      const unanswered = [...matchingSelects].some((select) => !select.value);
+
+      if (unanswered) {
+        return {
+          valid: false,
+          message: "Koppel eerst alle antwoorden.",
+        };
+      }
+
+      const allCorrect = [...matchingSelects].every(
+        (select) => select.value === select.dataset.correctAnswer,
+      );
+
+      return {
+        valid: true,
+        correct: allCorrect,
+        matchingCorrections: getMatchingCorrections(),
+      };
+    }
+
+    return {
+      valid: true,
+      correct: true,
+    };
+  }
+
+  function lockQuestionInputs() {
+    const inputs = document.querySelectorAll(
+      ".question-block input, .question-block textarea, .question-block select",
+    );
+
+    inputs.forEach((input) => {
+      input.disabled = true;
+    });
+  }
+
+  checkAnswerBtn?.addEventListener("click", () => {
+    const result = getQuestionResult();
+
+    answerFeedback.hidden = false;
+
+    if (!result.valid) {
+      answerFeedback.className = "answer-feedback answer-feedback--warning";
+      answerFeedback.textContent = result.message;
+      return;
+    }
+
+    const explanation = answerFeedback.dataset.explanation;
+    const exampleAnswer = answerFeedback.dataset.exampleAnswer;
+
+    if (result.isOpenQuestion) {
+      answerFeedback.className = "answer-feedback answer-feedback--example";
+      answerFeedback.innerHTML = `
+        <p>${escapeHtml(exampleAnswer)}</p>
+      `;
+    } else if (result.correct) {
+      markChoiceFeedback();
+      answerFeedback.className = "answer-feedback answer-feedback--correct";
+      answerFeedback.textContent = explanation
+        ? `Goed! ${explanation}`
+        : "Goed! Dit antwoord klopt.";
+    } else {
+      markChoiceFeedback();
+      answerFeedback.className = "answer-feedback answer-feedback--incorrect";
+
+      const correctOptions = result.correctOptions || [];
+      const matchingCorrections = result.matchingCorrections || [];
+
+      let feedbackHtml = explanation
+        ? `<strong>Niet helemaal.</strong><p>${escapeHtml(explanation)}</p>`
+        : "<strong>Niet helemaal.</strong>";
+
+      if (correctOptions.length > 0) {
+        feedbackHtml += `
+          <p><strong>Het juiste antwoord${correctOptions.length > 1 ? "en waren" : " was"}:</strong></p>
+          <ul>${correctOptions.map((option) => `<li>${escapeHtml(option)}</li>`).join("")}</ul>
+        `;
+      }
+
+      if (matchingCorrections.length > 0) {
+        feedbackHtml += `
+          <p><strong>Juiste koppelingen:</strong></p>
+          <ul>
+            ${matchingCorrections
+              .map(
+                (item) => `<li>${escapeHtml(item.prompt)}: ${escapeHtml(item.correctAnswer)}</li>`,
+              )
+              .join("")}
+          </ul>
+        `;
+      }
+
+      answerFeedback.innerHTML = feedbackHtml;
+    }
+
+    lockQuestionInputs();
+    checkAnswerBtn.disabled = true;
+    checkAnswerBtn.textContent = "Gecheckt";
+    setNextEnabled(true);
+  });
 
   const mcBlock = document.querySelector("[data-multiple-choice]");
 
@@ -413,7 +718,9 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
       checkbox.addEventListener("change", (e) => {
         const checked = [...checkboxes].filter((cb) => cb.checked);
 
-        if (checked.length > 2) {
+        const maxSelections = Number(mcBlock.dataset.maxSelections || 2);
+
+        if (checked.length > maxSelections) {
           e.target.checked = false;
 
           if (errorEl) {
@@ -1070,6 +1377,76 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     transform: translateY(-2px);
     box-shadow: 0 4px 10px
       color-mix(in srgb, var(--color-accent) 40%, transparent);
+  }
+
+  .question-check-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    padding-top: 0.5rem;
+  }
+
+  .answer-feedback {
+    border-radius: 12px;
+    padding: 0.85rem 1rem;
+    font-family: var(--font-semi-bold);
+    font-size: var(--size-base);
+    line-height: 1.45;
+    border: 1.5px solid rgba(0,0,0,0.12);
+  }
+
+  .answer-feedback[hidden] {
+    display: none;
+  }
+
+  .answer-feedback--correct {
+    background: #ecfff7;
+    border-color: #2fbf7f;
+    color: #126341;
+  }
+
+  .answer-feedback--incorrect {
+    background: #fff0ed;
+    border-color: #ff6631;
+    color: #9f2b00;
+  }
+
+  .answer-feedback--warning {
+    background: #fff8df;
+    border-color: #e0aa00;
+    color: #725500;
+  }
+
+  .answer-feedback--example {
+    background: #f5f7ff;
+    border-color: #8796ff;
+    color: #20285c;
+  }
+
+  .answer-feedback p {
+    margin: 0.35rem 0 0;
+  }
+
+  .answer-feedback ul {
+    margin: 0.35rem 0 0;
+    padding-left: 1.3rem;
+  }
+
+  .option-label--correct {
+    border-color: #2fbf7f;
+    background: #ecfff7;
+  }
+
+  .option-label--incorrect {
+    border-color: #ff6631;
+    background: #fff0ed;
+  }
+
+  .btn:disabled {
+    opacity: 0.55;
+    cursor: default;
+    transform: none;
+    box-shadow: none;
   }
 
   .action-row {
