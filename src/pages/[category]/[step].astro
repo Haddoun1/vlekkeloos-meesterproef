@@ -90,6 +90,138 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
 
 <link rel="stylesheet" href="/styles/global.css" />
 
+<!-- Hidden SVG filters for colour-blindness simulation -->
+<svg style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
+  <defs>
+    <filter id="cb-protanopia">
+      <feColorMatrix type="matrix" values="0.567 0.433 0 0 0  0.558 0.442 0 0 0  0 0.242 0.758 0 0  0 0 0 1 0"/>
+    </filter>
+    <filter id="cb-deuteranopia">
+      <feColorMatrix type="matrix" values="0.625 0.375 0 0 0  0.7 0.3 0 0 0  0 0.3 0.7 0 0  0 0 0 1 0"/>
+    </filter>
+    <filter id="cb-tritanopia">
+      <feColorMatrix type="matrix" values="0.95 0.05 0 0 0  0 0.433 0.567 0 0  0 0.475 0.525 0 0  0 0 0 1 0"/>
+    </filter>
+    <filter id="cb-achromatopsia">
+      <feColorMatrix type="matrix" values="0.299 0.587 0.114 0 0  0.299 0.587 0.114 0 0  0.299 0.587 0.114 0 0  0 0 0 1 0"/>
+    </filter>
+  </defs>
+</svg>
+
+<!-- ── Accessibility simulator ─────────────────────────────────── -->
+<div class="a11y-fab-wrap" id="a11yFabWrap">
+
+  <!-- Floating toggle button -->
+  <button class="a11y-fab" id="a11yFab" aria-expanded="false" aria-controls="a11yPanel" aria-label="Toegankelijkheid simuleren">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <circle cx="12" cy="5" r="1.5"/><path d="M7 9h10M10 9v10M14 9v10"/>
+    </svg>
+    <span class="a11y-fab-label">Toegankelijkheid</span>
+    <span class="a11y-active-dot" id="a11yActiveDot" hidden></span>
+  </button>
+
+  <!-- Slide-down panel -->
+  <div class="a11y-panel" id="a11yPanel" hidden>
+
+    <div class="a11y-section">
+      <div class="a11y-section-title">Kleuren &amp; contrast</div>
+
+      <div class="a11y-row">
+        <div class="a11y-label">Kleurenschema<small>Licht / donker</small></div>
+        <div class="a11y-radios" id="schemeGroup">
+          <button class="a11y-chip active" data-val="light">Licht</button>
+          <button class="a11y-chip" data-val="dark">Donker</button>
+          <button class="a11y-chip" data-val="system">Systeem</button>
+        </div>
+      </div>
+
+      <div class="a11y-row">
+        <div class="a11y-label">Kleurenblindheid<small>Type simulatie</small></div>
+        <div class="a11y-radios" id="colorblindGroup">
+          <button class="a11y-chip active" data-val="none">Geen</button>
+          <button class="a11y-chip" data-val="cb-protanopia">Protanopie</button>
+          <button class="a11y-chip" data-val="cb-deuteranopia">Deuteranopie</button>
+          <button class="a11y-chip" data-val="cb-tritanopia">Tritanopie</button>
+          <button class="a11y-chip" data-val="cb-achromatopsia">Achromatopsie</button>
+        </div>
+      </div>
+
+      <div class="a11y-row">
+        <div class="a11y-label">Contrast<small>Lager = slechter zicht</small></div>
+        <div class="a11y-slider-wrap">
+          <input type="range" id="contrastRange" min="0" max="200" value="100" step="1" />
+          <span class="a11y-val" id="contrastVal">100%</span>
+        </div>
+      </div>
+
+      <div class="a11y-row">
+        <div class="a11y-label">Helderheid</div>
+        <div class="a11y-slider-wrap">
+          <input type="range" id="brightnessRange" min="10" max="200" value="100" step="1" />
+          <span class="a11y-val" id="brightnessVal">100%</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="a11y-section">
+      <div class="a11y-section-title">Zicht &amp; focus</div>
+
+      <div class="a11y-row">
+        <div class="a11y-label">Wazig zicht<small>Simuleer slechtziendheid</small></div>
+        <div class="a11y-slider-wrap">
+          <input type="range" id="blurRange" min="0" max="10" value="0" step="0.1" />
+          <span class="a11y-val" id="blurVal">0</span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="a11y-section">
+      <div class="a11y-section-title">Lezen &amp; tekst</div>
+
+      <div class="a11y-row">
+        <div class="a11y-label">Dyslexie<small>Letterverwisseling</small></div>
+        <div class="a11y-radios" id="dyslexiaGroup">
+          <button class="a11y-chip active" data-val="0">Uit</button>
+          <button class="a11y-chip" data-val="1">Licht</button>
+          <button class="a11y-chip" data-val="2">Matig</button>
+          <button class="a11y-chip" data-val="3">Zwaar</button>
+          <button class="a11y-chip" data-val="4">Extreem</button>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="a11y-section">
+      <div class="a11y-section-title">Beweging &amp; interactie</div>
+
+      <div class="a11y-row">
+        <div class="a11y-label">Trilling<small>Simuleer tremor</small></div>
+        <div class="a11y-slider-wrap">
+          <input type="range" id="tremorRange" min="0" max="5" value="0" step="0.5" />
+          <span class="a11y-val" id="tremorVal">0</span>
+        </div>
+      </div>
+
+      <div class="a11y-row">
+        <div class="a11y-label">Cursor vertraging<small>Motorieke beperking</small></div>
+        <div class="a11y-radios" id="cursorDelayGroup">
+          <button class="a11y-chip active" data-val="0">Uit</button>
+          <button class="a11y-chip" data-val="0.8">Aan</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="a11y-footer">
+      <button class="a11y-reset" id="a11yReset">↺ Reset alle instellingen</button>
+    </div>
+
+  </div>
+</div>
+<!-- Vertraagde cursor stip (motorieke beperking simulatie) -->
+<div class="a11y-cursor-dot" id="a11yCursorDot" aria-hidden="true"></div>
+<!-- ── /Accessibility simulator ────────────────────────────────── -->
+
 <!-- Nav overlay (backdrop) -->
 <div class="nav-overlay" id="navOverlay"></div>
 
@@ -453,6 +585,227 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
   );
   navCloseBtn?.addEventListener("click", closeNav);
   navOverlay?.addEventListener("click", closeNav);
+
+  // ── Accessibility simulator ────────────────────────────────────
+
+  const a11yFab     = document.getElementById("a11yFab");
+  const a11yPanel   = document.getElementById("a11yPanel");
+  const a11yDot     = document.getElementById("a11yActiveDot");
+  const a11yReset   = document.getElementById("a11yReset");
+
+  // Toggle panel open/close
+  a11yFab?.addEventListener("click", () => {
+    const isOpen = !a11yPanel.hidden;
+    a11yPanel.hidden = isOpen;
+    a11yFab.setAttribute("aria-expanded", String(!isOpen));
+  });
+
+  // ── State ──────────────────────────────────────────────────────
+  const sim = {
+    contrast: 100, brightness: 100, blur: 0,
+    colorblind: "none", dyslexia: 0, tremor: 0, cursorDelay: 0,
+  };
+
+  const colorblindMap = {
+    none: "",
+    "cb-protanopia":    "url(#cb-protanopia)",
+    "cb-deuteranopia":  "url(#cb-deuteranopia)",
+    "cb-tritanopia":    "url(#cb-tritanopia)",
+    "cb-achromatopsia": "url(#cb-achromatopsia)",
+  };
+
+  // Apply all simulation values to <html>
+  function applyAll() {
+    const root = document.documentElement;
+
+    // CSS filter on <html> (contrast + brightness + blur + colour-blindness)
+    let f = "";
+    if (sim.contrast   !== 100) f += `contrast(${sim.contrast}%) `;
+    if (sim.brightness !== 100) f += `brightness(${sim.brightness}%) `;
+    if (sim.blur        > 0)    f += `blur(${sim.blur}px) `;
+    if (sim.colorblind !== "none") f += colorblindMap[sim.colorblind];
+    root.style.filter = f.trim();
+
+    // Active indicator dot
+    const active =
+      sim.contrast !== 100 || sim.brightness !== 100 || sim.blur > 0 ||
+      sim.colorblind !== "none" || sim.dyslexia > 0 || sim.tremor > 0 || sim.cursorDelay > 0;
+    if (a11yDot) a11yDot.hidden = !active;
+  }
+
+  // ── Colour scheme ──────────────────────────────────────────────
+  function setColorScheme(val) {
+    if (val === "system") {
+      const dark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      document.documentElement.setAttribute("data-color-scheme", dark ? "dark" : "light");
+    } else {
+      document.documentElement.setAttribute("data-color-scheme", val);
+    }
+  }
+
+  // ── Dyslexia (from leraar's code) ─────────────────────────────
+  let textNodes = [];
+  let dyslexiaInterval = null;
+
+  function findTextNodes() {
+    textNodes = [];
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    while (walker.nextNode()) {
+      const node = walker.currentNode;
+      if (node.nodeValue.trim() && !node.parentElement?.closest(".a11y-fab-wrap")) {
+        const words = [];
+        let re = /\w+/g, m;
+        while ((m = re.exec(node.nodeValue)) !== null)
+          words.push({ pos: m.index, len: m[0].length });
+        textNodes.push({ node, words, original: node.nodeValue });
+      }
+    }
+  }
+
+  function messUpWords(chance, tempo) {
+    clearInterval(dyslexiaInterval);
+    if (chance === 0) {
+      textNodes.forEach((t) => (t.node.nodeValue = t.original));
+      return;
+    }
+    dyslexiaInterval = setInterval(() => {
+      textNodes.forEach((t) => {
+        let val = t.original;
+        t.words.forEach((w) => {
+          if (Math.random() < chance && w.len > 3) {
+            const word = val.slice(w.pos, w.pos + w.len);
+            const mid = word.slice(1, -1).split("");
+            for (let i = mid.length - 1; i > 0; i--) {
+              const j = Math.floor(Math.random() * (i + 1));
+              [mid[i], mid[j]] = [mid[j], mid[i]];
+            }
+            val =
+              val.slice(0, w.pos) +
+              word[0] + mid.join("") + word[word.length - 1] +
+              val.slice(w.pos + w.len);
+          }
+        });
+        t.node.nodeValue = val;
+      });
+    }, tempo);
+  }
+
+  const dyslexiaConfig = { 0:[0,0], 1:[0.1,250], 2:[0.2,100], 3:[0.3,40], 4:[1,1] };
+
+  // ── Tremor ─────────────────────────────────────────────────────
+  let tremorInterval = null;
+
+  function setTremor(val) {
+    clearInterval(tremorInterval);
+    document.body.style.transform = "";
+    if (val === 0) return;
+    tremorInterval = setInterval(() => {
+      const x = ((Math.random() - 0.5) * val * 6).toFixed(1);
+      const y = ((Math.random() - 0.5) * val * 6).toFixed(1);
+      document.body.style.transform = `translate(${x}px, ${y}px)`;
+    }, 80);
+  }
+
+  // ── Cursor delay (motorieke beperking) ────────────────────────
+  const cursorDot = document.getElementById("a11yCursorDot");
+
+  function followCursor(e) {
+    document.body.style.setProperty("--client-x", e.clientX);
+    document.body.style.setProperty("--client-y", e.clientY);
+  }
+
+  function setCursorDelay(seconds) {
+    sim.cursorDelay = seconds;
+    if (seconds === 0) {
+      document.body.removeEventListener("pointermove", followCursor);
+      document.body.classList.remove("cursor-delayed");
+      if (cursorDot) cursorDot.style.transition = "";
+    } else {
+      document.body.addEventListener("pointermove", followCursor);
+      document.body.classList.add("cursor-delayed");
+      if (cursorDot) cursorDot.style.transition = `translate ${seconds}s ease-in`;
+    }
+    applyAll();
+  }
+
+
+  function makeSlider(id, valId, key, suffix, decimals) {
+    const el  = document.getElementById(id);
+    const out = document.getElementById(valId);
+    if (!el || !out) return;
+    el.addEventListener("input", () => {
+      const v = parseFloat(el.value);
+      sim[key] = v;
+      out.textContent = decimals ? v.toFixed(decimals) + suffix : Math.round(v) + suffix;
+      if (key === "tremor") setTremor(v);
+      applyAll();
+    });
+  }
+
+  makeSlider("contrastRange",    "contrastVal",    "contrast",    "%",  0);
+  makeSlider("brightnessRange",  "brightnessVal",  "brightness",  "%",  0);
+  makeSlider("blurRange",        "blurVal",        "blur",        "",   1);
+  makeSlider("tremorRange",      "tremorVal",      "tremor",      "",   1);
+
+  // ── Radio group helper ─────────────────────────────────────────
+  function makeRadioGroup(id, key, onChange) {
+    document.querySelectorAll(`#${id} .a11y-chip`).forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(`#${id} .a11y-chip`).forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        sim[key] = btn.dataset.val;
+        if (onChange) onChange(btn.dataset.val);
+        applyAll();
+      });
+    });
+  }
+
+  makeRadioGroup("schemeGroup",     "scheme",     setColorScheme);
+  makeRadioGroup("colorblindGroup", "colorblind");
+  makeRadioGroup("dyslexiaGroup", "dyslexia", (val) => {
+    findTextNodes();
+    const [chance, tempo] = dyslexiaConfig[val];
+    messUpWords(chance, tempo);
+  });
+  makeRadioGroup("cursorDelayGroup", "cursorDelay", (val) => {
+    setCursorDelay(parseFloat(val));
+  });
+
+  // ── Reset ──────────────────────────────────────────────────────
+  a11yReset?.addEventListener("click", () => {
+    Object.assign(sim, {
+      contrast: 100, brightness: 100, blur: 0,
+      colorblind: "none", dyslexia: 0, tremor: 0, cursorDelay: 0,
+    });
+
+    [
+      ["contrastRange",    "contrastVal",    100,  "%"],
+      ["brightnessRange",  "brightnessVal",  100,  "%"],
+      ["blurRange",        "blurVal",        0,    ""],
+      ["tremorRange",      "tremorVal",      0,    ""],
+    ].forEach(([rid, vid, val, suf]) => {
+      const el = document.getElementById(rid);
+      const out = document.getElementById(vid);
+      if (el)  el.value = val;
+      if (out) out.textContent = val + suf;
+    });
+
+    ["colorblindGroup","cursorDelayGroup","dyslexiaGroup","schemeGroup"].forEach((gid) => {
+      document.querySelectorAll(`#${gid} .a11y-chip`).forEach((b, i) =>
+        b.classList.toggle("active", i === 0)
+      );
+    });
+
+    clearInterval(dyslexiaInterval);
+    setTremor(0);
+    setCursorDelay(0);
+    textNodes.forEach((t) => (t.node.nodeValue = t.original));
+    document.documentElement.removeAttribute("data-color-scheme");
+    applyAll();
+  });
+
+  // Init
+  findTextNodes();
 </script>
 
 <style>
@@ -460,6 +813,241 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     background: var(--gradient-bg-cyan);
     min-height: 100vh;
   }
+
+  /* ════════════════════════════════════════════
+     ACCESSIBILITY SIMULATOR
+  ════════════════════════════════════════════ */
+
+  .a11y-fab-wrap {
+    position: fixed;
+    top: 1.25rem;
+    right: 1.25rem;
+    z-index: 400;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.5rem;
+  }
+
+  /* Floating action button */
+  .a11y-fab {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.45rem 1rem 0.45rem 0.7rem;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 99px;
+    font-family: var(--font-semi-bold);
+    font-size: var(--size-sm);
+    color: var(--color-text);
+    cursor: pointer;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.18s, transform 0.12s;
+    position: relative;
+  }
+
+  .a11y-fab:hover {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    transform: translateY(-1px);
+  }
+
+  .a11y-fab-label {
+    font-family: var(--font-semi-bold);
+    font-size: var(--size-sm);
+  }
+
+  .a11y-active-dot {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #ff6631;
+    border: 2px solid white;
+  }
+
+  /* Slide-down panel */
+  .a11y-panel {
+    width: 340px;
+    max-height: calc(100vh - 6rem);
+    overflow-y: auto;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(14px);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  }
+
+  .a11y-panel[hidden] {
+    display: none;
+  }
+
+  /* Sections */
+  .a11y-section {
+    padding: 14px 16px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+  }
+
+  .a11y-section:last-of-type {
+    border-bottom: none;
+  }
+
+  .a11y-section-title {
+    font-family: var(--font-semi-bold);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgba(0, 0, 0, 0.4);
+    margin-bottom: 10px;
+  }
+
+  /* Control rows */
+  .a11y-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+
+  .a11y-row:last-child {
+    margin-bottom: 0;
+  }
+
+  .a11y-label {
+    font-family: var(--font-semi-bold);
+    font-size: var(--size-sm);
+    color: var(--color-text);
+    min-width: 120px;
+    padding-top: 2px;
+    flex-shrink: 0;
+  }
+
+  .a11y-label small {
+    display: block;
+    font-family: var(--font-light);
+    font-size: 11px;
+    color: rgba(0, 0, 0, 0.45);
+    margin-top: 1px;
+  }
+
+  /* Slider */
+  .a11y-slider-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+  }
+
+  .a11y-slider-wrap input[type="range"] {
+    flex: 1;
+    height: 4px;
+    accent-color: var(--color-text);
+    cursor: pointer;
+  }
+
+  .a11y-val {
+    font-family: var(--font-semi-bold);
+    font-size: 11px;
+    color: rgba(0, 0, 0, 0.45);
+    min-width: 34px;
+    text-align: right;
+  }
+
+  /* Chip radio buttons */
+  .a11y-radios {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    flex: 1;
+  }
+
+  .a11y-chip {
+    font-family: var(--font-semi-bold);
+    font-size: 11px;
+    padding: 3px 9px;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 99px;
+    background: transparent;
+    color: var(--color-text);
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+  }
+
+  .a11y-chip:hover {
+    background: rgba(0, 0, 0, 0.06);
+  }
+
+  .a11y-chip.active {
+    background: var(--color-text);
+    color: white;
+    border-color: var(--color-text);
+  }
+
+  /* Footer */
+  .a11y-footer {
+    padding: 10px 16px 12px;
+    border-top: 1px solid rgba(0, 0, 0, 0.07);
+  }
+
+  .a11y-reset {
+    font-family: var(--font-semi-bold);
+    font-size: var(--size-sm);
+    color: rgba(0, 0, 0, 0.45);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    transition: color 0.15s;
+  }
+
+  .a11y-reset:hover {
+    color: var(--color-text);
+  }
+
+  /* Cursor vertraging */
+  body.cursor-delayed {
+    cursor: none;
+  }
+
+  .a11y-cursor-dot {
+    display: none;
+    width: 14px;
+    height: 14px;
+    background: red;
+    border-radius: 50%;
+    position: fixed;
+    z-index: 9999;
+    pointer-events: none;
+    translate:
+      calc(var(--client-x, -100) * 1px)
+      calc(var(--client-y, -100) * 1px);
+    margin-left: -7px;
+    margin-top: -7px;
+  }
+
+  body.cursor-delayed .a11y-cursor-dot {
+    display: block;
+  }
+
+  /* Mobile: panel goes full-width */
+  @media (max-width: 400px) {
+    .a11y-fab-wrap {
+      right: 0.75rem;
+      left: 0.75rem;
+      align-items: stretch;
+    }
+
+    .a11y-panel {
+      width: 100%;
+    }
+  }
+
+  /* ════════════════════════════════════════════
+     ORIGINAL STYLES (unchanged)
+  ════════════════════════════════════════════ */
 
   /* ── Nav overlay ─────────────────────────────────────────────── */
 
