@@ -143,6 +143,22 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
   </ul>
 </nav>
 
+<!-- Setting overlay (backdrop) -->
+<div class="setting-overlay" id="settingOverlay"></div>
+
+<!-- Slide-in setting panel (from right) -->
+<nav class="setting-panel" id="settingPanel" aria-label="Instellingen">
+  <div class="setting-panel-header">
+    <span class="setting-panel-title">Instellingen</span>
+    <button class="setting-close-btn" id="settingCloseBtn" aria-label="Sluit instellingen"
+      >&#10005</button
+    >
+  </div>
+  <div class="setting-content">
+    <!-- Add settings content here -->
+  </div>
+</nav>
+
 <div class="page-shell" style={`--color-accent: ${accentColor}`}>
   <aside class="sidebar-left" aria-label="Navigatiemenu"></aside>
 
@@ -162,6 +178,14 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
         aria-label="Open vragennavigatie"
       >
         {currentStep}<span class="step-total">/{totalSteps}</span>
+      </button>
+
+      <button
+        class="setting-btn"
+        id="settingBtn"
+        aria-label="Open instellingen"
+      >
+          &#9881;
       </button>
     </header>
 
@@ -762,6 +786,32 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
   );
   navCloseBtn?.addEventListener("click", closeNav);
   navOverlay?.addEventListener("click", closeNav);
+
+  // ── Setting nav ──────────────────────────────────────────────
+  const settingBtn = document.getElementById("settingBtn");
+  const settingPanel = document.getElementById("settingPanel");
+  const settingOverlay = document.getElementById("settingOverlay");
+  const settingCloseBtn = document.getElementById("settingCloseBtn");
+
+  function openSetting() {
+    settingPanel?.classList.add("open");
+    settingOverlay?.classList.add("open");
+    settingBtn?.classList.add("open");
+    settingBtn?.setAttribute("aria-expanded", "true");
+  }
+
+  function closeSetting() {
+    settingPanel?.classList.remove("open");
+    settingOverlay?.classList.remove("open");
+    settingBtn?.classList.remove("open");
+    settingBtn?.setAttribute("aria-expanded", "false");
+  }
+
+  settingBtn?.addEventListener("click", () =>
+    settingPanel?.classList.contains("open") ? closeSetting() : openSetting(),
+  );
+  settingCloseBtn?.addEventListener("click", closeSetting);
+  settingOverlay?.addEventListener("click", closeSetting);
 </script>
 
 <style>
@@ -897,6 +947,90 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     color: var(--color-text);
   }
 
+  /* ── Setting overlay ─────────────────────────────────────────────── */
+
+  .setting-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.25);
+    z-index: 250;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+  }
+
+  .setting-overlay.open {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  /* ── Setting panel (slides in from right) ────────────────────────── */
+
+  .setting-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: 300px;
+    background: var(--color-accent);
+    z-index: 300;
+    display: flex;
+    flex-direction: column;
+    transform: translateX(100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+  }
+
+  .setting-panel.open {
+    transform: translateX(0);
+    box-shadow: -4px 0 32px rgba(0, 0, 0, 0.15);
+  }
+
+  .setting-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 1.25rem 1rem;
+    border-bottom: 1.5px solid rgba(0, 0, 0, 0.12);
+    flex-shrink: 0;
+    background: rgba(255, 255, 255);
+  }
+
+  .setting-panel-title {
+    font-family: var(--font-semi-bold);
+    font-size: var(--size-sm);
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    opacity: 0.6;
+  }
+
+  .setting-close-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.1);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    color: var(--color-text);
+    transition: background 0.15s;
+    flex-shrink: 0;
+  }
+
+  .setting-close-btn:hover {
+    background: rgba(0, 0, 0, 0.22);
+  }
+
+  .setting-content {
+    flex: 1;
+    background: rgba(255, 255, 255);
+    overflow-y: auto;
+    padding: 0.75rem 0;
+  }
+
   /* ── Hamburger button ────────────────────────────────────────── */
 
   .hamburger-btn {
@@ -950,6 +1084,38 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
 
   .hamburger-btn.open .bar:nth-child(3) {
     transform: translateY(-7px) rotate(-45deg);
+  }
+
+  /* ── Setting button ────────────────────────────────────────── */
+
+  .setting-btn {
+    font-family: var(--font-semi-bold);
+    font-size: var(--size-lg);
+    letter-spacing: 0.06em;
+    background: color-mix(in srgb, var(--color-accent) 35%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-accent) 60%, transparent);
+    border-radius: 999px;
+    padding: 0.15rem 0.45rem;
+    color: var(--color-text);
+    margin-left: auto;
+    line-height: 1.4;
+    text-decoration: none;
+    transition:
+      background 0.18s,
+      color 0.18s,
+      transform 0.12s,
+      box-shadow 0.18s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2rem;
+    cursor: pointer;
+  }
+
+  .setting-btn:hover {
+    background: var(--color-accent);
+    box-shadow: 0 4px 14px
+      color-mix(in srgb, var(--color-accent) 50%, transparent);
+    transform: scale(1.07);
   }
 
   /* ── Page shell ──────────────────────────────────────────────── */
