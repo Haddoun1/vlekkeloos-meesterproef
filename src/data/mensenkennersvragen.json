@@ -153,7 +153,8 @@
       "question": "Wat is voor jou iets dat in contact met bezoekers vanzelfsprekend voelt?",
       "input_type": "sentence_completion",
       "required": true,
-      "Category": "Module 2"
+      "Category": "Module 2",
+      "example_answer": "Bijvoorbeeld: Voor mij voelt het vanzelfsprekend om snel informatie te geven aan bezoekers. Deze module laat mij beseffen dat niet iedereen informatie op dezelfde manier verwerkt."
     },
     {
       "id": "m2_content_02",
@@ -204,7 +205,8 @@
       "question": "Waarom kan extra tijd geven volgens jou belangrijk zijn voor een positieve ervaring?",
       "input_type": "sentence_completion",
       "required": true,
-      "Category": "Module 2"
+      "Category": "Module 2",
+      "example_answer": "Bijvoorbeeld: Extra tijd geven zorgt ervoor dat iemand zich gehoord voelt en de ruimte krijgt om op een eigen manier te communiceren."
     },
     {
       "id": "m2_q04",
@@ -242,10 +244,11 @@
       "question": "Welk inzicht uit deze module is voor jou het meest relevant voor je dagelijkse werk?",
       "input_type": "sentence_completion",
       "required": true,
-      "Category": "Module 2"
+      "Category": "Module 2",
+      "example_answer": "Bijvoorbeeld: Het belangrijkste inzicht voor mij is dat ik eerst moet vragen wat iemand nodig heeft voordat ik hulp aanbied."
     },
     {
-      "id": "m2_end",
+      "id": "m2_submit",
       "type": "content",
       "section": "module_2_perspectief_inlevingsvermogen",
       "title": "Module 2 afgerond",
@@ -353,7 +356,8 @@
       "question": "Een verbetering die direct verschil zou maken voor bezoekers is...",
       "input_type": "sentence_completion",
       "required": true,
-      "Category": "Module 3"
+      "Category": "Module 3",
+      "example_answer": "Bijvoorbeeld: Een verbetering die direct verschil zou maken voor bezoekers is duidelijke informatie op de website over toegankelijkheid en beschikbare voorzieningen."
     },
     {
       "id": "m4_intro",
@@ -533,10 +537,11 @@
       "question": "Wat ga jij vanaf morgen bewust anders doen in het contact met bezoekers of klanten?",
       "input_type": "long_text",
       "required": true,
-      "Category": "Module 4"
+      "Category": "Module 4",
+      "example_answer": "Bijvoorbeeld: Ik ga voortaan bewuster vragen of iemand hulp wil voordat ik actie onderneem, zodat de bezoeker zelf de regie houdt."
     },
     {
-      "id": "m4_end",
+      "id": "m4_submit",
       "type": "content",
       "section": "module_4_praktijksituaties_toepassing",
       "title": "Afronding",
@@ -544,7 +549,7 @@
       "Category": "Module 4"
     },
     {
-      "id": "m1_end",
+      "id": "m1_submit",
       "type": "content",
       "section": "module_1_inclusief_contact",
       "title": "Module 1 afgerond",
@@ -552,7 +557,7 @@
       "Category": "Module 1"
     },
     {
-      "id": "m3_end",
+      "id": "m3_submit",
       "type": "content",
       "section": "module_3_toegankelijkheid_werkplek",
       "title": "Module 3 afgerond",
