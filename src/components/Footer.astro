@@ -6,17 +6,18 @@ const courses = [
   { title: 'Bewustwording van jouw rol', href: '/deel-1/1' },
   { title: 'Leren door te ervaren', href: '/deel-2/1' },
   { title: 'Vertaling naar jouw werk', href: '/deel-3/1' },
-];
+]
 ---
 
 <footer>
   <div class="footer-inner">
 
     <div class="footer-brand">
-      <img
-        src="/src/assets/logohorizontaal.png"
-        alt="Stichting Mensenkenners logo"
-      />
+    <img
+  class="footer-logo-image"
+  src="/src/assets/logohorizontaal.png"
+  alt="Stichting Mensenkenners logo"
+/>
       <p class="brand-tagline">Leer in jouw eigen tempo.</p>
     </div>
 
@@ -54,12 +55,12 @@ const courses = [
 <style>
   footer {
     margin-top: 4rem;
-    background-color: #B1F2D9;
-    color: #1a1a1a;
-    font-family: 'Segoe UI', sans-serif;
+    background-color: var(--color-cyan);
+    color: var(--color-text);
+    font-family: var(--font-regular);
   }
 
-  .footer-inner{
+  .footer-inner {
     max-width: 1100px;
     margin: 0 auto;
     padding: 3rem 2rem 2rem;
@@ -68,7 +69,6 @@ const courses = [
     gap: 2.5rem;
   }
 
-  /* Brand */
   .footer-brand {
     display: flex;
     flex-direction: column;
@@ -82,18 +82,18 @@ const courses = [
 
   .brand-tagline {
     margin: 0;
-    font-size: 0.875rem;
-    color: #555;
+    font-size: var(--size-sm);
+    color: var(--color-text);
+    font-family: var(--font-light);
   }
 
-  /* Nav columns */
   .footer-nav-title {
     margin: 0 0 0.75rem;
-    font-size: 0.8rem;
-    font-weight: 700;
+    font-size: var(--size-xs);
+    font-family: var(--font-extra-bold);
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: black;
+    color: var(--color-text);
   }
 
   ul {
@@ -106,27 +106,28 @@ const courses = [
   }
 
   a {
-    color: #333;
+    color: var(--color-text);
     text-decoration: none;
-    font-size: 0.9rem;
+    font-size: var(--size-sm);
+    font-family: var(--font-light);
     transition: color 0.15s ease;
   }
 
   a:hover {
-    color: #2AB789;
+    color: var(--color-green);
   }
 
-  /* Bottom bar */
   .footer-bottom {
     max-width: 1100px;
     margin: 0 auto;
     padding: 1.25rem 2rem;
-    border-top: 1px solid rgba(0, 0, 0, 0.12);
+    border-top: 1px solid var(--color-cyan-dark);
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    font-size: 0.8rem;
-    color: #555;
+    font-size: var(--size-xs);
+    color: var(--color-text);
+    font-family: var(--font-light);
   }
 
   .footer-bottom p {
@@ -134,23 +135,26 @@ const courses = [
   }
 
   .footer-bottom a {
-    color: #555;
-    font-size: 0.8rem;
+    color: var(--color-text);
+    font-size: var(--size-xs);
   }
 
   .footer-bottom a:hover {
-    color: #000;
+    color: var(--color-green);
   }
 
   .divider {
-    color: #999;
+    color: var(--color-cyan-dark);
   }
 
-  /* Responsive */
   @media (max-width: 640px) {
     .footer-inner {
       grid-template-columns: 1fr;
       gap: 2rem;
     }
   }
+
+ :global(html:has(#theme-toggle-checkbox:checked)) .footer-logo-image {
+  content: url("/src/assets/mensenkennerslogowit.png");
+}
 </style>
