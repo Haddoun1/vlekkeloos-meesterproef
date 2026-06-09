@@ -3,8 +3,8 @@
 export const prerender = false;
 import MainLayout from "../layouts/Layout.astro";
 import CourseCard from "../components/CourseCard.astro";
+import ThemeToggle from '../components/ThemeToggle.astro';
 
-import { supabase } from "../lib/supabase";
 
 const courses = [
   {
@@ -134,6 +134,7 @@ const recentCourses = [
 <script>
   // @ts-nocheck
   import { supabase } from "../lib/supabase";
+
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -146,6 +147,49 @@ const recentCourses = [
     onboarding: 9,
   };
 
+  const courseStartHref = {
+    onboarding: "/onboarding/step-1",
+    module_1: "/module-1/1",
+    module_2: "/module-2/1",
+    module_3: "/module-3/1",
+    module_4: "/module-4/1",
+  };
+
+  const categoryToCourseId = {
+    onboarding: "onboarding",
+    "module-1": "module_1",
+    "module-2": "module_2",
+    "module-3": "module_3",
+    "module-4": "module_4",
+  };
+
+  const courseIdToCategory = {
+    onboarding: "onboarding",
+    module_1: "module-1",
+    module_2: "module-2",
+    module_3: "module-3",
+    module_4: "module-4",
+  };
+
+  function getResumeHref(courseId, lastStepId, percentage) {
+    const category = courseIdToCategory[courseId];
+
+    if (!category) return courseStartHref[courseId] || "/";
+
+    // Als de cursus al afgerond is, mag de gebruiker opnieuw starten bij stap 1.
+    if (percentage >= 100) {
+      return courseStartHref[courseId] || `/${category}/1`;
+    }
+
+    const parsedStep = Number(lastStepId);
+
+    if (!Number.isFinite(parsedStep) || parsedStep < 1) {
+      return courseStartHref[courseId] || `/${category}/1`;
+    }
+
+    return `/${category}/${parsedStep}`;
+  }
+
   async function loadProgress() {
     if (!user) return;
 
@@ -155,15 +199,8 @@ const recentCourses = [
       body: JSON.stringify({ userId: user.id }),
     });
 
-    console.log("USER:", user);
-
     const result = await response.json();
-
-    console.log("RESULT:", result);
-
     const rows = result.data || [];
-
-    console.log("ROWS:", rows);
 
     const completed = {
       module_1: new Set(),
@@ -173,29 +210,29 @@ const recentCourses = [
       onboarding: new Set(),
     };
 
-    const categoryToCourseId = {
-      onboarding: "onboarding",
-      "module-1": "module_1",
-      "module-2": "module_2",
-      "module-3": "module_3",
-      "module-4": "module_4",
-    };
+    const latestByCourse = {};
 
     rows.forEach((row) => {
       const courseId = categoryToCourseId[row.category];
+      if (!courseId || !completed[courseId]) return;
 
-      if (courseId && completed[courseId]) {
-        completed[courseId].add(row.step_id);
+      completed[courseId].add(String(row.step_id));
+
+      const currentLatest = latestByCourse[courseId];
+      const rowTime = new Date(row.ended_at || row.started_at || row.created_at || 0).getTime();
+      const latestTime = currentLatest
+        ? new Date(currentLatest.ended_at || currentLatest.started_at || currentLatest.created_at || 0).getTime()
+        : -1;
+
+      if (!currentLatest || rowTime > latestTime) {
+        latestByCourse[courseId] = row;
       }
     });
 
     Object.keys(completed).forEach((key) => {
       const count = completed[key].size;
       const total = totals[key];
-      const percentage = Math.min(
-      100,
-      Math.round((count / total) * 100)
-    );
+      const percentage = Math.min(100, Math.round((count / total) * 100));
 
       const card = document.querySelector(`[data-course-id="${key}"]`);
       if (!card) return;
@@ -206,11 +243,16 @@ const recentCourses = [
       if (progressText) progressText.textContent = `${percentage}%`;
       if (progressBar) progressBar.value = percentage;
 
-      // Zet status op het kaart-element voor filtering
       let status = "not-started";
       if (count > 0 && count < total) status = "in-progress";
       if (count >= total) status = "completed";
+
       card.dataset.status = status;
+      card.dataset.progress = String(percentage);
+
+      const latestRow = latestByCourse[key];
+      const resumeHref = getResumeHref(key, latestRow?.step_id, percentage);
+      card.dataset.resumeHref = resumeHref;
     });
   }
 
@@ -225,15 +267,12 @@ const recentCourses = [
       filterButtons.forEach((b) => b.classList.remove("active"));
       btn.classList.add("active");
 
-      const filter = btn.id; // "all-courses" | "not-started" | "in-progress" | "completed"
+      const filter = btn.id;
 
       carouselItems.forEach((item) => {
         const status = item.dataset.status || "not-started";
-        if (filter === "all-courses" || status === filter) {
-          item.style.display = "";
-        } else {
-          item.style.display = "none";
-        }
+        item.style.display =
+          filter === "all-courses" || status === filter ? "" : "none";
       });
     });
   });
@@ -288,7 +327,7 @@ const recentCourses = [
       image: "../../public/images/Mensenkennerskaderspraak.png",
       color: "var(--color-red)",
     },
-      module_4: {
+    module_4: {
       title: "Module 4: Praktijksituaties en toepassing",
       href: "/module-4/1",
       description:
@@ -296,7 +335,6 @@ const recentCourses = [
       image: "../../public/images/Mensenkennerskaderspraak.png",
       color: "var(--color-blue)",
     },
-  
   };
 
   const detail = document.getElementById("course-detail");
@@ -304,11 +342,11 @@ const recentCourses = [
   document.querySelectorAll(".carousel-item").forEach((item) => {
     item.addEventListener("click", (e) => {
       e.preventDefault();
+
       const courseId = item.dataset.courseId;
       const data = courseData[courseId];
       if (!data) return;
 
-      // Als dezelfde cursus nogmaals wordt geklikt, sluit het panel
       if (
         detail.classList.contains("active") &&
         detail.dataset.openCourse === courseId
@@ -320,13 +358,23 @@ const recentCourses = [
 
       detail.dataset.openCourse = courseId;
 
+      const resumeHref = item.dataset.resumeHref || data.href;
+      const status = item.dataset.status || "not-started";
+
       document.getElementById("detail-title").textContent = data.title;
       document.getElementById("detail-description").textContent =
         data.description;
-      document.getElementById("detail-cta").href = data.href;
-      document
-        .getElementById("detail-cta")
-        .style.setProperty("background-color", data.color);
+
+      const cta = document.getElementById("detail-cta");
+      cta.href = resumeHref;
+      cta.textContent =
+        status === "completed"
+          ? "Start deze cursus opnieuw"
+          : status === "in-progress"
+            ? "Ga verder waar je gebleven was"
+            : "Start deze cursus";
+
+      cta.style.setProperty("background-color", data.color);
       document
         .getElementById("detail-progress")
         .style.setProperty("color", data.color);
@@ -395,7 +443,7 @@ const recentCourses = [
       & .filter-button {
         padding: 0.5rem 1rem;
         border: 2px solid var(--color-green);
-        background-color: transparent;
+        background-color: var(--button-background);
         color: var(--color-green);
         border-radius: 9999px;
         cursor: pointer;
@@ -471,8 +519,8 @@ const recentCourses = [
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    background: var(--color-background);
-    border: 2px solid rgba(0, 0, 0, 0.1);
+    background: var(--gradient-bg-cyan-card);
+    border: 2px solid var(--color-cyan-dark);
     border-radius: 12px;
     width: 100%;
     opacity: 0;

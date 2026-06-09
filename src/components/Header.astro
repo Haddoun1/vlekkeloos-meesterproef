@@ -1,5 +1,5 @@
 ---
-
+import ThemeToggle from '../components/ThemeToggle.astro';
 ---
 
 <header>
@@ -9,10 +9,11 @@
         srcset="/src/assets/logovierkant.png"
         media="(max-width: 1100px)"
       />
-      <img
-        src="/src/assets/logohorizontaal.png"
-        alt="Stichting Mensenkenners logo"
-      />
+    <img
+      class="logo-image"
+      src="/src/assets/logohorizontaal.png"
+      alt="Stichting Mensenkenners logo"
+    />
     </picture>
   </a>
 
@@ -39,7 +40,9 @@
     >
     <hr />
     <a href="/profiel" class="profile-link">Mijn Profiel</a>
+    <button class="logout"></button>
   </nav>
+  <ThemeToggle />
 </header>
 
 <style>
@@ -55,11 +58,7 @@
     position: sticky;
     top: 0;
     z-index: 999;
-    background: radial-gradient(
-    circle at 0% 0%,
-    rgb(181 219 206 / 0.4) 0%,
-    transparent
-    );
+    background: var( --gradient-bg-header);
     backdrop-filter: blur(5px);
   }
 
@@ -114,6 +113,36 @@
       mask-size: contain;
     }
   }
+
+.logout {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: black;
+  transition: color 0.25s ease;
+
+  &::after {
+    content: "";
+    display: block;
+    width: 40px;
+    height: 40px;
+
+    background-color: black;
+
+    -webkit-mask: url("/src/assets/logout.svg") center/contain no-repeat;
+    mask: url("/src/assets/logout.svg") center/contain no-repeat;
+
+    transition: background-color 0.3s ease;
+  }
+
+  &:hover {
+    border-bottom: 2px solid var(--color-green);
+
+    &::after {
+      background-color: var(--color-green);
+    }
+  }
+}
 
   /* Hamburger button Dicht */
   .hamburger {
@@ -189,9 +218,17 @@
       border-bottom: none;
     }
   }
+
+  :global(html:has(#theme-toggle-checkbox:checked)) .logo-image {
+    content: url("/src/assets/mensenkennerslogowit.png");
+    scale:1.2;
+  }
 </style>
 
 <script>
+  import { createClient } from '@supabase/supabase-js'
+  const supabase = createClient('https://ydrfkbvvpvnfawagitpk.supabase.co', 'sb_publishable_mbrE91Iw1nji7h3s-PliTg_p0cOzjWg')
+
   const hamburger = document.querySelector(".hamburger");
   const nav = document.querySelector("nav");
 
@@ -200,4 +237,25 @@
     hamburger.classList.toggle("open");
     hamburger.setAttribute("aria-expanded", String(isOpen));
   });
+
+  async function signOut() {
+  const { error } = await supabase.auth.signOut()
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const logBtn = document.querySelector(".logout")
+
+  logBtn?.addEventListener("click", async () => {
+    const { error } = await supabase.auth.signOut()
+
+    if (error) {
+      console.error("Logout error:", error.message)
+      return
+    }
+
+    window.location.href = "/onboarding/login"
+  })
+})
+
 </script>
+
