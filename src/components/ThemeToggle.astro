@@ -61,4 +61,17 @@
       localStorage.setItem("theme", themeToggleCheckbox.checked ? "dark" : "light");
     });
   });
+
+  document.addEventListener("astro:page-load", () => {
+    const themeToggleCheckbox = document.getElementById("theme-toggle-checkbox");
+    if (!themeToggleCheckbox) return;
+
+    // Restore saved preference
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme === "dark") themeToggleCheckbox.checked = true;
+
+    themeToggleCheckbox.addEventListener("change", () => {
+      localStorage.setItem("theme", themeToggleCheckbox.checked ? "dark" : "light");
+    });
+  });
 </script>
