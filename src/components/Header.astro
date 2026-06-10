@@ -38,7 +38,6 @@ import ThemeToggle from "../components/ThemeToggle.astro";
       target="_blank"
       rel="noopener noreferrer">Contact</a
     >
-    <hr />
     <button class="logout"></button>
   </nav>
   <ThemeToggle />
@@ -64,10 +63,6 @@ import ThemeToggle from "../components/ThemeToggle.astro";
     display: flex;
     gap: 2rem;
     align-items: center;
-    & hr {
-      border: 1px solid var(--color-text);
-      height: 30px;
-    }
   }
 
   nav a {
@@ -176,10 +171,6 @@ import ThemeToggle from "../components/ThemeToggle.astro";
   @media (max-width: 768px) {
     .hamburger {
       display: flex;
-    }
-
-    nav hr {
-      display: none;
     }
 
     nav {
