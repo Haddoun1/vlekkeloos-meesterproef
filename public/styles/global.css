@@ -160,3 +160,20 @@ svg {
   max-width: 100%;
   height: auto;
 }
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .course-detail,
+  .course-detail.active {
+    transition: none !important;
+  }
+
+  .course-card:hover {
+    scale: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
