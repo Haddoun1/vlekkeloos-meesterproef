@@ -3,7 +3,8 @@ import ThemeToggle from "../components/ThemeToggle.astro";
 ---
 
 <header>
-  <a href="/" class="logo">
+  <div>
+      <a href="/" class="logo">
     <img
       class="logo-image logo-image--light"
       src="/src/assets/logohorizontaal.png"
@@ -15,6 +16,7 @@ import ThemeToggle from "../components/ThemeToggle.astro";
       alt="Stichting Mensenkenners logo"
     />
   </a>
+  </div>
 
   <button class="hamburger">
     <span></span>
@@ -39,8 +41,8 @@ import ThemeToggle from "../components/ThemeToggle.astro";
       rel="noopener noreferrer">Contact</a
     >
     <button class="logout"></button>
+    <ThemeToggle />
   </nav>
-  <ThemeToggle />
 </header>
 
 <style>
