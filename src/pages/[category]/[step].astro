@@ -764,8 +764,6 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
         const checked = [...checkboxes].filter((cb) => cb.checked);
         const maxSelections = Number(mcBlock.dataset.maxSelections || 2);
 
-        const maxSelections = Number(mcBlock.dataset.maxSelections || 2);
-
         if (checked.length > maxSelections) {
           e.target.checked = false;
 
