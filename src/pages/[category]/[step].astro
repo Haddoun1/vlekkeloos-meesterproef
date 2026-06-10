@@ -472,17 +472,18 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
       data: { user },
     } = await supabase.auth.getUser();
 
-    const response = await fetch("/api/track-step", {
+    const response = await fetch("/api/track-step", { 
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        userId: user?.id || "anonymous",
+        userId: user?.id || null,
         email: user?.email || null,
         name: user?.user_metadata?.name || null,
         stepId,
         category,
+        currentUrl: window.location.pathname,
         startedAt: startedAt.toISOString(),
         endedAt: endedAt.toISOString(),
         durationSeconds,
