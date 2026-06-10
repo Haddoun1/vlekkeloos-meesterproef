@@ -163,31 +163,21 @@ const recentCourses = [
     "module-4": "module_4",
   };
 
-  const courseIdToCategory = {
-    onboarding: "onboarding",
-    module_1: "module-1",
-    module_2: "module-2",
-    module_3: "module-3",
-    module_4: "module-4",
-  };
-
-  function getResumeHref(courseId, lastStepId, percentage) {
-    const category = courseIdToCategory[courseId];
-
-    if (!category) return courseStartHref[courseId] || "/";
-
+  function getResumeHref(courseId, latestRow, percentage) {
     // Als de cursus al afgerond is, mag de gebruiker opnieuw starten bij stap 1.
     if (percentage >= 100) {
-      return courseStartHref[courseId] || `/${category}/1`;
+      return courseStartHref[courseId] || "/";
     }
 
-    const parsedStep = Number(lastStepId);
-
-    if (!Number.isFinite(parsedStep) || parsedStep < 1) {
-      return courseStartHref[courseId] || `/${category}/1`;
+    // Gebruik altijd de opgeslagen URL. Dit werkt voor modules én onboarding.
+    // Voorbeeld module: /module-2/4
+    // Voorbeeld onboarding: /onboarding/step-4
+    if (latestRow?.current_url) {
+      return latestRow.current_url;
     }
 
-    return `/${category}/${parsedStep}`;
+    // Fallback als er nog geen progress of current_url is.
+    return courseStartHref[courseId] || "/";
   }
 
   async function loadProgress() {
@@ -251,7 +241,7 @@ const recentCourses = [
       card.dataset.progress = String(percentage);
 
       const latestRow = latestByCourse[key];
-      const resumeHref = getResumeHref(key, latestRow?.step_id, percentage);
+      const resumeHref = getResumeHref(key, latestRow, percentage);
       card.dataset.resumeHref = resumeHref;
     });
   }

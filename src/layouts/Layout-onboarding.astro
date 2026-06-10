@@ -533,44 +533,37 @@ const {
   let controller = new AbortController();
 
   document.addEventListener("astro:before-preparation", () => {
-    if (goingBack) {
-      document.documentElement.classList.add("is-going-back");
-    } else {
-      document.documentElement.classList.remove("is-going-back");
-    }
+    document.documentElement.classList.toggle("is-going-back", goingBack);
   });
 
   document.addEventListener("astro:after-swap", () => {
-    // Astro reset <html>, zet klasse terug op basis van goingBack
-
-    if (goingBack) {
-      document.documentElement.classList.add("is-going-back");
-    } else {
-      document.documentElement.classList.remove("is-going-back");
-    }
-
+    document.documentElement.classList.toggle("is-going-back", goingBack);
     goingBack = false;
   });
 
   async function setupTracking() {
     const main = document.querySelector("main");
-    const nextButton = document.querySelector(".button-next");
-    const { data: { user } } = await supabase.auth.getUser();
     const stepId = main?.dataset.stepId;
     const category = main?.dataset.category;
     const startedAt = Date.now();
 
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
     async function saveProgress() {
-      if (!stepId || !category) return;
+      if (!user?.id) {
+        console.warn("Geen ingelogde gebruiker, progress niet opgeslagen.");
+        return;
+      }
+
+      if (!stepId || !category) {
+        console.warn("stepId of category ontbreekt", { stepId, category });
+        return;
+      }
 
       const endedAt = Date.now();
       const durationSeconds = Math.round((endedAt - startedAt) / 1000);
-
-      console.log("Saving progress...", {
-        stepId,
-        category,
-        durationSeconds,
-      });
 
       const response = await fetch("/api/track-step", {
         method: "POST",
@@ -578,19 +571,20 @@ const {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          userId: user?.id || "anonymous",
-          email: localStorage.getItem("email") || null,
-          name: localStorage.getItem("name") || null,
-          startedAt: new Date(startedAt).toISOString(),
-          endedAt: new Date(endedAt).toISOString(),
+          userId: user.id,
+          email: user.email || localStorage.getItem("email") || null,
+          name: user.user_metadata?.name || localStorage.getItem("name") || null,
           stepId,
           category,
+          currentUrl: window.location.pathname,
+          startedAt: new Date(startedAt).toISOString(),
+          endedAt: new Date(endedAt).toISOString(),
           durationSeconds,
         }),
       });
 
       const result = await response.json();
-      console.log("API response:", result);
+      console.log("Onboarding progress saved:", result);
     }
 
     return saveProgress;
@@ -604,6 +598,7 @@ const {
     const saveProgress = await setupTracking();
 
     const backBtn = document.getElementById("back-btn");
+    const nextBtn = document.querySelector(".button-next");
 
     if (backBtn) {
       backBtn.addEventListener(
@@ -616,8 +611,6 @@ const {
         { signal },
       );
     }
-
-    const nextBtn = document.querySelector(".button-next");
 
     if (nextBtn) {
       nextBtn.addEventListener(
@@ -636,48 +629,4 @@ const {
   }
 
   document.addEventListener("astro:page-load", setupNavigation);
-
-  const main = document.querySelector("main");
-  const nextButton = document.querySelector(".button-next");
-
-  const stepId = main?.dataset.stepId;
-  const category = main?.dataset.category;
-
-  const startedAt = Date.now();
-
-  async function saveProgress() {
-    if (!stepId || !category) return;
-    
-    console.log("Next button clicked");
-    const endedAt = Date.now();
-    const durationSeconds = Math.round((new Date() - startedAt) / 1000);
-
-    console.log("Saving progress...", { stepId, category, durationSeconds });
-
-    const response = await fetch("/api/track-step", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        userId: localStorage.getItem("userId") || "anonymous",
-        email: localStorage.getItem("email") || null,
-        name: localStorage.getItem("name") || null,
-        startedAt: new Date(startedAt).toISOString(),
-        endedAt: new Date(endedAt).toISOString(),
-        stepId,
-        category,
-        durationSeconds,
-      }),
-    });
-
-    const result = await response.json();
-    console.log("API response:", result);
-  }
-  
-
-  nextButton.addEventListener("click", saveProgress)
-
-  console.log(stepId);
-  console.log(category);
 </script>
