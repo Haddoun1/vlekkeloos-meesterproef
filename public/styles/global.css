@@ -85,7 +85,7 @@ html {
 --color-cyan: light-dark(#B1F2D9, #1e4d3a);
 --color-cyan-dark: light-dark(#8bcab2, #2d6b52);
 --color-pink: light-dark(#FF94E1, #7a3d63);
---color-blue: light-dark(#2241dd, #2d3f8a);
+--color-blue: light-dark(#647bef, #2d3f8a);
 --color-red: light-dark(#FF6631, #8a3318);
 --color-yellow: light-dark(#E9F279, #6b6e12);
 --button-background: light-dark(transparent, #6ecfab2b);
@@ -159,4 +159,21 @@ svg {
   display: block;
   max-width: 100%;
   height: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .course-detail,
+  .course-detail.active {
+    transition: none !important;
+  }
+
+  .course-card:hover {
+    scale: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
 }

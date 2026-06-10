@@ -12,7 +12,7 @@ import MainLayout from "../../layouts/Layout-onboarding.astro";
   totalSteps={5}
   showBack={false}
   showProgress={false}
-  variant="welkom" 
+  variant="welkom"
 >
   <div class="loader">
     <img
@@ -28,7 +28,6 @@ import MainLayout from "../../layouts/Layout-onboarding.astro";
   />
 </MainLayout>
 
-
 <script>
   // @ts-nocheck
   const loader = document.querySelector(".loader");
@@ -37,7 +36,13 @@ import MainLayout from "../../layouts/Layout-onboarding.astro";
     const isMobile = window.matchMedia("(max-width: 768px)").matches;
 
     window.addEventListener("load", () => {
-      if (isMobile) {
+      const prefersReduced = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
+
+      if (prefersReduced) {
+        loader.classList.add("hidden");
+      } else if (isMobile) {
         setTimeout(() => {
           loader.classList.add("hidden-mobile");
         }, 750);
@@ -47,12 +52,6 @@ import MainLayout from "../../layouts/Layout-onboarding.astro";
             loader.classList.add("revealed");
           });
         });
-      }
-    });
-
-    loader.addEventListener("transitionend", (e) => {
-      if (e.propertyName === "mask-size") {
-        loader.classList.add("hidden");
       }
     });
   }
