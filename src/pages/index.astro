@@ -1,35 +1,61 @@
 ---
 // @ts-nocheck
 export const prerender = false;
-import MainLayout from '../layouts/Layout.astro';
-import CourseCard from '../components/CourseCard.astro';
+import MainLayout from "../layouts/Layout.astro";
+import CourseCard from "../components/CourseCard.astro";
+import ThemeToggle from '../components/ThemeToggle.astro';
 
-import { supabase } from '../lib/supabase';
 
 const courses = [
   {
-    id: "deel_1",
-    title: "Deel 1",
-    image: "",
+    id: "onboarding",
+    title: "Onboarding",
+    image: "/images/mockupmensenkenners.png",
+    description:
+      "Welkom bij de onboarding! In deze cursus maken we je wegwijs in het platform en leggen we uit wat je kunt verwachten in de verschillende delen van de cursus.",
     progress: 0,
-    href: "/deel-1/1",
-    color: "#FF94E1",
+    href: "/onboarding/step-1",
+    color: "var(--color-green)",
   },
   {
-    id: "deel_2",
-    title: "Deel 2",
-    image: "",
+    id: "module_1",
+    title: "Module 1: Inclusief contact",
+    description:
+      "In deze module oefen je met basisprincipes die in veel situaties toepasbaar zijn.",
+    image: "/images/Mensenkennerskaderdoof.png",
     progress: 0,
-    href: "/deel-2/1",
-    color: "#FF6631",
+    href: "/module-1/1",
+    color: "var(--color-pink)",
   },
   {
-    id: "deel_3",
-    title: "Deel 3",
-    image: "",
+    id: "module_2",
+    title: "Module 2: Perspectief en inlevingsvermogen",
+    description:
+      "In deze module sta je stil bij situaties waarin bezoekers de wereld anders ervaren.",
+    image: "images/Mensenkennerskaderroller.png",
     progress: 0,
-    href: "/deel-3/1",
-    color: "#E9F279",
+    href: "/module-2/1",
+    color: "var(--color-yellow)",
+  },
+  {
+    id: "module_3",
+    title: "Module 3: Toegankelijkheid van jouw werkplek",
+    description:
+      "In deze module ga je leren hoe je jouw werplek concreet inclusief kunt maken.",
+    image: "/images/Mensenkennerskadersd.png",
+    progress: 0,
+    href: "/module-3/1",
+    color: "var(--color-red)",
+  },
+  {
+    id: "module_4",
+    title: "Module 4: Praktijksituaties en toepassing",
+    description:
+      "In deze module oefen je met herkenbare situaties.",
+    image: "/images/Mensenkennerskadervisueel.png",
+    progress: 0,
+    href: "/module-4/1",
+    color: "var(--color-blue)",
   },
 ];
 
@@ -37,103 +63,166 @@ const courses = [
 const recentCourses = [
   {
     id: "onboarding",
-    title: 'Onboarding',
-    image: '',
+    title: "Onboarding",
+    image: "/images/Mensenkennerskaderdoof.png",
+    description:
+      "Welkom bij de onboarding! In deze cursus maken we je wegwijs in het platform en leggen we uit wat je kunt verwachten in de verschillende delen van de cursus.",
     progress: 0,
-    href: '/onboarding/welkom',
-    color: '#2241DD',
+    href: "/onboarding/step-1",
+    color: "var(--color-blue)",
   },
 ];
 ---
 
 <MainLayout>
   <section class="dashboard">
-    {recentCourses.length > 0 && (
-      <>
-        <h2>Ga verder waar je gebleven was</h2>
+    <div class="dashboard-left">
+      <div class="dashboard-title">
+        <h1 id="welcome"></h1>
+        <hr />
+      </div>
+
+      <div class="dashboard-cursus">
+        <h2>Mijn Cursussen</h2>
+        <div class="dashboard-buttons">
+          <button class="filter-button active" id="all-courses"
+            >Alle cursussen</button
+          >
+          <hr />
+          <button class="filter-button" id="not-started">Niet begonnen</button>
+          <button class="filter-button" id="in-progress">Bezig</button>
+          <button class="filter-button" id="completed">Voltooid</button>
+        </div>
 
         <div class="carousel-wrapper">
           <ul class="carousel">
-            {recentCourses.map((course) => (
-              <li class="carousel-item" data-course-id={course.id}>
-                <CourseCard
-                  title={course.title}
-                  image={course.image}
-                  progress={course.progress}
-                  href={course.href}
-                  color={course.color}
-                />
-              </li>
-            ))}
+            {
+              courses.map((course) => (
+                <li class="carousel-item" data-course-id={course.id}>
+                  <CourseCard
+                    title={course.title}
+                    description={course.description}
+                    image={course.image}
+                    progress={course.progress}
+                    href={course.href}
+                    color={course.color}
+                  />
+                </li>
+              ))
+            }
           </ul>
         </div>
-      </>
-    )}
-
-    <h1>Mijn Cursussen</h1>
-
-    <div class="carousel-wrapper">
-      <ul class="carousel">
-        {courses.map((course) => (
-          <li class="carousel-item" data-course-id={course.id}>
-            <CourseCard
-              title={course.title}
-              image={course.image}
-              progress={course.progress}
-              href={course.href}
-              color={course.color}
-            />
-          </li>
-        ))}
-      </ul>
+      </div>
     </div>
 
+    <aside class="course-detail" id="course-detail">
+      <div class="detail-image">
+        <div class="detail-image-placeholder"></div>
+      </div>
+      <div class="detail-content">
+        <h3 id="detail-title"></h3>
+        <p class="detail-progress" id="detail-progress"></p>
+        <p class="detail-description" id="detail-description"></p>
+        <a href="#" class="detail-cta" id="detail-cta"
+          >Ga verder met deze cursus</a
+        >
+      </div>
+    </aside>
   </section>
 </MainLayout>
 
 <script>
   // @ts-nocheck
-  const userId = localStorage.getItem("userId");
+  import { supabase } from "../lib/supabase";
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const totals = {
+    module_1: 6,
+    module_2: 10,
+    module_3: 7,
+    module_4: 8,
+    onboarding: 9,
+  };
+
+  const courseStartHref = {
+    onboarding: "/onboarding/step-1",
+    module_1: "/module-1/1",
+    module_2: "/module-2/1",
+    module_3: "/module-3/1",
+    module_4: "/module-4/1",
+  };
+
+  const categoryToCourseId = {
+    onboarding: "onboarding",
+    "module-1": "module_1",
+    "module-2": "module_2",
+    "module-3": "module_3",
+    "module-4": "module_4",
+  };
+
+  function getResumeHref(courseId, latestRow, percentage) {
+    // Als de cursus al afgerond is, mag de gebruiker opnieuw starten bij stap 1.
+    if (percentage >= 100) {
+      return courseStartHref[courseId] || "/";
+    }
+
+    // Gebruik altijd de opgeslagen URL. Dit werkt voor modules én onboarding.
+    // Voorbeeld module: /module-2/4
+    // Voorbeeld onboarding: /onboarding/step-4
+    if (latestRow?.current_url) {
+      return latestRow.current_url;
+    }
+
+    // Fallback als er nog geen progress of current_url is.
+    return courseStartHref[courseId] || "/";
+  }
 
   async function loadProgress() {
-    if (!userId) return;
+    if (!user) return;
 
     const response = await fetch("/api/get-progress", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ userId })
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId: user.id }),
     });
 
     const result = await response.json();
     const rows = result.data || [];
 
-    const totals = {
-      deel_1: 33,
-      deel_2: 32,
-      deel_3: 31,
-      onboarding: 5
+    const completed = {
+      module_1: new Set(),
+      module_2: new Set(),
+      module_3: new Set(),
+      module_4: new Set(),
+      onboarding: new Set(),
     };
 
-    const completed = {
-      deel_1: new Set(),
-      deel_2: new Set(),
-      deel_3: new Set(),
-      onboarding: new Set()
-    };
+    const latestByCourse = {};
 
     rows.forEach((row) => {
-      if (row.category === "Deel 1") completed.deel_1.add(row.step_id);
-      if (row.category === "Deel 2") completed.deel_2.add(row.step_id);
-      if (row.category === "Deel 3") completed.deel_3.add(row.step_id);
-      if (row.category === "onboarding") completed.onboarding.add(row.step_id);
+      const courseId = categoryToCourseId[row.category];
+      if (!courseId || !completed[courseId]) return;
+
+      completed[courseId].add(String(row.step_id));
+
+      const currentLatest = latestByCourse[courseId];
+      const rowTime = new Date(row.ended_at || row.started_at || row.created_at || 0).getTime();
+      const latestTime = currentLatest
+        ? new Date(currentLatest.ended_at || currentLatest.started_at || currentLatest.created_at || 0).getTime()
+        : -1;
+
+      if (!currentLatest || rowTime > latestTime) {
+        latestByCourse[courseId] = row;
+      }
     });
 
     Object.keys(completed).forEach((key) => {
-      const percentage = Math.round(
-        (completed[key].size / totals[key]) * 100
-      );
+      const count = completed[key].size;
+      const total = totals[key];
+      const percentage = Math.min(100, Math.round((count / total) * 100));
 
       const card = document.querySelector(`[data-course-id="${key}"]`);
       if (!card) return;
@@ -141,70 +230,419 @@ const recentCourses = [
       const progressText = card.querySelector("[data-progress-text]");
       const progressBar = card.querySelector("[data-progress-bar]");
 
-      if (progressText) {
-        progressText.textContent = `${percentage}%`;
+      if (progressText) progressText.textContent = `${percentage}%`;
+      if (progressBar) progressBar.value = percentage;
+
+      let status = "not-started";
+      if (count > 0 && count < total) status = "in-progress";
+      if (count >= total) status = "completed";
+
+      card.dataset.status = status;
+      card.dataset.progress = String(percentage);
+
+      const latestRow = latestByCourse[key];
+      const resumeHref = getResumeHref(key, latestRow, percentage);
+      card.dataset.resumeHref = resumeHref;
+    });
+  }
+
+  await loadProgress();
+
+  // --- Filterlogica ---
+  const filterButtons = document.querySelectorAll(".filter-button");
+  const carouselItems = document.querySelectorAll(".carousel-item");
+
+  filterButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      filterButtons.forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+
+      const filter = btn.id;
+
+      carouselItems.forEach((item) => {
+        const status = item.dataset.status || "not-started";
+        item.style.display =
+          filter === "all-courses" || status === filter ? "" : "none";
+      });
+    });
+  });
+
+  // --- Begroeting ---
+  const hour = new Date().getHours();
+  const greeting =
+    hour < 12 ? "Goedemorgen" : hour < 18 ? "Goedemiddag" : "Goedenavond";
+
+  const userName = user?.user_metadata?.name || "";
+  const capitalizedUsername =
+    userName.charAt(0).toUpperCase() + userName.slice(1);
+
+  if (user) {
+    document.getElementById("welcome").innerText =
+      `${greeting}, ${capitalizedUsername}! Ga verder waar je gebleven was.`;
+  } else {
+    document.getElementById("welcome").innerText = `${greeting}!`;
+  }
+
+  // --- Detail panel ---
+  const courseData = {
+    onboarding: {
+      title: "Onboarding",
+      href: "/onboarding/step-1",
+      description:
+        "Welkom bij de onboarding! In deze cursus maken we je wegwijs in het platform en leggen we uit wat je kunt verwachten in de verschillende delen van de cursus.",
+      image: "../../public/images/mockupmensenkenners.png",
+      color: "var(--color-green)",
+    },
+    module_1: {
+      title: "Module 1: Inclusief Contact",
+      href: "/module-1/1",
+      description:
+        "In deze module oefen je met basisprincipes die in veel situaties toepasbaar zijn.",
+      image: "../../public/images/Mensenkennerskaderdoof.png",
+      color: "var(--color-pink)",
+    },
+    module_2: {
+      title: "Module 2: Perspectief en inlevingsvermogen",
+      href: "/module-2/1",
+      description:
+        "In deze module sta je stil bij situaties waarin bezoekers de wereld anders ervaren.",
+      image: "../../public/images/Mensenkennerskaderroller.png",
+      color: "var(--color-yellow)",
+    },
+    module_3: {
+      title: "Toegankelijkheid van jouw werkplek",
+      href: "/module-3/1",
+      description:
+        "In deze module ga je leren hoe je jouw werplek concreet inclusief kunt maken.",
+      image: "../../public/images/Mensenkennerskaderspraak.png",
+      color: "var(--color-red)",
+    },
+    module_4: {
+      title: "Module 4: Praktijksituaties en toepassing",
+      href: "/module-4/1",
+      description:
+        "In deze module oefen je met herkenbare situaties.",
+      image: "../../public/images/Mensenkennerskaderspraak.png",
+      color: "var(--color-blue)",
+    },
+  };
+
+  const detail = document.getElementById("course-detail");
+
+  document.querySelectorAll(".carousel-item").forEach((item) => {
+    item.addEventListener("click", (e) => {
+      e.preventDefault();
+
+      const courseId = item.dataset.courseId;
+      const data = courseData[courseId];
+      if (!data) return;
+
+      if (
+        detail.classList.contains("active") &&
+        detail.dataset.openCourse === courseId
+      ) {
+        detail.classList.remove("active");
+        detail.dataset.openCourse = "";
+        return;
       }
 
-      if (progressBar) {
-        progressBar.value = percentage;
-      }
-          });
-        }
+      detail.dataset.openCourse = courseId;
 
-  loadProgress();
+      const resumeHref = item.dataset.resumeHref || data.href;
+      const status = item.dataset.status || "not-started";
+
+      document.getElementById("detail-title").textContent = data.title;
+      document.getElementById("detail-description").textContent =
+        data.description;
+
+      const cta = document.getElementById("detail-cta");
+      cta.href = resumeHref;
+      cta.textContent =
+        status === "completed"
+          ? "Start deze cursus opnieuw"
+          : status === "in-progress"
+            ? "Ga verder waar je gebleven was"
+            : "Start deze cursus";
+
+      cta.style.setProperty("background-color", data.color);
+      document
+        .getElementById("detail-progress")
+        .style.setProperty("color", data.color);
+
+      const placeholder = document.querySelector(".detail-image-placeholder");
+      placeholder.style.backgroundImage = `url('${data.image}')`;
+      placeholder.style.backgroundSize = "cover";
+      placeholder.style.backgroundPosition = "center";
+
+      const progressText =
+        item.querySelector("[data-progress-text]")?.textContent || "0%";
+      document.getElementById("detail-progress").textContent =
+        progressText + " compleet";
+
+      detail.classList.add("active");
+    });
+  });
 </script>
 
 <style>
   .dashboard {
-    max-width: 1100px;
     margin: 0 auto;
     padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
   }
 
-  h1, h2 {
-    margin: 0 0 1.5rem;
-    font-size: 2rem;
-    color: #333;
+  @media (min-width: 768px) {
+    .dashboard {
+      flex-direction: row;
+      align-items: start;
+    }
   }
 
+  .dashboard-left {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    min-width: 0;
+    flex: 1;
+    width: 100%;
+  }
+
+  .dashboard-title {
+    display: flex;
+    flex-direction: column;
+    gap: var(--size-sm);
+
+    & hr {
+      border: 2px solid var(--color-green);
+      width: 200px;
+    }
+  }
+
+  .dashboard-cursus {
+    display: flex;
+    flex-direction: column;
+    gap: var(--size-sm);
+
+    .dashboard-buttons {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+
+      & .filter-button {
+        padding: 0.5rem 1rem;
+        border: 2px solid var(--color-green);
+        background-color: var(--button-background);
+        color: var(--color-green);
+        border-radius: 9999px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+        font-family: var(--font-bold);
+
+        &:hover {
+          background-color: var(--color-green);
+          color: var(--color-background);
+        }
+
+        &.active {
+          background-color: var(--color-green);
+          color: var(--color-background);
+        }
+      }
+    }
+  }
+
+  .dashboard-cursus hr {
+    border: 1.6px solid var(--color-green);
+  }
+
+  h1,
   h2 {
-    margin-top: 2rem;
+    font-size: var(--size-2xl);
+    color: var(--color-text);
   }
 
-  /* Carousel */
+  @media (min-width: 768px) {
+    h1 {
+      font-size: var(--size-3xl);
+    }
+
+    h2 {
+      font-size: var(--size-2xl);
+    }
+  }
+
   .carousel-wrapper {
-    position: relative;
+    margin-top: 1rem;
   }
 
   .carousel {
     list-style: none;
-    padding: 2rem 0;
+    padding: 0;
     margin: 0;
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr;
     gap: 1rem;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scroll-behavior: smooth;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-  }
-
-  .carousel::-webkit-scrollbar {
-    display: none;
   }
 
   .carousel-item {
-    flex: 0 0 200px;
-    scroll-snap-align: start;
+    min-width: 0;
+    display: flex;
   }
 
   @media (min-width: 768px) {
-    .carousel-item {
-      flex: 0 0 350px;
+    .carousel {
+      grid-template-columns: repeat(2, 1fr);
     }
+  }
 
-    h1, h2 {
-      margin-bottom: 0rem;
+  @media (min-width: 1024px) {
+    .carousel {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  /* aside / detail panel */
+  .course-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    background: var(--gradient-bg-cyan-card);
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+    border: 2px solid rgba(0, 0, 0, 0.1);
+=======
+    border: 2px solid var(--color-cyan-dark);
+>>>>>>> 24ca3af (darkm mode)
+=======
+    border: 2px solid var(--color-cyan-dark);
+>>>>>>> 24ca3af (darkm mode)
+=======
+    border: 2px solid var(--color-cyan-dark);
+>>>>>>> 24ca3af (darkm mode)
+    border-radius: 12px;
+    width: 100%;
+    opacity: 0;
+    overflow: hidden;
+    height: 0;
+    padding: 0;
+    transition:
+      height 0.4s ease,
+      opacity 0.4s ease,
+      padding 0.4s ease;
+  }
+
+  @media (min-width: 768px) {
+    .course-detail {
+      width: 0;
+      min-width: 0;
+      height: 82vh;
+      position: sticky;
+      top: 5rem;
+      transform: translateX(100%);
+      transition:
+        width 0.4s ease,
+        opacity 0.4s ease,
+        transform 0.4s ease,
+        padding 0.4s ease;
+    }
+  }
+
+  .course-detail.active {
+    opacity: 1;
+    height: auto;
+    padding: 1.5rem;
+    margin-left: 2rem;
+  }
+
+  @media (min-width: 768px) {
+    .course-detail.active {
+      width: 320px;
+      min-width: 320px;
+      height: 82vh;
+      transform: translateX(0);
+      padding: 1.5rem;
+    }
+  }
+
+  .detail-image {
+    width: 100%;
+    border-radius: 8px;
+    height: 200px;
+    overflow: hidden;
+  }
+
+  .detail-image-placeholder {
+    width: 100%;
+    height: 200px;
+    background-size: cover;
+    background-position: center;
+  }
+
+  .detail-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    flex: 1;
+  }
+
+  .detail-content h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: var(--color-text);
+  }
+
+  .detail-progress {
+    font-size: 0.9rem;
+    margin: 0;
+    font-family: var(--font-bold);
+  }
+
+  .detail-description {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin: 0;
+    color: var(--color-text);
+    font-family: var(--font-medium);
+  }
+
+  .detail-cta {
+    margin-top: auto;
+    display: block;
+    text-align: center;
+    padding: 0.75rem;
+    background: var(--color-green);
+    color: var(--color-text);
+    border-radius: 9999px;
+    text-decoration: none;
+    font-family: var(--font-bold);
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background-color: color-mix(in srgb, var(--color-green) 85%, black);
+      scale: 1.02;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .dashboard:has(.course-detail.active) .carousel {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .dashboard:has(.course-detail.active) .carousel {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1440px) {
+    .dashboard:has(.course-detail.active) .carousel {
+      grid-template-columns: repeat(3, 1fr);
     }
   }
 </style>

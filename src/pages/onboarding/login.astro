@@ -1,6 +1,8 @@
 ---
-export const prerender = false;
 import MainLayout from "../../layouts/Layout-onboarding.astro";
+import { supabase } from "../../lib/supabase";
+
+export const prerender = false;
 ---
 
 <MainLayout
@@ -14,214 +16,85 @@ import MainLayout from "../../layouts/Layout-onboarding.astro";
   showProgress={false}
   showBack={false}
   showNext={false}
+  mockupSrc="/images/Mensenkennerskaderdoof.png"
+  showDashboardButton={false}
+  variant="login"
 >
-  <!-- <img class="mockup"
-    src="../../public/images/Mensenkennerskaderdoof.png"
+  <img
+    class="logo-desktop-login"
+    src="/images/Mensenkenners-logo-hori.png"
     alt="Mensenkenners logo"
-  /> -->
+  />
 
-  <form class="login-form">
-    <!-- <div class="buttons-container">
-        <button class="button-login active">
-          inloggen
-        </button>
-    
-        <button class="button-register not-active">
-          registreren
-        </button>
-      </div> -->
+  <form class="login-form" method="post">
     <fieldset>
-      <legend>Account</legend>
+      <div class="title-login">
+        <legend>Login</legend>
+      </div>
 
       <div class="container-name">
-        <label for="first-name">
-          Naam
-          <input
-            type="text"
-            id="first-name"
-            name="first-name"
-            placeholder=""
-            required
-          />
+        <label for="email">
+          E-mailadres
+          <input type="email" id="email" name="email" required />
+          <p class="error">Vul hier je e-mailadres in.</p>
         </label>
 
-        <label for="last-name">
-          Achternaam
+        <label for="password">
+          Wachtwoord
           <input
-            type="text"
-            id="last-name"
-            name="last-name"
+            type="password"
+            id="password"
+            name="password"
             placeholder=""
             required
           />
+          <p class="error">Vul hier je wachtwoord in.</p>
         </label>
       </div>
 
-      <label for="email">
-        E-mailadres
-        <input type="email" id="email" name="email" placeholder="" required />
-      </label>
-
       <p class="login-link">
-        Heb je al een account? <a href="/onboarding/login">Inloggen</a>
+        Heb je nog geen account? <a href="/onboarding/register"
+          >Maak een account</a
+        >
       </p>
     </fieldset>
-    <button type="submit">Ga verder</button>
+
+    <div class="buttons-onboarding">
+      <a class="button-back" href="/onboarding/welkom-no-loader" id="back-btn">
+        <button type="button">Ga terug</button>
+      </a>
+      <button type="submit">Login</button>
+    </div>
   </form>
 </MainLayout>
 
-<style>
-  img {
-    width: 70%;
-    max-width: 400px;
-    margin-top: 1rem;
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .buttons-container {
-    display: flex;
-    gap: 0.5rem;
-    margin: 1rem 0;
-
-    & button {
-      padding: 0.4rem 1.5rem;
-      border: none;
-      font-size: var(--size-xs);
-      border-radius: 50px;
-      cursor: pointer;
-      font-weight: bold;
-      width: 100%;
-    }
-
-    & button.active {
-      background-color: var(--color-cyan);
-      color: var(--color-background);
-    }
-
-    & button.not-active {
-      background-color: var(--color-background);
-      color: var(--color-cyan);
-    }
-  }
-  form{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    height: 100%;
-  }
-  fieldset {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    border: none;
-    margin: var(--size-xl) 0;
-    width: 100%;
-
-    & legend {
-      font-size: var(--size-lg);
-      font-family: var(--font-extra-bold);
-      margin-bottom: 0.5rem;
-    }
-  }
-
-  label {
-    display: flex;
-    flex-direction: column;
-    gap: 0.2em;
-    font-size: var(--size-sm);
-    font-family: var(--font-light);
-
-    & input {
-      padding: 0.5em;
-      border: 1px solid #e5e5e5;
-      background-color: rgb(255 255 255 / 0.8);
-      border-radius: 4px;
-      font-size: var(--size-base);
-    }
-  }
-
-  .container-name {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    width: 100%;
-  }
-
-  .login-link {
-    font-size: var(--size-sm);
-    font-family: var(--font-light);
-    text-align: center;
-
-    & a {
-      margin-left: 0.25rem;
-      color: var(--color-cyan);
-      text-decoration: none;
-      font-weight: bold;
-    }
-  }
-
-  button[type="submit"] {
-    width: 100%;
-    padding: var(--size-xs) var(--size-2xl);
-    border-radius: 25px;
-    border: none;
-    font-weight: 600;
-    cursor: pointer;
-    background-color: var(--color-cyan);
-    color: var(--color-background);
-
-    margin-top: auto;
-  }
-</style>
-
 <script>
   // @ts-nocheck
+  import { supabase } from "../../lib/supabase";
+
   const form = document.querySelector(".login-form");
   const emailInput = document.getElementById("email");
+  const passwordInput = document.getElementById("password");
 
-  function showError(input, message) {
-    input.setCustomValidity(message);
-    input.reportValidity();
-  }
-
-  function clearError(input) {
-    input.setCustomValidity("");
-  }
-
-  form.querySelectorAll("input").forEach((input) => {
-    input.addEventListener("input", () => clearError(input));
-  });
-
-  form.addEventListener("submit", (e) => {
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const firstName = document.getElementById("first-name").value.trim();
-    const lastName = document.getElementById("last-name").value.trim();
     const email = emailInput.value.trim();
+    const password = passwordInput.value.trim();
 
-    if (!firstName) {
-      return showError(
-        document.getElementById("first-name"),
-        "Vul je voornaam in.",
-      );
-    }
-    if (!lastName) {
-      return showError(
-        document.getElementById("last-name"),
-        "Vul je achternaam in.",
-      );
-    }
-    if (!email) {
-      return showError(emailInput, "Vul je e-mailadres in.");
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) {
+      console.error("Login error:", error.message);
+      alert("Inloggen mislukt: " + error.message);
+      return;
     }
 
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailPattern.test(email)) {
-      return showError(emailInput, "Voer een geldig e-mailadres in.");
-    }
+    console.log("Ingelogd als:", data.user.id);
 
-    window.location.href = "/onboarding/step-1";
+    window.location.replace("/onboarding/step-1");
   });
 </script>

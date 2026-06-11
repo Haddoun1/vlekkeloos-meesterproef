@@ -48,6 +48,9 @@ const {
   showBack = true,
   showProgress = true,
   showNext = true,
+  mockupSrc = "",
+  variant = "",
+  showDashboardButton = true,
 } = Astro.props;
 
 // https://claude.ai/chat/8789b362-5b69-4d5c-9b16-a4b157d09820 button back niet op welkompagina, wel op rest van stappen
@@ -59,15 +62,25 @@ const {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <link rel="stylesheet" href="/styles/global.css" />
+    <link rel="stylesheet" href="/styles/onboarding.css" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2" />
     <ClientRouter />
   </head>
 
   <body>
-    <main class="container"     
+    <main class={`container ${variant}`}     
     data-step-id={stepId}
     data-category={category} 
     >
+    <div class="wrapper-dashboardBtn">
+  {showDashboardButton && (
+    <div class="wrapper-dashboardBtn">
+      <a href="/index.html" class="back-button">
+        Dashboard
+      </a>
+    </div>
+  )}
+    </div>
       <div class="logo-mobile">
         <img
           src="/images/Mensenkenners-logo-hori.png"
@@ -83,6 +96,7 @@ const {
 
         <!-- Rechts op desktop: logo, tekst, progress, knoppen -->
         <div class="panel-right">
+          {mockupSrc && <img class="mockup" src={mockupSrc} alt="mockup" />}
           <div class="logo-desktop">
             <img
               src="/images/Mensenkenners-logo-hori.png"
@@ -103,6 +117,10 @@ const {
               )
             }
 
+            <div class="question-wrapper">
+              <slot name="question" />
+            </div>
+
             <div class="questionnaire">
               <h1>{headingText}</h1>
               <p>{bodyText}</p>
@@ -110,6 +128,13 @@ const {
           </div>
 
           <div class="buttons-onboarding">
+            {
+              showNext && (
+                <a class="button-next" href={nextHref} data-direction="forward">
+                  <button>Ga verder</button>
+                </a>
+              )
+            }
             {
               showBack && (
                 <a
@@ -122,13 +147,6 @@ const {
                 </a>
               )
             }
-            {
-              showNext && (
-                <a class="button-next" href={nextHref} data-direction="forward">
-                  <button>Ga verder</button>
-                </a>
-              )
-            }
           </div>
         </div>
       </div>
@@ -136,14 +154,8 @@ const {
   </body>
 </html>
 
-<style>
+<!-- <style>
   html {
-    /* background-image: radial-gradient(
-      circle at 0% 0%,
-      rgb(181 219 206 / 0.4) 0%,
-      transparent
-    ); */
-
     background-image: var(--gradient-bg-cyan);
     animation: pulse 2s ease-in-out infinite;
   }
@@ -176,6 +188,12 @@ const {
     width: 100%;
   }
 
+  .panel-left {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+  }
+
   .panel-right {
     display: flex;
     flex-direction: column;
@@ -189,6 +207,10 @@ const {
     gap: var(--size-xs);
     align-items: center;
     text-align: center;
+
+    & .question-wrapper {
+      order: 1;
+    }
 
     & .progress-bar {
       order: 2;
@@ -211,6 +233,7 @@ const {
 
   .logo-desktop {
     display: none;
+    padding: .3rem;
   }
 
   /* ── Text & progress ── */
@@ -256,15 +279,50 @@ const {
   }
 
   .progress.done-small {
-    background-color: var(--color-cyan);
+    background-color: var(--color-green);
   }
 
   .progress.done {
     width: 15%;
-    background-color: var(--color-cyan);
+    background-color: var(--color-green);
   }
 
   /* ── Buttons ── */
+
+  .wrapper-dashboardBtn {
+    display: flex;
+    align-self: flex-start;
+  }
+
+  .back-button {
+    font-family: var(--font-semi-bold);
+    font-size: var(--size-sm);
+    letter-spacing: 0.06em;
+    background: var(--color-green);
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 99px;
+    padding: 0.25rem 0.85rem;
+    color: var(--color-text);
+    margin: 0;
+    text-decoration: none;
+    max-width:fit-content;
+
+    &&::before {
+      content: "←";
+      display: inline-block;
+      margin-left: 0.2rem;
+      transition: transform 0.2s;
+    }
+
+    &&:hover {
+    background: #137f5b;
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(42,183,137,0.25);
+    transition: transform 0.2s;
+  }
+}
+
   .buttons-onboarding {
     display: flex;
     flex-direction: column;
@@ -288,27 +346,27 @@ const {
   }
 
   .button-next button {
-    background-color: var(--color-cyan);
+    background-color: var(--color-green);
     color: var(--color-background);
     transition:
       background-color 0.3s ease,
       color 0.3s ease;
 
     &:hover {
-      background-color: #82c2a9;
+      background-color: var(--color-cyan);
     }
   }
 
   .button-back button {
     background-color: var(--color-background);
-    color: var(--color-cyan);
-    border: 2px solid var(--color-cyan);
+    color: var(--color-green);
+    border: 2px solid var(--color-green);
     transition:
       background-color 0.3s ease,
       color 0.3s ease;
 
     &:hover {
-      background-color: var(--color-cyan);
+      background-color: var(--color-green);
       color: var(--color-background);
     }
   }
@@ -386,7 +444,6 @@ const {
       gap: var(--size-2xl);
     }
 
-    /* Linker kolom: slot-inhoud (bv. afbeelding/illustratie) */
     .panel-left {
       display: flex;
       flex: 1;
@@ -399,7 +456,6 @@ const {
       }
     }
 
-    /* Rechter kolom: logo + tekst + knoppen */
     .panel-right {
       flex: 1;
       display: flex;
@@ -431,7 +487,7 @@ const {
 
     .buttons-onboarding {
       margin-top: auto;
-      flex-direction: row;
+      flex-direction: row-reverse;
     }
   }
 
@@ -465,41 +521,85 @@ const {
       }
     }
   }
-</style>
+</style> -->
 
 <!-- https://claude.ai/chat/c67f7248-9580-489f-a97f-bb6489468314 het terugnavigeren met view transitions voor de backbuttons -->
 <script>
   // @ts-nocheck
   import { navigate } from "astro:transitions/client";
+  import { supabase } from "../lib/supabase";
 
   let goingBack = false;
   let controller = new AbortController();
 
   document.addEventListener("astro:before-preparation", () => {
-    if (goingBack) {
-      document.documentElement.classList.add("is-going-back");
-    } else {
-      document.documentElement.classList.remove("is-going-back");
-    }
+    document.documentElement.classList.toggle("is-going-back", goingBack);
   });
 
   document.addEventListener("astro:after-swap", () => {
-    // Astro reset <html>, zet klasse terug op basis van goingBack
-
-    if (goingBack) {
-      document.documentElement.classList.add("is-going-back");
-    } else {
-      document.documentElement.classList.remove("is-going-back");
-    }
+    document.documentElement.classList.toggle("is-going-back", goingBack);
     goingBack = false;
   });
 
-  function setupNavigation() {
+  async function setupTracking() {
+    const main = document.querySelector("main");
+    const stepId = main?.dataset.stepId;
+    const category = main?.dataset.category;
+    const startedAt = Date.now();
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    async function saveProgress() {
+      if (!user?.id) {
+        console.warn("Geen ingelogde gebruiker, progress niet opgeslagen.");
+        return;
+      }
+
+      if (!stepId || !category) {
+        console.warn("stepId of category ontbreekt", { stepId, category });
+        return;
+      }
+
+      const endedAt = Date.now();
+      const durationSeconds = Math.round((endedAt - startedAt) / 1000);
+
+      const response = await fetch("/api/track-step", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: user.id,
+          email: user.email || localStorage.getItem("email") || null,
+          name: user.user_metadata?.name || localStorage.getItem("name") || null,
+          stepId,
+          category,
+          currentUrl: window.location.pathname,
+          startedAt: new Date(startedAt).toISOString(),
+          endedAt: new Date(endedAt).toISOString(),
+          durationSeconds,
+        }),
+      });
+
+      const result = await response.json();
+      console.log("Onboarding progress saved:", result);
+    }
+
+    return saveProgress;
+  }
+
+  async function setupNavigation() {
     controller.abort();
     controller = new AbortController();
     const signal = controller.signal;
 
+    const saveProgress = await setupTracking();
+
     const backBtn = document.getElementById("back-btn");
+    const nextBtn = document.querySelector(".button-next");
+
     if (backBtn) {
       backBtn.addEventListener(
         "click",
@@ -512,13 +612,15 @@ const {
       );
     }
 
-    const nextBtn = document.querySelector(".button-next");
     if (nextBtn) {
       nextBtn.addEventListener(
         "click",
-        (e) => {
+        async (e) => {
           e.preventDefault();
           goingBack = false;
+
+          await saveProgress();
+
           navigate(nextBtn.getAttribute("href") ?? "/");
         },
         { signal },
@@ -527,48 +629,4 @@ const {
   }
 
   document.addEventListener("astro:page-load", setupNavigation);
-
-  const main = document.querySelector("main");
-  const nextButton = document.querySelector(".button-next");
-
-  const stepId = main?.dataset.stepId;
-  const category = main?.dataset.category;
-
-  const startedAt = Date.now();
-
-  async function saveProgress() {
-    if (!stepId || !category) return;
-    
-    console.log("Next button clicked");
-    const endedAt = Date.now();
-    const durationSeconds = Math.round((new Date() - startedAt) / 1000);
-
-    console.log("Saving progress...", { stepId, category, durationSeconds });
-
-    const response = await fetch("/api/track-step", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        userId: localStorage.getItem("userId") || "anonymous",
-        email: localStorage.getItem("email") || null,
-        name: localStorage.getItem("name") || null,
-        startedAt: new Date(startedAt).toISOString(),
-        endedAt: new Date(endedAt).toISOString(),
-        stepId,
-        category,
-        durationSeconds,
-      }),
-    });
-
-    const result = await response.json();
-    console.log("API response:", result);
-  }
-  
-
-  nextButton.addEventListener("click", saveProgress)
-
-  console.log(stepId);
-  console.log(category);
 </script>

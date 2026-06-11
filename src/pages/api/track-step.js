@@ -1,63 +1,107 @@
-import { supabase } from "../../lib/supabase";
+  // Importeert de Supabase client.
+  // Hiermee kunnen we gegevens opslaan in de database.
+  import { supabase } from "../../lib/supabase";
 
-export async function POST({ request }) {
-  let body = {};
+  // Deze functie wordt uitgevoerd wanneer een POST-request
+  // naar deze API-route wordt gestuurd.
+  export async function POST({ request }) {
 
-  try {
-    const text = await request.text();
-    body = text ? JSON.parse(text) : {};
-  } catch (error) {
-    return new Response(
-      JSON.stringify({
-        data: null,
-        error: "Geen geldige JSON ontvangen"
-      }),
-      {
-        status: 400,
-        headers: { "Content-Type": "application/json" }
-      }
-    );
-  }
+    // Leeg object waarin later de ontvangen data wordt opgeslagen.
+    let body = {};
 
-  if (!body.stepId || !body.category) {
-    return new Response(
-      JSON.stringify({
-        data: null,
-        error: "stepId of category ontbreekt"
-      }),
-      {
-        status: 400,
-        headers: { "Content-Type": "application/json" }
-      }
-    );
-  }
+    try {
 
-  const { data, error } = await supabase
-    .from("course_progress")
-    .insert({
-      user_id: body.userId || "anonymous",
-      email: body.email || null,
-      name: body.name || null,
-      step_id: body.stepId,
-      category: body.category,
-      started_at: body.startedAt || new Date().toISOString(),
-      ended_at: body.endedAt || new Date().toISOString(),
-      duration_seconds: body.durationSeconds || 0,
-    })
-    .select();
+      // Leest de inhoud van het verzoek als tekst.
+      const text = await request.text();
 
-  return new Response(JSON.stringify({ data, error }), {
-    headers: { "Content-Type": "application/json" }
-  });
-}
+      // Zet de ontvangen JSON om naar een JavaScript object.
+      // Als er geen data is ontvangen, gebruiken we een leeg object.
+      body = text ? JSON.parse(text) : {};
 
-export async function GET() {
-  return new Response(
-    JSON.stringify({
-      message: "Deze API werkt alleen met POST requests."
-    }),
-    {
-      headers: { "Content-Type": "application/json" }
+    } catch (error) {
+
+      // Als de ontvangen JSON ongeldig is,
+      // sturen we een foutmelding terug.
+      return new Response(
+        JSON.stringify({
+          data: null,
+          error: "Geen geldige JSON ontvangen"
+        }),
+        {
+          status: 400,
+          headers: {
+            "Content-Type": "application/json"
+          }
+        }
+      );
     }
-  );
-}
+
+    // Controleert of de verplichte velden aanwezig zijn.
+    // Zonder stepId en category kunnen we geen voortgang opslaan.
+    if (!body.stepId || !body.category) {
+      return new Response(
+        JSON.stringify({
+          data: null,
+          error: "stepId of category ontbreekt"
+        }),
+        {
+          status: 400,
+          headers: {
+            "Content-Type": "application/json"
+          }
+        }
+      );
+    }
+
+    // Slaat de cursusvoortgang op in de database.
+    const { data, error } = await supabase
+      .from("course_progress")
+
+.insert({
+  user_id: body.userId || "anonymous",
+  email: body.email || null,
+  name: body.name || null,
+  step_id: body.stepId,
+  category: body.category,
+  current_url: body.currentUrl || null,
+  started_at: body.startedAt || new Date().toISOString(),
+  ended_at: body.endedAt || new Date().toISOString(),
+  duration_seconds: body.durationSeconds || 0,
+})
+
+      // Geeft het nieuw opgeslagen record direct terug.
+      .select();
+
+    // Stuurt het resultaat terug naar de browser.
+    return new Response(
+      JSON.stringify({
+        data,
+        error
+      }),
+      {
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }
+    );
+  }
+
+  // Deze functie wordt uitgevoerd wanneer iemand
+  // deze route via een GET-request bezoekt.
+  export async function GET() {
+
+    // Geeft een melding terug dat deze API-route
+    // alleen bedoeld is voor POST-requests.
+    return new Response(
+      JSON.stringify({
+        message: "Deze API werkt alleen met POST requests."
+      }),
+      {
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }
+    );
+  }
+
+  // Bron: https://chatgpt.com/c/6a195d63-9e38-83eb-a00b-9b631d2b3a69
