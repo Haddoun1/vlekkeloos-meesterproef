@@ -53,7 +53,7 @@
       "type": "content",
       "section": "module_1_inclusief_contact",
       "title": "Vier basisprincipes",
-      "text": "Spreek de persoon zelf aan. Vraag voordat je helpt. Doe geen aannames. Geef iemand de ruimte om op diens eigen manier te reageren.",
+      "text": "Spreek de persoon altijd rechtstreeks aan, ook als er anderen aanwezig zijn. Vraag eerst of hulp gewenst is voordat je iets overneemt. Doe geen aannames over wat iemand kan, nodig heeft of prettig vindt. Iedereen is anders en weet zelf vaak het beste wat werkt. Geef ruimte om op een eigen manier te reageren, communiceren en keuzes te maken.",
       "Category": "Module 1"
     },
     {
@@ -80,7 +80,7 @@
         },
         {
           "prompt": "Een bezoeker met een blindengeleidehond blijft bij de ingang staan.",
-          "answer": "Vraag of ondersteuning gewenst is."
+          "answer": "Zorg dat de blindengeleidehond welkom is en geen toegang wordt geweigerd."
         },
         {
           "prompt": "Een bezoeker in een rolstoel komt binnen.",
@@ -124,7 +124,7 @@
         },
         {
           "prompt": "Lang blijven kijken naar iemands uiterlijk.",
-          "answer": "Kan ongemak of afstand creëren."
+          "answer": "Kan ongemak of afstand creeren."
         }
       ],
       "Category": "Module 1"
