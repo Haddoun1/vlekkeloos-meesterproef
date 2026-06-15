@@ -43,23 +43,41 @@
     }
   }
 
-  .theme-toggle-icon-dark { display: none; }
+  /* .theme-toggle-icon-dark { display: none; }
 
   :global(html:has(#theme-toggle-checkbox:checked)) .theme-toggle-icon-light { display: none; }
-  :global(html:has(#theme-toggle-checkbox:checked)) .theme-toggle-icon-dark { display: block; }
+  :global(html:has(#theme-toggle-checkbox:checked)) .theme-toggle-icon-dark { display: block; } */
+
+  .theme-toggle-icon-dark { display: none; }
+
+:global(html.dark-mode) .theme-toggle-icon-light { display: none; }
+:global(html.dark-mode) .theme-toggle-icon-dark { display: block; }
 </style>
 
 <script>
 //@ts-nocheck
-  document.addEventListener("astro:page-load", () => {
+  function setupThemeToggle() {
     const themeToggleCheckbox = document.getElementById("theme-toggle-checkbox");
     if (!themeToggleCheckbox) return;
 
-    const savedTheme = localStorage.getItem("theme");
-    if (savedTheme === "dark") themeToggleCheckbox.checked = true;
+    if (document.documentElement.classList.contains("dark-mode")) {
+      themeToggleCheckbox.checked = true;
+    }
 
     themeToggleCheckbox.addEventListener("change", () => {
-      localStorage.setItem("theme", themeToggleCheckbox.checked ? "dark" : "light");
+      if (themeToggleCheckbox.checked) {
+        document.documentElement.classList.add("dark-mode");
+        localStorage.setItem("theme", "dark");
+      } else {
+        document.documentElement.classList.remove("dark-mode");
+        localStorage.setItem("theme", "light");
+      }
     });
-  });
+  }
+
+  // Run on initial load
+  setupThemeToggle();
+
+  // Run after every Astro page transition
+  document.addEventListener("astro:page-load", setupThemeToggle);
 </script>
