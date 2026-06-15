@@ -337,6 +337,7 @@ html.is-going-back::view-transition-new(content) {
 
     & .progress-bar {
       justify-content: flex-start;
+      margin-top: var(--size-base);
     }
   }
 
