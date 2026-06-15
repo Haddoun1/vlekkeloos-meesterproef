@@ -5,31 +5,32 @@ import data from "../../data/mensenkennersvragen.json";
 import { slugify } from "../../utils/slugify";
 import AccessibilitySimulator from "../../components/AccessibilitySimulator.astro";
 
+// Genereert cursuspagina's vanuit de Mensenkennersvragen JSON.
 
 export async function getStaticPaths() {
 
-  const getCategory = (item) => item.Category ?? item.category;
-  const getCategorySlug = (item) => slugify(getCategory(item));
+  const getCategory = (item) => item.Category ?? item.category; // Haalt de categorie op, bijvoorbeeld 'Module 1'.
+  const getCategorySlug = (item) => slugify(getCategory(item)); // Zet de categorie om naar een URL-vriendelijke slug.
 
-  const items = data.blocks.filter(
+  const items = data.blocks.filter( // Selecteert alleen blokken die als cursuspagina getoond worden.
     (item) =>
       getCategory(item) &&
       ["content", "video", "question"].includes(item.type),
   );
 
-  return items.map((item) => {
+  return items.map((item) => { // Maakt voor elk blok een aparte route aan.
     const categorySlug = getCategorySlug(item);
-    const categoryItems = items.filter(
+    const categoryItems = items.filter( // Haalt alle stappen binnen dezelfde module op.
       (x) => getCategorySlug(x) === categorySlug,
     );
-    const stepIndex = categoryItems.findIndex((x) => x.id === item.id);
+    const stepIndex = categoryItems.findIndex((x) => x.id === item.id); // Bepaalt het stapnummer binnen de module.
 
-    return {
+    return { // Geeft de URL-parameters en paginadata terug aan Astro.
       params: {
         category: categorySlug,
         step: String(stepIndex + 1),
       },
-      props: {
+      props: { // Geeft data mee aan de gegenereerde pagina.
         item,
         currentStep: stepIndex + 1,
         totalSteps: categoryItems.length,
@@ -40,11 +41,25 @@ export async function getStaticPaths() {
   });
 }
 
+// Haalt de huidige stapdata op en bouwt de vorige/volgende links.
+
 const { item, currentStep, totalSteps, category, categoryItems } = Astro.props;
 const categorySlug = slugify(category);
-
 const previousPage = currentStep > 1 ? `/${categorySlug}/${currentStep - 1}` : null;
 const nextPage = currentStep < totalSteps ? `/${categorySlug}/${currentStep + 1}` : null;
+
+// Haalt vraagopties, schaalinstellingen en ratingwaarden op.
+
+const options = item.options || [];
+const scale = item.scale || {};
+const minRating = scale.min || 1;
+const maxRating = scale.max || 10;
+const ratings = Array.from(
+  { length: maxRating - minRating + 1 },
+  (_, i) => minRating + i,
+);
+
+// Zet video-URL's om naar embed-URL's wanneer een videoblok wordt gebruikt.
 
 let embedUrl = item.url;
 if (item.url?.includes("vimeo.com")) {
@@ -60,14 +75,7 @@ if (item.url?.includes("youtu.be/")) {
   embedUrl = `https://www.youtube.com/embed/${id}`;
 }
 
-const options = item.options || [];
-const scale = item.scale || {};
-const minRating = scale.min || 1;
-const maxRating = scale.max || 10;
-const ratings = Array.from(
-  { length: maxRating - minRating + 1 },
-  (_, i) => minRating + i,
-);
+// Bepaalt welk type vraag getoond wordt en of de check-knop nodig is.
 
 const hasCorrectOptions =
   item.type === "question" &&
@@ -82,6 +90,8 @@ const isCheckableQuestion =
   item.type === "question" &&
   (hasCorrectOptions || item.input_type === "matching" || isOpenReflectionQuestion);
 
+// Stelt feedback en voorbeeldantwoorden in.
+
 const maxSelections = item.max_selections || 2;
 const exampleAnswer =
   item.example_answer ||
@@ -89,6 +99,8 @@ const exampleAnswer =
   item.sample_answer ||
   item.explanation ||
   "Er is nog geen voorbeeldantwoord ingesteld voor deze vraag. Voeg bijvoorbeeld `example_answer` toe aan deze vraag in de JSON.";
+
+// Bepaalt naar welke module de gebruiker gaat na een eindscherm.
 
 let nextSectionUrl = null;
 
@@ -99,7 +111,13 @@ if (item.id?.endsWith("_submit")) {
   if (item.id === "m3_submit") nextSectionUrl = "/module-4/1";
 }
 
-const progressPct = Math.round((currentStep / totalSteps) * 100);
+// Berekent de voortgang binnen de huidige module.
+
+const progressPct = Math.round(
+  (currentStep / totalSteps) * 100,
+);
+
+// Koppelt elke module aan een accentkleur.
 
 const categoryColorMap: Record<string, string> = {
   "intro": "#B1F2D9",
@@ -114,10 +132,9 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
 
 <link rel="stylesheet" href="/styles/global.css" />
 
-<!-- Nav overlay (backdrop) -->
+<!-- Zijmenu met alle stappen binnen de huidige module. -->
 <div class="nav-overlay" id="navOverlay"></div>
 
-<!-- Slide-in nav panel -->
 <nav class="nav-panel" id="navPanel" aria-label="Vragennavigatie">
   <div class="nav-panel-header">
     <span class="nav-panel-title">{category}</span>
@@ -144,8 +161,10 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
   </ul>
 </nav>
 
+<!-- Toegankelijkheidssimulator voor ervaringsopdrachten. -->
 <AccessibilitySimulator />
 
+<!-- Hoofdlayout van de cursuspagina. -->
 <div class="page-shell" style={`--color-accent: ${accentColor}`}>
   <aside class="sidebar-left" aria-label="Navigatiemenu"></aside>
 
@@ -156,6 +175,8 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     data-requires-check={isCheckableQuestion ? "true" : "false"}
     data-input-type={item.input_type || ""}
   >
+
+  <!-- Bovenste navigatie met dashboardlink, modulelabel, stappenmenu en instellingen. -->
     <header class="page-header">
       <a href="/index.html" class="back-button"> Dashboard </a>
       <p class="category-pill">{category}</p>
@@ -176,6 +197,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
       </button>
     </header>
 
+  <!-- Contentkaart met tekst, video, vraag of eindscherm. -->
     <section class="card">
       {item.title && <h1 class="card-title">{item.title}</h1>}
       {item.subtitle && <p class="card-subtitle">{item.subtitle}</p>}
@@ -188,6 +210,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
         </p>
       )}
 
+    <!-- Videoblok. -->
       {item.type === "video" && embedUrl && embedUrl.trim() !== "" && (
         <div class="video-wrapper">
           <iframe
@@ -200,6 +223,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
         </div>
       )}
 
+    <!-- Vraagblok. De inhoud wordt bepaald door input_type uit de JSON. -->
       {item.type === "question" && (
         <div class="question-block">
           {item.question && <h2 class="question-text">{item.question}</h2>}
@@ -209,10 +233,12 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
           {item.input_type === "text" && (
             <input class="text-input" type="text" placeholder={item.placeholder || "Typ hier je antwoord"} />
           )}
+          
+          {/* Input type email is ongebruikt
 
-          {item.input_type === "email" && (
+          {item.input_type === "email" && ( 
             <input class="text-input" type="email" placeholder="Typ hier je e-mailadres" />
-          )}
+          )} */}
 
           {item.input_type === "long_text" && (
             <textarea class="text-area" rows="5" placeholder={item.placeholder || "Typ hier je antwoord"} />
@@ -240,6 +266,8 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
               })}
             </ul>
           )}
+
+          {/* Multiple-choicevraag. */}
 
           {item.input_type === "multiple_choice" && (
             <div data-multiple-choice data-max-selections={maxSelections}>
@@ -278,6 +306,8 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
             </div>
           )}
 
+          {/* Ratingvraag. */}
+
           {item.input_type === "rating" && (
             <div class="rating-block">
               {scale.min_label && (
@@ -303,6 +333,8 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
             </div>
           )}
 
+        {/* Zin-afmaken-vraag. */}
+
           {item.input_type === "sentence_completion" && (
             <div class="sentence-completion-block">
               <textarea
@@ -314,6 +346,8 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
               />
             </div>
           )}
+        
+        {/* Matchingvraag. */}
 
           {item.input_type === "matching" && (
             <div class="matching-block" data-matching data-question-id={item.id}>
@@ -321,7 +355,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
                 {(item.pairs || []).map((pair, index) => (
                   <div class="matching-row">
                     <div class="matching-prompt">
-                      <span class="option-key">{String.fromCharCode(65 + index)}</span>
+                      <span class="option-key">{index + 1}</span>
                       <span>{pair.prompt}</span>
                     </div>
                     <select
@@ -360,6 +394,8 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
         </div>
       )}
 
+      <!-- Eindscherm met dashboardlink en optionele link naar de volgende module. -->
+
       {
         item.id?.endsWith("_submit") && (
           <div class="action-row">
@@ -375,6 +411,8 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
         )
       }
     </section>
+
+    <!-- Vaste navigatie onderaan met vorige en volgende stap. -->
 
     <nav class="bottom-nav" aria-label="Navigatie">
       {
@@ -412,6 +450,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
   // @ts-nocheck
   import { supabase } from "../../lib/supabase";
 
+  // Haalt de belangrijkste DOM-elementen en stapmetadata op.
   const main = document.querySelector("main.content-col");
   const navNext = document.getElementById("nav-next");
   const checkAnswerBtn = document.getElementById("check-answer-btn");
@@ -424,6 +463,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
 
   let alreadySaved = false;
 
+  // Slaat de huidige stap op in Supabase, zodat de gebruiker later kan hervatten.
   async function saveProgress() {
     if (alreadySaved) return;
     if (!stepId || !category) return;
@@ -443,11 +483,12 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        userId: user?.id || "anonymous",
+        userId: user?.id || null,
         email: user?.email || null,
         name: user?.user_metadata?.name || null,
         stepId,
         category,
+        currentUrl: window.location.pathname,
         startedAt: startedAt.toISOString(),
         endedAt: endedAt.toISOString(),
         durationSeconds,
@@ -457,6 +498,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     const result = await response.json();
   }
 
+  // Zet de volgende-knop pas vrij nadat een checkbare vraag is nagekeken.
   function setNextEnabled(enabled) {
     if (!navNext || !requiresCheck) return;
 
@@ -483,6 +525,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     });
   }
 
+  // Maakt tekst veilig voordat deze als HTML-feedback wordt getoond.
   function escapeHtml(value) {
     return String(value || "")
       .replaceAll("&", "&amp;")
@@ -492,6 +535,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
       .replaceAll("'", "&#039;");
   }
 
+  // Haalt het zichtbare label van een antwoordoptie op.
   function getOptionLabel(input) {
     const label = input.closest(".option-label");
     const key = label?.querySelector(".option-key")?.textContent?.trim();
@@ -506,6 +550,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     return [...correctInputs].map(getOptionLabel);
   }
 
+  // Markeert keuzeantwoorden visueel als goed of fout.
   function markChoiceFeedback() {
     const choiceInputs = document.querySelectorAll(
       ".question-block input[data-correct]",
@@ -527,25 +572,50 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     });
   }
 
+  // Bepaalt welke matching-antwoorden fout zijn en wat de juiste koppeling is.
   function getMatchingCorrections() {
     const matchingSelects = document.querySelectorAll(".matching-select[data-correct-answer]");
 
     return [...matchingSelects]
       .filter((select) => select.value !== select.dataset.correctAnswer)
       .map((select) => {
-        const prompt = select
-          .closest(".matching-row")
+        const row = select.closest(".matching-row");
+        const key = row?.querySelector(".matching-prompt .option-key")?.textContent?.trim();
+        const prompt = row
           ?.querySelector(".matching-prompt span:last-child")
           ?.textContent
           ?.trim();
 
         return {
+          key,
           prompt,
           correctAnswer: select.dataset.correctAnswer,
         };
       });
   }
 
+  // Markeert matching-antwoorden visueel als goed of fout.
+  function markMatchingFeedback() {
+    const matchingSelects = document.querySelectorAll(".matching-select[data-correct-answer]");
+
+    matchingSelects.forEach((select) => {
+      const row = select.closest(".matching-row");
+      const prompt = row?.querySelector(".matching-prompt");
+
+      select.classList.remove("matching-select--correct", "matching-select--incorrect");
+      prompt?.classList.remove("matching-prompt--correct", "matching-prompt--incorrect");
+
+      if (select.value === select.dataset.correctAnswer) {
+        select.classList.add("matching-select--correct");
+        prompt?.classList.add("matching-prompt--correct");
+      } else {
+        select.classList.add("matching-select--incorrect");
+        prompt?.classList.add("matching-prompt--incorrect");
+      }
+    });
+  }
+
+  // Controleert of een open reflectievraag is ingevuld.
   function getOpenQuestionResult() {
     const openInput = document.querySelector(
       ".question-block textarea, .question-block input[type='text']",
@@ -567,6 +637,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     };
   }
 
+  // Controleert het antwoord op basis van het vraagtype.
   function getQuestionResult() {
     const inputType = main?.dataset.inputType;
 
@@ -630,6 +701,8 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
         (select) => select.value === select.dataset.correctAnswer,
       );
 
+      markMatchingFeedback();
+
       return {
         valid: true,
         correct: allCorrect,
@@ -643,6 +716,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     };
   }
 
+  // Zet invoervelden vast nadat het antwoord is nagekeken.
   function lockQuestionInputs() {
     const inputs = document.querySelectorAll(
       ".question-block input, .question-block textarea, .question-block select",
@@ -653,6 +727,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     });
   }
 
+  // Handelt de check-knop af en toont passende feedback.
   checkAnswerBtn?.addEventListener("click", () => {
     const result = getQuestionResult();
 
@@ -674,6 +749,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
       `;
     } else if (result.correct) {
       markChoiceFeedback();
+      if (result.matchingCorrections) markMatchingFeedback();
       answerFeedback.className = "answer-feedback answer-feedback--correct";
       answerFeedback.textContent = explanation
         ? `Goed! ${explanation}`
@@ -692,20 +768,25 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
       if (correctOptions.length > 0) {
         feedbackHtml += `
           <p><strong>Het juiste antwoord${correctOptions.length > 1 ? "en waren" : " was"}:</strong></p>
-          <ul>${correctOptions.map((option) => `<li>${escapeHtml(option)}</li>`).join("")}</ul>
+          <div class="correct-answer-list">
+            ${correctOptions
+              .map((option, index) => `<div class="correct-answer-row">${index + 1}. ${escapeHtml(option)}</div>`)
+              .join("")}
+          </div>
         `;
       }
 
       if (matchingCorrections.length > 0) {
         feedbackHtml += `
           <p><strong>Juiste koppelingen:</strong></p>
-          <ul>
+          <div class="correct-answer-list">
             ${matchingCorrections
-              .map(
-                (item) => `<li>${escapeHtml(item.prompt)}: ${escapeHtml(item.correctAnswer)}</li>`,
-              )
+              .map((item, index) => {
+                const number = item.key || index + 1;
+                return `<div class="correct-answer-row">${number}. ${escapeHtml(item.prompt)} → ${escapeHtml(item.correctAnswer)}</div>`;
+              })
               .join("")}
-          </ul>
+          </div>
         `;
       }
 
@@ -713,11 +794,12 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     }
 
     lockQuestionInputs();
-    checkAnswerBtn.disabled = true;
-    checkAnswerBtn.textContent = "Gecheckt";
+    checkAnswerBtn.style.display = "none";
+    
     setNextEnabled(true);
   });
 
+  // Beperkt het aantal keuzes bij multiple-choicevragen.
   const mcBlock = document.querySelector("[data-multiple-choice]");
 
   if (mcBlock) {
@@ -746,7 +828,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     });
   }
 
-  // ── Hamburger nav ──────────────────────────────────────────────
+  // Zijmenu openen en sluiten.
   const hamburgerBtn = document.getElementById("hamburgerBtn");
   const navPanel = document.getElementById("navPanel");
   const navOverlay = document.getElementById("navOverlay");
@@ -772,7 +854,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
   navCloseBtn?.addEventListener("click", closeNav);
   navOverlay?.addEventListener("click", closeNav);
 
-  // ── Setting nav ────────────────────────────────────────────────
+  // Instellingenpaneel openen en sluiten.
   const settingBtn = document.getElementById("settingBtn");
   const settingPanel = document.getElementById("settingPanel");
   const settingOverlay = document.getElementById("settingOverlay");
@@ -806,7 +888,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     min-height: 100vh;
   }
 
-  /* ── Nav overlay ─────────────────────────────────────────────── */
+  /* Achtergrondlaag voor het zijmenu. */
 
   .nav-overlay {
     position: fixed;
@@ -823,7 +905,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     pointer-events: all;
   }
 
-  /* ── Nav panel ───────────────────────────────────────────────── */
+  /* Zijmenu met alle stappen binnen de module. */
 
   .nav-panel {
     position: fixed;
@@ -934,7 +1016,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
   }
 
 
-  /* ── Hamburger button ────────────────────────────────────────── */
+  /* Knop om het zijmenu te openen. */
 
   .hamburger-btn {
     font-family: var(--font-semi-bold);
@@ -965,7 +1047,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     transform: scale(1.07);
   }
 
-  /* ── Setting button ──────────────────────────────────────────── */
+  /* Knop om het instellingenpaneel te openen. */
 
   .setting-btn {
     font-family: var(--font-semi-bold);
@@ -997,7 +1079,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     transform: scale(1.07);
   }
 
-  /* ── Page shell ──────────────────────────────────────────────── */
+  /* Hoofdlayout van de cursuspagina. */
 
   .page-shell {
     display: grid;
@@ -1474,19 +1556,74 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
   }
 
   .answer-feedback ul {
+    list-style: none;
     margin: 0.35rem 0 0;
-    padding-left: 1.3rem;
+    padding-left: 0;
   }
 
-  .option-label--correct {
-    border-color: #2fbf7f;
-    background: #ecfff7;
+  .correct-answer-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    margin-top: 0.5rem;
   }
 
-  .option-label--incorrect {
-    border-color: #ff6631;
-    background: #fff0ed;
+  .correct-answer-row {
+    border: 1.5px solid currentColor;
+    border-radius: 10px;
+    padding: 0.55rem 0.75rem;
+    background: rgba(255, 255, 255, 0.55);
   }
+
+  .option-label.option-label--correct {
+    border-color: #2fbf7f !important;
+    background: #ecfff7 !important;
+    box-shadow: 0 0 0 2px rgba(47, 191, 127, 0.25) !important;
+  }
+
+  .option-label.option-label--incorrect {
+    border-color: #ff6631 !important;
+    background: #fff0ed !important;
+    box-shadow: 0 0 0 2px rgba(255, 102, 49, 0.25) !important;
+  }
+
+  .option-label.option-label--correct .option-key {
+    background: #2fbf7f !important;
+    color: white !important;
+    border-color: #2fbf7f !important;
+  }
+
+  .option-label.option-label--incorrect .option-key {
+    background: #ff6631 !important;
+    color: white !important;
+    border-color: #ff6631 !important;
+  }
+
+.matching-prompt.matching-prompt--correct,
+.matching-select.matching-select--correct {
+  border-color: #2fbf7f !important;
+  background: #ecfff7 !important;
+  box-shadow: 0 0 0 2px rgba(47, 191, 127, 0.25) !important;
+}
+
+.matching-prompt.matching-prompt--incorrect,
+.matching-select.matching-select--incorrect {
+  border-color: #ff6631 !important;
+  background: #fff0ed !important;
+  box-shadow: 0 0 0 2px rgba(255, 102, 49, 0.25) !important;
+}
+
+.matching-prompt.matching-prompt--correct .option-key {
+  background: #2fbf7f !important;
+  color: white !important;
+  border-color: #2fbf7f !important;
+}
+
+.matching-prompt.matching-prompt--incorrect .option-key {
+  background: #ff6631 !important;
+  color: white !important;
+  border-color: #ff6631 !important;
+}
 
   .btn:disabled {
     opacity: 0.55;
@@ -1610,7 +1747,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     cursor: default;
   }
 
-  /* Medium size */
+  /* Responsieve layout voor middelgrote schermen. */
 
   @media (max-width: 900px) {
     .page-shell {
@@ -1624,7 +1761,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     }
   }
 
-  /* Small size */
+  /* Responsieve layout voor kleine schermen. */
 
   @media (max-width: 600px) {
     .page-shell {
@@ -1663,7 +1800,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     }
   }
 
-  /* Keyframes */
+  /* Animatie voor foutmeldingen. */
 
   @keyframes shake {
     0% {
