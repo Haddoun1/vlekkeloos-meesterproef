@@ -4,7 +4,7 @@ export const prerender = true;
 import data from "../../data/mensenkennersvragen.json";
 import { slugify } from "../../utils/slugify";
 import AccessibilitySimulator from "../../components/Accessibilitysimulator.astro";
-import QuestionNav from "../../components/QuestionNav.astro";
+import QuestionNav from "../../components/Questionnav.astro";
 
 export async function getStaticPaths() {
   const getCategory = (item) => item.Category ?? item.category;
