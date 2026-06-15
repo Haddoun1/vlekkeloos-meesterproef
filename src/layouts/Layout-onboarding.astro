@@ -1,6 +1,8 @@
 ---
 // @ts-nocheck
 import { ClientRouter } from "astro:transitions";
+import BaseHead from '../components/BaseHead.astro';
+
 
 const bounceTransition = {
   forwards: {
@@ -64,11 +66,9 @@ const {
     <link rel="stylesheet" href="/styles/global.css" />
     <link rel="stylesheet" href="/styles/onboarding.css" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2" />
-    <ClientRouter />
-    <script is:inline>
-    if (localStorage.getItem("theme") === "dark") {
-    document.documentElement.classList.add("dark-mode");
-  }
+      <BaseHead title={title} />
+  <link rel="stylesheet" href="/styles/onboarding.css" />
+  <ClientRouter />
 </script>
   </head>
 
