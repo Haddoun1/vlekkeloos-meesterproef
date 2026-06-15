@@ -76,93 +76,104 @@
 }
 
 html {
-	scroll-behavior: smooth;
+  scroll-behavior: smooth;
+  color-scheme: light;
 
-	color-scheme: light;
-	--color-text: #000000;
-	--color-background: #ffffff;
-	--color-green: #2AB789;
-	--color-cyan: #B1F2D9;
-	--color-pink: #FF94E1;
-	--color-blue: #2241dd;
-	--color-red: #FF6631;
-	--color-yellow: #E9F279;
-
-  --gradient-bg-cyan: radial-gradient(
-    circle at 0% 0%,
-    rgb(181 219 206 / 0.4) 0%,
-    transparent
-  );
-
-  --gradient-bg-green: radial-gradient(
-    circle at 0% 0%,
-    rgb(42 183 137 / 0.2) 0%,
-    transparent
-  );
-
-  --gradient-bg-pink:radial-gradient(
-    circle at 0% 0%,
-    rgb(255 148 225 / 0.3) 0%,
-    transparent
-  );
-
-  --gradient-bg-blue: radial-gradient(
-    circle at 0% 0%,
-    rgb(34 65 221 / 0.2) 0%,
-    transparent
-  );
-
-  --gradient-bg-yellow: radial-gradient(
-    circle at 0% 0%,
-    rgb(233 242 121 / 0.4) 0%,
-    transparent
-  );
-
-  --gradient-bg-red: radial-gradient(
-    circle at 0% 0%,
-    rgb(255 102 49 / 0.4) 0%,
-    transparent
-  );
-
-	--font-bold: 'Plus Jakarta Sans Bold', sans-serif;
-	--font-bold-italic: 'Plus Jakarta Sans Bold Italic', sans-serif;
-	--font-extra-bold: 'Plus Jakarta Sans Extra Bold', sans-serif;
-	--font-extra-bold-italic: 'Plus Jakarta Sans Extra Bold Italic', sans-serif;
-	--font-extra-light: 'Plus Jakarta Sans Extra Light', sans-serif;
-	--font-extra-light-italic: 'Plus Jakarta Sans Extra Light Italic', sans-serif;
-	--font-italic: 'Plus Jakarta Sans Italic', sans-serif;
-	--font-light: 'Plus Jakarta Sans Light', sans-serif;
-	--font-light-italic: 'Plus Jakarta Sans Light Italic', sans-serif;
-	--font-medium: 'Plus Jakarta Sans Medium', sans-serif;
-	--font-medium-italic: 'Plus Jakarta Sans Medium Italic', sans-serif;
-	--font-regular: 'Plus Jakarta Sans Regular', sans-serif;
-	--font-semi-bold: 'Plus Jakarta Sans Semi Bold', sans-serif;
-
-	--size-xxs: 0.5rem;
-	--size-xs: 0.75rem;
-	--size-sm: 0.875rem;
-	--size-base: 1rem;
-	--size-lg: 1.125rem;
-	--size-xl: 1.25rem;
-	--size-2xl: 1.5rem;
-	--size-3xl: 1.875rem;
-	--size-4xl: 2.25rem;
-	--size-5xl: 3rem;
-	--size-6xl: 3.75rem;
-	--size-7xl: 4.5rem;
-	--size-8xl: 6rem;
-	--size-9xl: 8rem;
-	--size-10xl: 10rem;
+--color-text: light-dark(#222020, #ffffff);
+--color-background: light-dark(#ffffff, #ffffff);
+--color-green: light-dark(#2AB789, #142621);
+--color-cyan: light-dark(#B1F2D9, #1e4d3a);
+--color-cyan-dark: light-dark(#8bcab2, #2d6b52);
+--color-pink: light-dark(#FF94E1, #7a3d63);
+--color-blue: light-dark(#2241dd, #2d3f8a);
+--color-red: light-dark(#FF6631, #8a3318);
+--color-yellow: light-dark(#E9F279, #6b6e12);
+--button-background: light-dark(transparent, #6ecfab2b);
 
 
-	font-family: var(--font-bold);
-	color: var(--colour-text);
-	background-color: var(--colour-background);
+  --gradient-bg-cyan: radial-gradient(circle at 0% 0%, rgb(181 219 206 / 0.4) 0%, transparent);
+  --gradient-bg-cyan-card: #fff;
+  --gradient-bg-green: radial-gradient(circle at 0% 0%, rgb(42 183 137 / 0.2) 0%, transparent);
+  --gradient-bg-pink: radial-gradient(circle at 0% 0%, rgb(255 148 225 / 0.3) 0%, transparent);
+  --gradient-bg-blue: radial-gradient(circle at 0% 0%, rgb(34 65 221 / 0.2) 0%, transparent);
+  --gradient-bg-yellow: radial-gradient(circle at 0% 0%, rgb(233 242 121 / 0.4) 0%, transparent);
+  --gradient-bg-red: radial-gradient(circle at 0% 0%, rgb(255 102 49 / 0.4) 0%, transparent);
+  --gradient-bg-header: radial-gradient(circle at 0% 0%,rgb(181 219 206 / 0.4) 0%,transparent);
+
+  &:has(#theme-toggle-checkbox:checked) {
+    color-scheme: dark;
+
+    --gradient-bg-cyan: radial-gradient(circle at 0% 0%, rgb(59, 129, 102) 0%, rgb(26 26 26));
+    --gradient-bg-cyan-card: radial-gradient(circle at 0% 0%, rgb(181 219 206 / 0.4) 0%);
+    --gradient-bg-green: radial-gradient(circle at 0% 0%, rgb(29 143 105) 0%, rgb(26 26 26));
+    --gradient-bg-pink: radial-gradient(circle at 0% 0%, rgb(196 96 159) 0%, rgb(26 26 26));
+    --gradient-bg-blue: radial-gradient(circle at 0% 0%, rgb(79 106 245) 0%, rgb(26 26 26));
+    --gradient-bg-yellow: radial-gradient(circle at 0% 0%, rgb(184 193 42) 0%, rgb(26 26 26));
+    --gradient-bg-red: radial-gradient(circle at 0% 0%, rgb(204 74 31) 0%, rgb(26 26 26));
+    --gradient-bg-header: radial-gradient(circle at 0% 0%, rgb(4 5 5 / 40%) 0%,transparent);
+
+  }
+
+  --font-bold: 'Plus Jakarta Sans Bold', sans-serif;
+  --font-bold-italic: 'Plus Jakarta Sans Bold Italic', sans-serif;
+  --font-extra-bold: 'Plus Jakarta Sans Extra Bold', sans-serif;
+  --font-extra-bold-italic: 'Plus Jakarta Sans Extra Bold Italic', sans-serif;
+  --font-extra-light: 'Plus Jakarta Sans Extra Light', sans-serif;
+  --font-extra-light-italic: 'Plus Jakarta Sans Extra Light Italic', sans-serif;
+  --font-italic: 'Plus Jakarta Sans Italic', sans-serif;
+  --font-light: 'Plus Jakarta Sans Light', sans-serif;
+  --font-light-italic: 'Plus Jakarta Sans Light Italic', sans-serif;
+  --font-medium: 'Plus Jakarta Sans Medium', sans-serif;
+  --font-medium-italic: 'Plus Jakarta Sans Medium Italic', sans-serif;
+  --font-regular: 'Plus Jakarta Sans Regular', sans-serif;
+  --font-semi-bold: 'Plus Jakarta Sans Semi Bold', sans-serif;
+
+  --size-xxs: 0.5rem;
+  --size-xs: 0.75rem;
+  --size-sm: 0.875rem;
+  --size-base: 1rem;
+  --size-lg: 1.125rem;
+  --size-xl: 1.25rem;
+  --size-2xl: 1.5rem;
+  --size-3xl: 1.875rem;
+  --size-4xl: 2.25rem;
+  --size-5xl: 3rem;
+  --size-6xl: 3.75rem;
+  --size-7xl: 4.5rem;
+  --size-8xl: 6rem;
+  --size-9xl: 8rem;
+  --size-10xl: 10rem;
+
+  font-family: var(--font-bold);
+  color: var(--color-text);
+  background-color: var(--color-background);
+
+  &:has(#theme-toggle-checkbox:checked) {
+    color-scheme: dark;
+  }
 }
+
 
 img,
 svg {
   display: block;
   max-width: 100%;
   height: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .course-detail,
+  .course-detail.active {
+    transition: none !important;
+  }
+
+  .course-card:hover {
+    scale: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
 }

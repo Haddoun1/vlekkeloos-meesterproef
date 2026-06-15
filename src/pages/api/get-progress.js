@@ -1,12 +1,37 @@
 import { supabase } from "../../lib/supabase";
 
 export async function POST({ request }) {
-  const body = await request.json();
+  let body = {};
+
+  try {
+    body = await request.json();
+  } catch {
+    return new Response(
+      JSON.stringify({
+        data: null,
+        error: "Ongeldige JSON"
+      }),
+      {
+        status: 400,
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }
+    );
+  }
 
   if (!body.userId) {
     return new Response(
-      JSON.stringify({ data: null, error: "userId ontbreekt" }),
-      { status: 400, headers: { "Content-Type": "application/json" } }
+      JSON.stringify({
+        data: null,
+        error: "userId ontbreekt"
+      }),
+      {
+        status: 400,
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }
     );
   }
 
@@ -14,9 +39,17 @@ export async function POST({ request }) {
     .from("course_progress")
     .select("*")
     .eq("user_id", body.userId)
-    .order("created_at", { ascending: false });
+    .order("ended_at", { ascending: false });
 
-  return new Response(JSON.stringify({ data, error }), {
-    headers: { "Content-Type": "application/json" }
-  });
+  return new Response(
+    JSON.stringify({
+      data,
+      error
+    }),
+    {
+      headers: {
+        "Content-Type": "application/json"
+      }
+    }
+  );
 }
