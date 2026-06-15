@@ -38,12 +38,14 @@ html {
   margin-top: 1rem;
   margin-left: auto;
   margin-right: auto;
+  z-index: 9999;
 }
 
 .panel-left {
   display: flex;
   flex: 1;
   flex-direction: column;
+  z-index: 100;
 }
 
 .panel-right {
@@ -135,7 +137,6 @@ html {
 }
 
 .progress.done {
-  width: 15%;
   background-color: var(--color-green);
 }
 
@@ -198,27 +199,32 @@ html {
 }
 
 .button-next button {
-  background-color: var(--color-green);
+  background-color: var(--color-cyan-dark);
   color: var(--color-background);
   transition:
     background-color 0.3s ease,
     color 0.3s ease;
 
   &:hover {
-    background-color: var(--color-cyan);
+    background-color:var(--color-green);
   }
 }
 
 .button-back button {
-  background-color: var(--color-background);
+  /* background-color: var(--color-background);
   color: var(--color-green);
-  border: 2px solid var(--color-green);
+  border: 2px solid var(--color-green); */
+
+  color: #ABADAC;
+  background: #ECEFEE;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 0, 0, 0.07);
   transition:
     background-color 0.3s ease,
     color 0.3s ease;
 
   &:hover {
-    background-color: var(--color-green);
+    background-color: var(--color-cyan-dark);
     color: var(--color-background);
   }
 }
@@ -363,11 +369,6 @@ html.is-going-back::view-transition-new(content) {
       width: 200px;
     }
   }
-
-  .progress.done {
-    width: 5%;
-  }
-
   .questionnaire {
     & h1 {
       font-size: var(--size-3xl);
@@ -729,6 +730,15 @@ html.is-going-back::view-transition-new(content) {
   }
 }
 
+::view-transition-new(panel-left),
+::view-transition-old(panel-left) {
+  z-index: 1; /* lager dan de content-transitie */
+}
+
+::view-transition-new(content),
+::view-transition-old(content) {
+  z-index: 2;
+}
 
 /* ══════════════════════════════
     RESULT VARIANT
@@ -787,4 +797,18 @@ color-mix(in srgb, var(--color-green) 35%, transparent);
     }
   }
 
+}
+
+@media (min-width: 1200px) {
+  .questionnaire p{
+    font-size: var(--size-lg);
+  }
+
+  .buttons-onboarding button {
+    font-size: var(--size-base);
+  }
+  
+  .questionnaire h1{
+    font-size: var(--size-4xl);
+  }
 }
