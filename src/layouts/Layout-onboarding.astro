@@ -65,6 +65,11 @@ const {
     <link rel="stylesheet" href="/styles/onboarding.css" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2" />
     <ClientRouter />
+    <script is:inline>
+    if (localStorage.getItem("theme") === "dark") {
+    document.documentElement.classList.add("dark-mode");
+  }
+</script>
   </head>
 
   <body>
@@ -629,4 +634,16 @@ const {
   }
 
   document.addEventListener("astro:page-load", setupNavigation);
+
+  document.addEventListener("astro:after-swap", () => {
+    document.documentElement.classList.toggle("is-going-back", goingBack);
+    goingBack = false;
+
+    if (localStorage.getItem("theme") === "dark") {
+      document.documentElement.classList.add("dark-mode");
+    }
+  });
 </script>
+
+
+
