@@ -1,0 +1,242 @@
+---
+// QuestionNav.astro
+// Gebruik: <QuestionNav category={category} categorySlug={categorySlug} categoryItems={categoryItems} currentStep={currentStep} totalSteps={totalSteps} accentColor={accentColor} />
+
+interface NavItem {
+  id?: string;
+  title?: string;
+  question?: string;
+}
+
+interface Props {
+  category: string;
+  categorySlug: string;
+  categoryItems: NavItem[];
+  currentStep: number;
+  totalSteps: number;
+  accentColor: string;
+}
+
+const { category, categorySlug, categoryItems, currentStep, totalSteps, accentColor } = Astro.props;
+---
+
+<!-- Hamburger button -->
+<button
+  class="hamburger-btn"
+  id="qnav-hamburger-btn"
+  aria-label="Open vragennavigatie"
+  aria-expanded="false"
+  style={`--color-accent: ${accentColor}`}
+>
+  {currentStep}<span class="step-total">/{totalSteps}</span>
+</button>
+
+<!-- Overlay -->
+<div class="qnav-overlay" id="qnav-overlay"></div>
+
+<!-- Slide-in nav panel -->
+<nav class="qnav-panel" id="qnav-panel" aria-label="Vragennavigatie" style={`--color-accent: ${accentColor}`}>
+  <div class="qnav-header">
+    <span class="qnav-title">{category}</span>
+    <button class="qnav-close-btn" id="qnav-close-btn" aria-label="Sluit menu">&#10005;</button>
+  </div>
+  <ul class="qnav-list">
+    {categoryItems.map((navItem, idx) => (
+      <li>
+        <a
+          href={`/${categorySlug}/${idx + 1}`}
+          class={idx + 1 === currentStep ? "active" : ""}
+        >
+          <span class="qnav-step-num">{idx + 1}</span>
+          <span class="qnav-step-title">
+            {navItem.title || navItem.question || `Stap ${idx + 1}`}
+          </span>
+        </a>
+      </li>
+    ))}
+  </ul>
+</nav>
+
+<script>
+  const hamburgerBtn = document.getElementById("qnav-hamburger-btn");
+  const overlay = document.getElementById("qnav-overlay");
+  const panel = document.getElementById("qnav-panel");
+  const closeBtn = document.getElementById("qnav-close-btn");
+
+  function open() {
+    panel?.classList.add("open");
+    overlay?.classList.add("open");
+    hamburgerBtn?.setAttribute("aria-expanded", "true");
+  }
+
+  function close() {
+    panel?.classList.remove("open");
+    overlay?.classList.remove("open");
+    hamburgerBtn?.setAttribute("aria-expanded", "false");
+  }
+
+  hamburgerBtn?.addEventListener("click", () => {
+    panel?.classList.contains("open") ? close() : open();
+  });
+
+  closeBtn?.addEventListener("click", close);
+  overlay?.addEventListener("click", close);
+</script>
+
+<style>
+  .hamburger-btn {
+    font-family: var(--font-semi-bold);
+    font-size: var(--size-lg);
+    letter-spacing: 0.06em;
+    background: color-mix(in srgb, var(--color-accent) 35%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-accent) 60%, transparent);
+    border-radius: 99px;
+    padding: 0.15rem 0.85rem;
+    color: var(--color-text);
+    margin: 0;
+    line-height: 1.4;
+    cursor: pointer;
+    transition:
+      background 0.18s,
+      transform 0.12s,
+      box-shadow 0.18s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2rem;
+  }
+
+  .hamburger-btn:hover {
+    background: var(--color-accent);
+    box-shadow: 0 4px 14px color-mix(in srgb, var(--color-accent) 50%, transparent);
+    transform: scale(1.07);
+  }
+
+  .step-total {
+    font-family: var(--font-light);
+    font-size: var(--size-base);
+    opacity: 0.45;
+  }
+
+  .qnav-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.25);
+    z-index: 250;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+  }
+
+  .qnav-overlay.open {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .qnav-panel {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 300px;
+    background: var(--color-accent);
+    z-index: 300;
+    display: flex;
+    flex-direction: column;
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+  }
+
+  .qnav-panel.open {
+    transform: translateX(0);
+    box-shadow: 4px 0 32px rgba(0, 0, 0, 0.15);
+  }
+
+  .qnav-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 1.25rem 1rem;
+    border-bottom: 1.5px solid rgba(0, 0, 0, 0.12);
+    flex-shrink: 0;
+    background: white;
+  }
+
+  .qnav-title {
+    font-family: var(--font-semi-bold);
+    font-size: var(--size-sm);
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    opacity: 0.6;
+  }
+
+  .qnav-close-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.1);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    color: var(--color-text);
+    transition: background 0.15s;
+    flex-shrink: 0;
+  }
+
+  .qnav-close-btn:hover {
+    background: rgba(0, 0, 0, 0.22);
+  }
+
+  .qnav-list {
+    list-style: none;
+    padding: 0.75rem 0;
+    margin: 0;
+    overflow-y: auto;
+    flex: 1;
+    background: white;
+  }
+
+  .qnav-list li a {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem 1.25rem;
+    text-decoration: none;
+    color: var(--color-text);
+    transition: background 0.15s;
+  }
+
+  .qnav-list li a:hover {
+    background: rgba(0, 0, 0, 0.07);
+  }
+
+  .qnav-list li a.active {
+    background: rgba(0, 0, 0, 0.12);
+    font-family: var(--font-bold);
+  }
+
+  .qnav-step-num {
+    flex-shrink: 0;
+    width: 26px;
+    height: 26px;
+    border-radius: 7px;
+    background: rgba(0, 0, 0, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-bold);
+    font-size: var(--size-sm);
+    color: var(--color-text);
+  }
+
+  .qnav-step-title {
+    font-family: var(--font-semi-bold);
+    font-size: var(--size-sm);
+    line-height: 1.35;
+    flex: 1;
+    color: var(--color-text);
+  }
+</style>
