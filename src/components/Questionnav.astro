@@ -28,6 +28,7 @@ const { category, categorySlug, categoryItems, currentStep, totalSteps, accentCo
   aria-expanded="false"
   style={`--color-accent: ${accentColor}`}
 >
+<img class="table-of-contents-icon" src="/images/table-of-contents.svg" alt="Inhoudsopgave" aria-hidden="true">
   {currentStep}<span class="step-total">/{totalSteps}</span>
 </button>
 
@@ -86,7 +87,7 @@ const { category, categorySlug, categoryItems, currentStep, totalSteps, accentCo
 <style>
   .hamburger-btn {
     font-family: var(--font-semi-bold);
-    font-size: var(--size-lg);
+    font-size: var(--size-sm);
     letter-spacing: 0.06em;
     background: color-mix(in srgb, var(--color-accent) 35%, transparent);
     border: 1px solid color-mix(in srgb, var(--color-accent) 60%, transparent);
@@ -107,13 +108,19 @@ const { category, categorySlug, categoryItems, currentStep, totalSteps, accentCo
 
   .hamburger-btn:hover {
     background: var(--color-accent);
+    border-color: color-mix(in srgb, var(--color-accent) 80%, black);
+    transform: translateY(-1px);
     box-shadow: 0 4px 14px color-mix(in srgb, var(--color-accent) 50%, transparent);
-    transform: scale(1.07);
+  }
+
+  .table-of-contents-icon {
+    width: 22px;
+    height: 22px;
   }
 
   .step-total {
     font-family: var(--font-light);
-    font-size: var(--size-base);
+    font-size: var(--size-sm);
     opacity: 0.45;
   }
 
