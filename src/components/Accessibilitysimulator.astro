@@ -1,0 +1,611 @@
+---
+// @ts-nocheck
+// AccessibilitySimulator.astro
+// Gebruik: <AccessibilitySimulator />
+// Plaatst de setting-overlay, setting-panel en cursor-dot in de pagina.
+// De setting-btn en openSetting/closeSetting logica blijven in de parent pagina.
+---
+
+<!-- Vertraagde cursor stip (motorieke beperking simulatie) -->
+<div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
+
+<!-- Setting overlay (backdrop) -->
+<div class="setting-overlay" id="settingOverlay"></div>
+
+<!-- Slide-in setting panel (from right) -->
+<nav class="setting-panel" id="settingPanel" aria-label="Instellingen">
+  <div class="setting-panel-header">
+    <span class="setting-panel-title">Accessibility Simulator</span>
+    <button class="setting-close-btn" id="settingCloseBtn" aria-label="Sluit instellingen"
+      >&#10005</button
+    >
+  </div>
+  <div class="setting-content">
+
+    <div class="setting-section">
+      <div class="nav-panel-title sim-section-title">Kleuren &amp; contrast</div>
+
+      <div class="setting-row">
+        <div class="nav-step-title setting-label">Contrast<small>Lager = slechter zicht</small></div>
+        <div class="setting-slider-wrap">
+          <input type="range" id="contrastRange" min="0" max="200" value="100" step="1" />
+          <span class="setting-val" id="contrastVal">100%</span>
+        </div>
+      </div>
+
+      <div class="setting-row">
+        <div class="nav-step-title setting-label">Helderheid</div>
+        <div class="setting-slider-wrap">
+          <input type="range" id="brightnessRange" min="10" max="200" value="100" step="1" />
+          <span class="setting-val" id="brightnessVal">100%</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="setting-section">
+      <div class="nav-panel-title sim-section-title">Zicht &amp; focus</div>
+
+      <div class="setting-row">
+        <div class="nav-step-title setting-label">Wazig zicht<small>Simuleer slechtziendheid</small></div>
+        <div class="setting-slider-wrap">
+          <input type="range" id="blurRange" min="0" max="10" value="0" step="0.1" />
+          <span class="setting-val" id="blurVal">0</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="setting-section">
+      <div class="nav-panel-title sim-section-title">Lezen &amp; tekst</div>
+
+      <div class="setting-row">
+        <div class="nav-step-title setting-label">Dyslexie<small>Letterverwisseling</small></div>
+        <div class="setting-radios" id="dyslexiaGroup">
+          <button class="setting-chip active" data-val="0">Uit</button>
+          <button class="setting-chip" data-val="1">Licht</button>
+          <button class="setting-chip" data-val="2">Matig</button>
+          <button class="setting-chip" data-val="3">Zwaar</button>
+          <button class="setting-chip" data-val="4">Extreem</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="setting-section">
+      <div class="nav-panel-title sim-section-title">Beweging &amp; interactie</div>
+
+      <div class="setting-row">
+        <div class="nav-step-title setting-label">Trilling<small>Simuleer tremor</small></div>
+        <div class="setting-slider-wrap">
+          <input type="range" id="tremorRange" min="0" max="5" value="0" step="0.5" />
+          <span class="setting-val" id="tremorVal">0</span>
+        </div>
+      </div>
+
+      <div class="setting-row">
+        <div class="nav-step-title setting-label">Cursor vertraging<small>Motorieke beperking</small></div>
+        <div class="setting-radios" id="cursorDelayGroup">
+          <button class="setting-chip active" data-val="0">Uit</button>
+          <button class="setting-chip" data-val="0.8">Aan</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="setting-footer">
+      <button class="setting-reset" id="simReset">Reset alle instellingen</button>
+    </div>
+
+  </div>
+</nav>
+
+<script>
+  // @ts-nocheck
+
+  //////////////////
+  // COLOR SCHEME //
+  //////////////////
+
+  function setColorScheme(colorScheme) {
+    if(colorScheme == "system") {
+      if(window.matchMedia('(prefers-color-scheme: light)').matches) {
+        document.documentElement.setAttribute("data-color-scheme", "light");
+      } else {
+        document.documentElement.setAttribute("data-color-scheme", "dark");
+      }
+    } else {
+      document.documentElement.setAttribute("data-color-scheme", colorScheme);
+    }
+  }
+
+  function handleColorSchemeChange(e) {
+    const colorScheme = e.currentTarget.dataset.val;
+    document.querySelectorAll('#schemeGroup .setting-chip').forEach(b => b.classList.remove("active"));
+    e.currentTarget.classList.add("active");
+    setColorScheme(colorScheme);
+  }
+
+  function iniColorScheme() {
+    setColorScheme("light");
+  }
+
+  window.matchMedia("(prefers-color-scheme: light)").addEventListener('change', () => {
+    const activeChip = document.querySelector('#schemeGroup .setting-chip.active');
+    if(activeChip?.dataset.val == "system") {
+      setColorScheme("system");
+    }
+  });
+
+  document.querySelectorAll('#schemeGroup .setting-chip').forEach(chip => {
+    chip.addEventListener("click", handleColorSchemeChange);
+  });
+
+  // INI
+  iniColorScheme();
+
+
+  ////////////////////////////
+  // RANGES - ACCESSIBILITY //
+  ////////////////////////////
+
+  let filterState = { contrast: 100, brightness: 100, blur: 0 };
+
+  function applyFilters(overrides = {}) {
+    Object.assign(filterState, overrides);
+    let f = "";
+    if(filterState.contrast   !== 100) f += `contrast(${filterState.contrast}%) `;
+    if(filterState.brightness !== 100) f += `brightness(${filterState.brightness}%) `;
+    if(filterState.blur        >  0)   f += `blur(${filterState.blur}px) `;
+    document.documentElement.style.filter = f.trim();
+  }
+
+  function updateSettingContrast(e) {
+    const value = e.currentTarget.value;
+    document.getElementById("contrastVal").textContent = value + "%";
+    applyFilters({ contrast: Number(value) });
+  }
+
+  function updateSettingBrightness(e) {
+    const value = e.currentTarget.value;
+    document.getElementById("brightnessVal").textContent = value + "%";
+    applyFilters({ brightness: Number(value) });
+  }
+
+  function updateSettingBlur(e) {
+    const value = e.currentTarget.value;
+    document.getElementById("blurVal").textContent = parseFloat(value).toFixed(1);
+    applyFilters({ blur: Number(value) });
+  }
+
+  function iniRangeAccessibility() {
+    document.getElementById("contrastRange").addEventListener("input", updateSettingContrast);
+    document.getElementById("brightnessRange").addEventListener("input", updateSettingBrightness);
+    document.getElementById("blurRange").addEventListener("input", updateSettingBlur);
+  }
+
+  // INI
+  iniRangeAccessibility();
+
+
+  ////////////////////
+  // RANDOM LETTERS //
+  ////////////////////
+
+  let textNodes = [];
+  let letterChangeChance = 0.1;
+  let letterChangeTempo  = 250;
+  let letterChangeInterval;
+
+  function iniDyslexia() {
+    findTextNodes();
+    iniDyslexiaChips();
+  }
+
+  function updateSettingDyslexia(e) {
+    const valueDyslexia = e.currentTarget.dataset.val;
+    document.querySelectorAll('#dyslexiaGroup .setting-chip').forEach(b => b.classList.remove("active"));
+    e.currentTarget.classList.add("active");
+
+    switch(valueDyslexia) {
+      case '0': stopMessUpWords();           break;
+      case '1': startMessUpWords(0.1, 250);  break;
+      case '2': startMessUpWords(0.2, 100);  break;
+      case '3': startMessUpWords(0.3, 40);   break;
+      case '4': startMessUpWords(1,   1);    break;
+    }
+  }
+
+  function iniDyslexiaChips() {
+    document.querySelectorAll('#dyslexiaGroup .setting-chip').forEach(chip => {
+      chip.addEventListener("click", updateSettingDyslexia);
+    });
+  }
+
+  function findTextNodes() {
+    textNodes = [];
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    while(walker.nextNode()) {
+      const textNode = walker.currentNode;
+      if(textNode.wholeText.trim() != "" && !textNode.parentElement?.closest(".setting-panel")) {
+        let wordsMeta = [];
+        let re = /\w+/g;
+        let match;
+        while((match = re.exec(textNode.nodeValue)) != null) {
+          wordsMeta.push({ length: match[0].length, position: match.index });
+        }
+        textNodes.push({ text: textNode, wordsMeta: wordsMeta });
+      }
+    }
+  }
+
+  function messUpWords() {
+    function messUpWord(word) {
+      if(word.length < 4) return word;
+      return word[0] + messUpMessyPart(word.slice(1, -1)) + word[word.length - 1];
+    }
+
+    function messUpMessyPart(messyPart) {
+      let a, b;
+      while(!(a < b)) {
+        a = Math.floor(Math.random() * messyPart.length);
+        b = Math.floor(Math.random() * messyPart.length);
+      }
+      return messyPart.slice(0, a) + messyPart[b] + messyPart.slice(a + 1, b) + messyPart[a] + messyPart.slice(b + 1);
+    }
+
+    textNodes.forEach(textNode => {
+      textNode.wordsMeta.forEach(wordMeta => {
+        if(letterChangeChance > Math.random()) {
+          let before = textNode.text.nodeValue.slice(0, wordMeta.position);
+          let after  = textNode.text.nodeValue.slice(wordMeta.position + wordMeta.length);
+          let word   = textNode.text.nodeValue.slice(wordMeta.position, wordMeta.position + wordMeta.length);
+          textNode.text.nodeValue = before + messUpWord(word) + after;
+        }
+      });
+    });
+  }
+
+  function startMessUpWords(chance, tempo) {
+    stopMessUpWords();
+    letterChangeChance = chance;
+    letterChangeTempo  = tempo;
+    letterChangeInterval = setInterval(messUpWords, letterChangeTempo);
+  }
+
+  function stopMessUpWords() {
+    clearInterval(letterChangeInterval);
+  }
+
+  // INI
+  iniDyslexia();
+
+
+  /////////////////////
+  // TREMOR          //
+  /////////////////////
+
+  let tremorInterval;
+
+  function setTremor(value) {
+    clearInterval(tremorInterval);
+    document.body.style.transform = "";
+    if(value == 0) return;
+    tremorInterval = setInterval(() => {
+      const x = ((Math.random() - 0.5) * value * 6).toFixed(1);
+      const y = ((Math.random() - 0.5) * value * 6).toFixed(1);
+      document.body.style.transform = `translate(${x}px, ${y}px)`;
+    }, 80);
+  }
+
+  function updateSettingTremor(e) {
+    const value = e.currentTarget.value;
+    document.getElementById("tremorVal").textContent = parseFloat(value).toFixed(1);
+    setTremor(Number(value));
+  }
+
+  function iniTremor() {
+    document.getElementById("tremorRange").addEventListener("input", updateSettingTremor);
+  }
+
+  // INI
+  iniTremor();
+
+
+  ///////////////////////
+  // CURSOR VERTRAGING //
+  ///////////////////////
+
+  const cursorDot = document.getElementById("cursorDot");
+
+  function followCursor(e) {
+    document.body.style.setProperty("--client-x", e.clientX);
+    document.body.style.setProperty("--client-y", e.clientY);
+  }
+
+  function setCursorDelay(seconds) {
+    if(seconds == 0) {
+      document.body.removeEventListener("pointermove", followCursor);
+      document.body.classList.remove("cursor-delayed");
+      if(cursorDot) cursorDot.style.transition = "";
+    } else {
+      document.body.addEventListener("pointermove", followCursor);
+      document.body.classList.add("cursor-delayed");
+      if(cursorDot) cursorDot.style.transition = `translate ${seconds}s ease-in`;
+    }
+  }
+
+  function handleCursorDelayChange(e) {
+    const seconds = e.currentTarget.dataset.val;
+    document.querySelectorAll('#cursorDelayGroup .setting-chip').forEach(b => b.classList.remove("active"));
+    e.currentTarget.classList.add("active");
+    setCursorDelay(parseFloat(seconds));
+  }
+
+  function iniCursorDelay() {
+    document.querySelectorAll('#cursorDelayGroup .setting-chip').forEach(chip => {
+      chip.addEventListener("click", handleCursorDelayChange);
+    });
+  }
+
+  // INI
+  iniCursorDelay();
+
+
+  /////////////////////
+  // RESET           //
+  /////////////////////
+
+  function resetSimulator() {
+    filterState = { contrast: 100, brightness: 100, blur: 0 };
+    document.documentElement.style.filter = "";
+    document.getElementById("contrastRange").value   = 100;
+    document.getElementById("brightnessRange").value = 100;
+    document.getElementById("blurRange").value       = 0;
+    document.getElementById("contrastVal").textContent   = "100%";
+    document.getElementById("brightnessVal").textContent = "100%";
+    document.getElementById("blurVal").textContent       = "0";
+    document.getElementById("tremorRange").value     = 0;
+    document.getElementById("tremorVal").textContent = "0";
+
+    document.documentElement.removeAttribute("data-color-scheme");
+
+    ["schemeGroup","dyslexiaGroup","cursorDelayGroup"].forEach(gid => {
+      const chips = document.querySelectorAll(`#${gid} .setting-chip`);
+      chips.forEach((b, i) => b.classList.toggle("active", i === 0));
+    });
+
+    stopMessUpWords();
+    setTremor(0);
+    setCursorDelay(0);
+  }
+
+  document.getElementById("simReset")?.addEventListener("click", resetSimulator);
+</script>
+
+<style>
+  /* ── Setting overlay ─────────────────────────────────────────── */
+
+  .setting-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.25);
+    z-index: 250;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+  }
+
+  .setting-overlay.open {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  /* ── Setting panel (slides in from right) ────────────────────── */
+
+  .setting-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: 300px;
+    background: var(--color-accent);
+    z-index: 300;
+    display: flex;
+    flex-direction: column;
+    transform: translateX(100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+  }
+
+  .setting-panel.open {
+    transform: translateX(0);
+    box-shadow: -4px 0 32px rgba(0, 0, 0, 0.15);
+  }
+
+  .setting-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 1.25rem 1rem;
+    border-bottom: 1.5px solid rgba(0, 0, 0, 0.12);
+    flex-shrink: 0;
+    background: rgba(255, 255, 255);
+  }
+
+  .setting-panel-title {
+    font-family: var(--font-semi-bold);
+    font-size: var(--size-sm);
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    opacity: 0.6;
+  }
+
+  .setting-close-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.1);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    color: var(--color-text);
+    transition: background 0.15s;
+    flex-shrink: 0;
+  }
+
+  .setting-close-btn:hover {
+    background: rgba(0, 0, 0, 0.22);
+  }
+
+  .setting-content {
+    flex: 1;
+    background: rgba(255, 255, 255);
+    overflow-y: auto;
+  }
+
+  /* ── Simulator inhoud ────────────────────────────────────────── */
+
+  .setting-section {
+    padding: 14px 16px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+  }
+
+  .setting-section:last-of-type {
+    border-bottom: none;
+  }
+
+  .sim-section-title {
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    color: rgba(0, 0, 0, 0.4);
+    margin-bottom: 10px;
+    opacity: 1;
+  }
+
+  .setting-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+
+  .setting-row:last-child {
+    margin-bottom: 0;
+  }
+
+  .setting-label {
+    min-width: 100px;
+    padding-top: 2px;
+    flex-shrink: 0;
+    flex: unset;
+  }
+
+  .setting-label small {
+    display: block;
+    font-family: var(--font-light);
+    font-size: 11px;
+    color: rgba(0, 0, 0, 0.45);
+    margin-top: 1px;
+  }
+
+  .setting-slider-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+  }
+
+  .setting-slider-wrap input[type="range"] {
+    flex: 1;
+    height: 4px;
+    accent-color: var(--color-text);
+    cursor: pointer;
+  }
+
+  .setting-val {
+    font-family: var(--font-semi-bold);
+    font-size: 11px;
+    color: rgba(0, 0, 0, 0.45);
+    min-width: 30px;
+    text-align: right;
+  }
+
+  .setting-radios {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    flex: 1;
+  }
+
+  .setting-chip {
+    font-family: var(--font-semi-bold);
+    font-size: 11px;
+    padding: 3px 9px;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 99px;
+    background: transparent;
+    color: var(--color-text);
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+  }
+
+  .setting-chip:hover {
+    background: rgba(0, 0, 0, 0.06);
+  }
+
+  .setting-chip.active {
+    background: var(--color-text);
+    color: white;
+    border-color: var(--color-text);
+  }
+
+  .setting-footer {
+    padding: 10px 16px 14px;
+    border-top: 1px solid rgba(0, 0, 0, 0.07);
+  }
+
+  .setting-reset {
+    font-family: var(--font-semi-bold);
+    font-size: var(--size-sm);
+    color: rgba(0, 0, 0, 0.45);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    width: auto;
+    height: auto;
+    border-radius: 0;
+    transition: color 0.15s;
+  }
+
+  .setting-reset:hover {
+    background: none;
+    color: var(--color-text);
+  }
+
+  /* ── Cursor vertraging ───────────────────────────────────────── */
+
+  body.cursor-delayed {
+    cursor: none;
+  }
+
+  .cursor-dot {
+    display: none;
+    width: 14px;
+    height: 14px;
+    background: red;
+    border-radius: 50%;
+    position: fixed;
+    z-index: 9999;
+    pointer-events: none;
+    translate:
+      calc(var(--client-x, -100) * 1px)
+      calc(var(--client-y, -100) * 1px);
+    margin-left: -7px;
+    margin-top: -7px;
+  }
+
+  body.cursor-delayed .cursor-dot {
+    display: block;
+  }
+</style>
