@@ -86,10 +86,18 @@ const {
   )}
     </div>
       <div class="logo-mobile">
-        <img
-          src="/images/Mensenkenners-logo-hori.png"
-          alt="Mensenkenners logo"
-        />
+        <div>
+          <img
+            class="logo-image logo-image--light"
+            src="/src/assets/logohorizontaal.png"
+            alt="Stichting Mensenkenners logo"
+          />
+          <img
+            class="logo-image logo-image--dark"
+            src="/src/assets/mensenkennerslogowit.png"
+            alt="Stichting Mensenkenners logo"
+          />
+        </div>
       </div>
 
       <div class="content" transition:animate="none" transition:name="content">
@@ -176,6 +184,10 @@ const {
 
   .logo-image--dark {
     display: none;
+  }
+
+  .logo-mobile .logo-image{
+    transform: scale(1.8);
   }
 
   :global(html.dark-mode) .logo-image--light {
