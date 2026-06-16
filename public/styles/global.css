@@ -88,6 +88,8 @@ html {
   --color-red: #FF6631;
   --color-yellow: #E9F279;
   --onboarding-text: #7e7676;
+  --onboarding-text-dark: #525252;
+  --error-login: #b43f3f;
   --button-background: transparent;
 
   --gradient-bg-cyan: radial-gradient(circle at 0% 0%, rgb(181 219 206 / 0.4) 0%, transparent);
@@ -145,6 +147,8 @@ html.dark-mode {
   --color-red: #8a3318;
   --color-yellow: #6b6e12;
   --onboarding-text: #ffffff;
+  --onboarding-text-dark: #ffffff;
+  --error-login: #fa4545;
   --button-background: #6ecfab2b;
 
   --gradient-bg-cyan: radial-gradient(circle at 0% 0%, rgb(59, 129, 102) 0%, rgb(26 26 26));

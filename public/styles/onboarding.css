@@ -400,7 +400,7 @@
 
 .login {
   .error {
-    color: #b43f3f;
+    color: var(--error-login);
     display: none;
     font-size: 1em;
     margin-top: 0.3em;
@@ -488,7 +488,7 @@
     gap: 0.2em;
     font-size: var(--size-sm);
     font-family: var(--font-light);
-    color: #525252;
+    color: var(--onboarding-text-dark);
 
     input {
       padding: 0.75em 1em;
