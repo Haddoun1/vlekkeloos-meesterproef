@@ -22,8 +22,8 @@ const { category, categorySlug, categoryItems, currentStep, totalSteps, accentCo
 
 <!-- Hamburger button -->
 <button
-  class="hamburger-btn"
-  id="qnav-hamburger-btn"
+  class="hamburger-button"
+  id="qnav-hamburger-button"
   aria-label="Open vragennavigatie"
   aria-expanded="false"
   style={`--color-accent: ${accentColor}`}
@@ -59,7 +59,7 @@ const { category, categorySlug, categoryItems, currentStep, totalSteps, accentCo
 </nav>
 
 <script>
-  const hamburgerBtn = document.getElementById("qnav-hamburger-btn");
+  const hamburgerBtn = document.getElementById("qnav-hamburger-button");
   const overlay = document.getElementById("qnav-overlay");
   const panel = document.getElementById("qnav-panel");
   const closeBtn = document.getElementById("qnav-close-btn");
@@ -85,7 +85,7 @@ const { category, categorySlug, categoryItems, currentStep, totalSteps, accentCo
 </script>
 
 <style>
-  .hamburger-btn {
+  .hamburger-button {
     font-family: var(--font-semi-bold);
     font-size: var(--size-sm);
     letter-spacing: 0.06em;
@@ -106,7 +106,7 @@ const { category, categorySlug, categoryItems, currentStep, totalSteps, accentCo
     gap: 0.2rem;
   }
 
-  .hamburger-btn:hover {
+  .hamburger-button:hover {
     background: var(--color-accent);
     border-color: color-mix(in srgb, var(--color-accent) 80%, black);
     transform: translateY(-1px);
