@@ -53,7 +53,12 @@
       "type": "content",
       "section": "module_1_inclusief_contact",
       "title": "Vier basisprincipes",
-      "text": "Spreek de persoon zelf aan. Vraag voordat je helpt. Doe geen aannames. Geef iemand de ruimte om op diens eigen manier te reageren.",
+      "list": [
+        "Spreek de persoon zelf aan.",
+        "Vraag voordat je helpt.",
+        "Doe geen aannames.",
+        "Geef iemand de ruimte om op diens eigen manier te reageren."
+      ],
       "Category": "Module 1"
     },
     {
