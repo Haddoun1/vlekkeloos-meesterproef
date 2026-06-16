@@ -110,7 +110,7 @@
     & p {
       font-size: var(--size-sm);
       font-family: var(--font-regular);
-      color: #7e7676;
+      color: var(--onboarding-text);
       line-height: 1.2;
     }
   }
