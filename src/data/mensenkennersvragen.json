@@ -53,7 +53,12 @@
       "type": "content",
       "section": "module_1_inclusief_contact",
       "title": "Vier basisprincipes",
-      "text": "Spreek de persoon altijd rechtstreeks aan, ook als er anderen aanwezig zijn. Vraag eerst of hulp gewenst is voordat je iets overneemt. Doe geen aannames over wat iemand kan, nodig heeft of prettig vindt. Iedereen is anders en weet zelf vaak het beste wat werkt. Geef ruimte om op een eigen manier te reageren, communiceren en keuzes te maken.",
+      "list": [
+        "Spreek de persoon zelf aan.",
+        "Vraag voordat je helpt.",
+        "Doe geen aannames.",
+        "Geef iemand de ruimte om op diens eigen manier te reageren."
+      ],
       "Category": "Module 1"
     },
     {

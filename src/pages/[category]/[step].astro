@@ -5,6 +5,7 @@ import data from "../../data/mensenkennersvragen.json";
 import { slugify } from "../../utils/slugify";
 import AccessibilitySimulator from "../../components/Accessibilitysimulator.astro";
 import QuestionNav from "../../components/Questionnav.astro";
+import BottomNav from "../../components/BottomNav.astro";
 
 export async function getStaticPaths() {
 
@@ -178,7 +179,6 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
   <!-- Bovenste navigatie met dashboardlink, modulelabel, stappenmenu en instellingen. -->
     <header class="page-header">
       <a href="/index.html" class="back-button">Dashboard</a>
-      <p class="category-pill">{category}</p>
 
       <QuestionNav
         category={category}
@@ -189,8 +189,15 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
         accentColor={accentColor}
       />
 
-      <button class="setting-btn" id="settingBtn" aria-label="Open instellingen">
-        &#9881;
+      <p class="category-pill">{category}</p>
+
+      <button
+        class="setting-btn"
+        id="settingBtn"
+        aria-label="Open instellingen"
+      >
+        <img class="accessibility-icon" src="/images/accessibility.svg" alt="Accessibility" aria-hidden="true">
+        Menu
       </button>
     </header>
 
@@ -199,6 +206,11 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
       {item.title && <h1 class="card-title">{item.title}</h1>}
       {item.subtitle && <p class="card-subtitle">{item.subtitle}</p>}
       {item.text && <p class="card-body">{item.text}</p>}
+      {item.list && Array.isArray(item.list) && (
+        <ul class="card-list">
+          {item.list.map((point) => <li>{point}</li>)}
+        </ul>
+      )}
 
       {item.source && (
         <p class="card-source">
@@ -230,7 +242,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
           {item.input_type === "text" && (
             <input class="text-input" type="text" placeholder={item.placeholder || "Typ hier je antwoord"} />
           )}
-          
+
           {/* Input type email is ongebruikt
 
           {item.input_type === "email" && ( 
@@ -318,7 +330,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
             </div>
           )}
 
-        {/* Zin-afmaken-vraag. */}
+          {/* Zin-afmaken-vraag. */}
 
           {item.input_type === "sentence_completion" && (
             <div class="sentence-completion-block">
@@ -331,8 +343,8 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
               />
             </div>
           )}
-        
-        {/* Matchingvraag. */}
+
+          {/* Matchingvraag. */}
 
           {item.input_type === "matching" && (
             <div class="matching-block" data-matching data-question-id={item.id}>
@@ -392,20 +404,8 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     </section>
 
     <!-- Vaste navigatie onderaan met vorige en volgende stap. -->
+    <BottomNav previousPage={previousPage} nextPage={nextPage} />
 
-    <nav class="bottom-nav" aria-label="Navigatie">
-      {previousPage ? (
-        <a class="nav-btn nav-btn--prev" href={previousPage}> Vorige</a>
-      ) : (
-        <span class="nav-btn nav-btn--disabled" aria-disabled="true"> Vorige</span>
-      )}
-
-      {nextPage ? (
-        <a class="nav-btn nav-btn--next" href={nextPage} id="nav-next">Volgende </a>
-      ) : (
-        <span class="nav-btn nav-btn--disabled" aria-disabled="true">Volgende </span>
-      )}
-    </nav>
   </main>
 
   <aside class="sidebar-right" aria-hidden="true"></aside>
@@ -915,7 +915,6 @@ function markMatchingFeedback() {
     color: var(--color-text);
   }
 
-
   /* Knop om het zijmenu te openen. */
 
   .hamburger-btn {
@@ -951,11 +950,11 @@ function markMatchingFeedback() {
 
   .setting-btn {
     font-family: var(--font-semi-bold);
-    font-size: var(--size-lg);
+    font-size: var(--size-sm);
     background: color-mix(in srgb, var(--color-accent) 35%, transparent);
     border: 1px solid color-mix(in srgb, var(--color-accent) 60%, transparent);
     border-radius: 999px;
-    padding: 0.15rem 0.45rem;
+    padding: 0.15rem 0.85rem;
     color: var(--color-text);
     margin-left: auto;
     line-height: 1.4;
@@ -963,12 +962,19 @@ function markMatchingFeedback() {
     display: inline-flex;
     align-items: center;
     cursor: pointer;
+    gap: 0.3rem;
   }
 
   .setting-btn:hover {
     background: var(--color-accent);
+    border-color: color-mix(in srgb, var(--color-accent) 80%, black);
+    transform: translateY(-1px);
     box-shadow: 0 4px 14px color-mix(in srgb, var(--color-accent) 50%, transparent);
-    transform: scale(1.07);
+  }
+
+  .accessibility-icon {
+    width: 16px;
+    height: 16px;
   }
 
   /* Hoofdlayout van de cursuspagina. */
@@ -1006,12 +1012,9 @@ function markMatchingFeedback() {
 
   .category-pill {
     font-family: var(--font-semi-bold);
-    font-size: var(--size-sm);
+    font-size: var(--size-base);
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    background: color-mix(in srgb, var(--color-accent) 35%, transparent);
-    border: 1px solid color-mix(in srgb, var(--color-accent) 60%, transparent);
-    border-radius: 99px;
     padding: 0.25rem 0.85rem;
     color: var(--color-text);
     margin: 0;
@@ -1036,10 +1039,12 @@ function markMatchingFeedback() {
     gap: 0.4rem;
   }
 
-  .back-button::before {
+   .back-button::before {
     content: "←";
-    display: inline-block;
+    font-size: var(--size-lg);
     transition: transform 0.2s;
+        margin-top: -2px;
+
   }
 
   .back-button:hover {
@@ -1051,6 +1056,7 @@ function markMatchingFeedback() {
 
   .back-button:hover::before {
     transform: translateX(-2px);
+    
   }
 
   .back-button:active {
@@ -1091,6 +1097,35 @@ function markMatchingFeedback() {
     line-height: 1.65;
     margin: 0;
     color: var(--color-text);
+  }
+
+  .card-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .card-list li {
+    font-family: var(--font-light);
+    font-size: var(--size-lg);
+    line-height: 1.5;
+    color: var(--color-text);
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .card-list li::before {
+    content: "";
+    flex-shrink: 0;
+    width: 0.5rem;
+    height: 0.5rem;
+    margin-top: 0.55rem;
+    border-radius: 50%;
+    background: var(--color-accent);
   }
 
   .card-source {
@@ -1467,31 +1502,31 @@ function markMatchingFeedback() {
     border-color: #ff6631 !important;
   }
 
-.matching-prompt.matching-prompt--correct,
-.matching-select.matching-select--correct {
-  border-color: #2fbf7f !important;
-  background: #ecfff7 !important;
-  box-shadow: 0 0 0 2px rgba(47, 191, 127, 0.25) !important;
-}
+  .matching-prompt.matching-prompt--correct,
+  .matching-select.matching-select--correct {
+    border-color: #2fbf7f !important;
+    background: #ecfff7 !important;
+    box-shadow: 0 0 0 2px rgba(47, 191, 127, 0.25) !important;
+  }
 
-.matching-prompt.matching-prompt--incorrect,
-.matching-select.matching-select--incorrect {
-  border-color: #ff6631 !important;
-  background: #fff0ed !important;
-  box-shadow: 0 0 0 2px rgba(255, 102, 49, 0.25) !important;
-}
+  .matching-prompt.matching-prompt--incorrect,
+  .matching-select.matching-select--incorrect {
+    border-color: #ff6631 !important;
+    background: #fff0ed !important;
+    box-shadow: 0 0 0 2px rgba(255, 102, 49, 0.25) !important;
+  }
 
-.matching-prompt.matching-prompt--correct .option-key {
-  background: #2fbf7f !important;
-  color: white !important;
-  border-color: #2fbf7f !important;
-}
+  .matching-prompt.matching-prompt--correct .option-key {
+    background: #2fbf7f !important;
+    color: white !important;
+    border-color: #2fbf7f !important;
+  }
 
-.matching-prompt.matching-prompt--incorrect .option-key {
-  background: #ff6631 !important;
-  color: white !important;
-  border-color: #ff6631 !important;
-}
+  .matching-prompt.matching-prompt--incorrect .option-key {
+    background: #ff6631 !important;
+    color: white !important;
+    border-color: #ff6631 !important;
+  }
 
   .btn:disabled {
     opacity: 0.55;
@@ -1609,7 +1644,6 @@ function markMatchingFeedback() {
       gap: 0 1rem;
       padding: 0 0.75rem;
     }
-    .bottom-nav { width: min(80%, 700px); }
   }
 
   @media (max-width: 700px) {
@@ -1625,7 +1659,6 @@ function markMatchingFeedback() {
     .card { padding: 1.5rem 1.25rem; border-radius: 14px; }
     .card-title { font-size: clamp(1.35rem, 6vw, 1.8rem); }
     .rating-pip { width: 2.4rem; height: 2.4rem; font-size: var(--size-sm); }
-    .bottom-nav { width: calc(100% - 2rem); bottom: 1rem; border-radius: 16px; }
   }
 
   /* Animatie voor foutmeldingen. */
