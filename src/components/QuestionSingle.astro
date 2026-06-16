@@ -95,4 +95,10 @@ const { question, options, name } = Astro.props;
     width: 0;
     height: 0;
   }
+
+  @media (min-width: 1200px) {
+    .questions-single label {
+      font-size: var(--size-lg);
+    }
+  }
 </style>

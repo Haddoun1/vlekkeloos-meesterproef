@@ -332,6 +332,11 @@ const recentCourses = [
   document.querySelectorAll(".carousel-item").forEach((item) => {
     item.addEventListener("click", (e) => {
       e.preventDefault();
+      if (window.innerWidth < 426) {
+        const href = item.dataset.resumeHref || courseData[item.dataset.courseId]?.href;
+        if (href) window.location.href = href;
+        return;
+      }
 
       const courseId = item.dataset.courseId;
       const data = courseData[courseId];
@@ -510,19 +515,7 @@ const recentCourses = [
     flex-direction: column;
     gap: 1rem;
     background: var(--gradient-bg-cyan-card);
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    border: 2px solid rgba(0, 0, 0, 0.1);
-=======
     border: 2px solid var(--color-cyan-dark);
->>>>>>> 24ca3af (darkm mode)
-=======
-    border: 2px solid var(--color-cyan-dark);
->>>>>>> 24ca3af (darkm mode)
-=======
-    border: 2px solid var(--color-cyan-dark);
->>>>>>> 24ca3af (darkm mode)
     border-radius: 12px;
     width: 100%;
     opacity: 0;
@@ -645,4 +638,11 @@ const recentCourses = [
       grid-template-columns: repeat(3, 1fr);
     }
   }
+
+  @media (max-width: 426px) {
+  .course-detail,
+  .course-detail.active {
+    display: none !important;
+  }
+}
 </style>
