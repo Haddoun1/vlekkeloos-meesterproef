@@ -5,6 +5,7 @@ import data from "../../data/mensenkennersvragen.json";
 import { slugify } from "../../utils/slugify";
 import AccessibilitySimulator from "../../components/Accessibilitysimulator.astro";
 import QuestionNav from "../../components/Questionnav.astro";
+import BottomNav from "../../components/BottomNav.astro";
 
 export async function getStaticPaths() {
 
@@ -191,13 +192,13 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
       <p class="category-pill">{category}</p>
 
       <button
-  class="setting-btn"
-  id="settingBtn"
-  aria-label="Open instellingen"
->
-  <img class="accessibility-icon" src="/images/accessibility.svg" alt="Accessibility" aria-hidden="true">
-  Menu
-</button>
+        class="setting-btn"
+        id="settingBtn"
+        aria-label="Open instellingen"
+      >
+        <img class="accessibility-icon" src="/images/accessibility.svg" alt="Accessibility" aria-hidden="true">
+        Menu
+      </button>
     </header>
 
   <!-- Contentkaart met tekst, video, vraag of eindscherm. -->
@@ -206,10 +207,10 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
       {item.subtitle && <p class="card-subtitle">{item.subtitle}</p>}
       {item.text && <p class="card-body">{item.text}</p>}
       {item.list && Array.isArray(item.list) && (
-  <ul class="card-list">
-    {item.list.map((point) => <li>{point}</li>)}
-  </ul>
-)}
+        <ul class="card-list">
+          {item.list.map((point) => <li>{point}</li>)}
+        </ul>
+      )}
 
       {item.source && (
         <p class="card-source">
@@ -241,7 +242,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
           {item.input_type === "text" && (
             <input class="text-input" type="text" placeholder={item.placeholder || "Typ hier je antwoord"} />
           )}
-          
+
           {/* Input type email is ongebruikt
 
           {item.input_type === "email" && ( 
@@ -329,7 +330,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
             </div>
           )}
 
-        {/* Zin-afmaken-vraag. */}
+          {/* Zin-afmaken-vraag. */}
 
           {item.input_type === "sentence_completion" && (
             <div class="sentence-completion-block">
@@ -342,8 +343,8 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
               />
             </div>
           )}
-        
-        {/* Matchingvraag. */}
+
+          {/* Matchingvraag. */}
 
           {item.input_type === "matching" && (
             <div class="matching-block" data-matching data-question-id={item.id}>
@@ -403,20 +404,8 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     </section>
 
     <!-- Vaste navigatie onderaan met vorige en volgende stap. -->
+    <BottomNav previousPage={previousPage} nextPage={nextPage} />
 
-    <nav class="bottom-nav" aria-label="Navigatie">
-      {previousPage ? (
-        <a class="nav-btn nav-btn--prev" href={previousPage}> Vorige</a>
-      ) : (
-        <span class="nav-btn nav-btn--disabled" aria-disabled="true"> Vorige</span>
-      )}
-
-      {nextPage ? (
-        <a class="nav-btn nav-btn--next" href={nextPage} id="nav-next">Volgende </a>
-      ) : (
-        <span class="nav-btn nav-btn--disabled" aria-disabled="true">Volgende </span>
-      )}
-    </nav>
   </main>
 
   <aside class="sidebar-right" aria-hidden="true"></aside>
@@ -899,7 +888,6 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     color: var(--color-text);
   }
 
-
   /* Knop om het zijmenu te openen. */
 
   .hamburger-btn {
@@ -933,8 +921,8 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
 
   /* Knop om het instellingenpaneel te openen. */
 
- .setting-btn {
-        font-family: var(--font-semi-bold);
+  .setting-btn {
+    font-family: var(--font-semi-bold);
     font-size: var(--size-sm);
     background: color-mix(in srgb, var(--color-accent) 35%, transparent);
     border: 1px solid color-mix(in srgb, var(--color-accent) 60%, transparent);
@@ -951,7 +939,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
   }
 
   .setting-btn:hover {
-  background: var(--color-accent);
+    background: var(--color-accent);
     border-color: color-mix(in srgb, var(--color-accent) 80%, black);
     transform: translateY(-1px);
     box-shadow: 0 4px 14px color-mix(in srgb, var(--color-accent) 50%, transparent);
@@ -995,7 +983,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     gap: 1rem;
   }
 
-   .category-pill {
+  .category-pill {
     font-family: var(--font-semi-bold);
     font-size: var(--size-base);
     letter-spacing: 0.06em;
@@ -1028,8 +1016,6 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     content: "←";
     display: inline-block;
     transition: transform 0.2s;
-    
-
   }
 
   .back-button:hover {
@@ -1084,33 +1070,33 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
   }
 
   .card-list {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-}
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
 
-.card-list li {
-  font-family: var(--font-light);
-  font-size: var(--size-lg);
-  line-height: 1.5;
-  color: var(--color-text);
-  display: flex;
-  align-items: flex-start;
-  gap: 0.75rem;
-}
+  .card-list li {
+    font-family: var(--font-light);
+    font-size: var(--size-lg);
+    line-height: 1.5;
+    color: var(--color-text);
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
 
-.card-list li::before {
-  content: "";
-  flex-shrink: 0;
-  width: 0.5rem;
-  height: 0.5rem;
-  margin-top: 0.55rem;
-  border-radius: 50%;
-  background: var(--color-accent);
-}
+  .card-list li::before {
+    content: "";
+    flex-shrink: 0;
+    width: 0.5rem;
+    height: 0.5rem;
+    margin-top: 0.55rem;
+    border-radius: 50%;
+    background: var(--color-accent);
+  }
 
   .card-source {
     font-family: var(--font-light);
@@ -1486,31 +1472,31 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     border-color: #ff6631 !important;
   }
 
-.matching-prompt.matching-prompt--correct,
-.matching-select.matching-select--correct {
-  border-color: #2fbf7f !important;
-  background: #ecfff7 !important;
-  box-shadow: 0 0 0 2px rgba(47, 191, 127, 0.25) !important;
-}
+  .matching-prompt.matching-prompt--correct,
+  .matching-select.matching-select--correct {
+    border-color: #2fbf7f !important;
+    background: #ecfff7 !important;
+    box-shadow: 0 0 0 2px rgba(47, 191, 127, 0.25) !important;
+  }
 
-.matching-prompt.matching-prompt--incorrect,
-.matching-select.matching-select--incorrect {
-  border-color: #ff6631 !important;
-  background: #fff0ed !important;
-  box-shadow: 0 0 0 2px rgba(255, 102, 49, 0.25) !important;
-}
+  .matching-prompt.matching-prompt--incorrect,
+  .matching-select.matching-select--incorrect {
+    border-color: #ff6631 !important;
+    background: #fff0ed !important;
+    box-shadow: 0 0 0 2px rgba(255, 102, 49, 0.25) !important;
+  }
 
-.matching-prompt.matching-prompt--correct .option-key {
-  background: #2fbf7f !important;
-  color: white !important;
-  border-color: #2fbf7f !important;
-}
+  .matching-prompt.matching-prompt--correct .option-key {
+    background: #2fbf7f !important;
+    color: white !important;
+    border-color: #2fbf7f !important;
+  }
 
-.matching-prompt.matching-prompt--incorrect .option-key {
-  background: #ff6631 !important;
-  color: white !important;
-  border-color: #ff6631 !important;
-}
+  .matching-prompt.matching-prompt--incorrect .option-key {
+    background: #ff6631 !important;
+    color: white !important;
+    border-color: #ff6631 !important;
+  }
 
   .btn:disabled {
     opacity: 0.55;
@@ -1568,58 +1554,6 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
 
   .btn--ghost:active { transform: scale(0.97); }
 
-  /* ── Bottom nav ──────────────────────────────────────────────── */
-
-  .bottom-nav {
-    position: fixed;
-    bottom: 2rem;
-    left: 50%;
-    transform: translateX(-50%);
-    width: min(66.67%, 800px);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    z-index: 100;
-    background: rgba(255, 255, 255, 0.6);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(0, 0, 0, 0.07);
-    border-radius: 99px;
-    padding: 0.5rem 0.75rem;
-  }
-
-  .nav-btn {
-    font-family: var(--font-bold);
-    font-size: var(--size-base);
-    padding: 0.6rem 1.4rem;
-    border-radius: 25px;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    transition: background 0.18s, color 0.18s, transform 0.12s, box-shadow 0.18s;
-    background: var(--color-accent);
-    color: var(--color-text);
-    border: 1.5px solid rgba(0, 0, 0, 0.12);
-  }
-
-  .nav-btn:hover {
-    background: color-mix(in srgb, var(--color-accent) 70%, black);
-    color: white;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 14px color-mix(in srgb, var(--color-accent) 50%, transparent);
-  }
-
-  .nav-btn:active { transform: scale(0.97); }
-
-  .nav-btn--disabled {
-    background: rgba(0, 0, 0, 0.05);
-    color: rgba(0, 0, 0, 0.28);
-    border-color: transparent;
-    pointer-events: none;
-    cursor: default;
-  }
-
   /* Responsieve layout voor middelgrote schermen. */
 
   @media (max-width: 900px) {
@@ -1628,7 +1562,6 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
       gap: 0 1rem;
       padding: 0 0.75rem;
     }
-    .bottom-nav { width: min(80%, 700px); }
   }
 
   @media (max-width: 700px) {
@@ -1644,7 +1577,6 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     .card { padding: 1.5rem 1.25rem; border-radius: 14px; }
     .card-title { font-size: clamp(1.35rem, 6vw, 1.8rem); }
     .rating-pip { width: 2.4rem; height: 2.4rem; font-size: var(--size-sm); }
-    .bottom-nav { width: calc(100% - 2rem); bottom: 1rem; border-radius: 16px; }
   }
 
   /* Animatie voor foutmeldingen. */
