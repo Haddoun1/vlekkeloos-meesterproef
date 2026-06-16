@@ -68,19 +68,22 @@ const {
   </head>
 
   <body>
-    <main class={`container ${variant}`}     
-    data-step-id={stepId}
-    data-category={category} 
+    <main
+      class={`container ${variant}`}
+      data-step-id={stepId}
+      data-category={category}
     >
-    <div class="wrapper-dashboardBtn">
-  {showDashboardButton && (
-    <div class="wrapper-dashboardBtn">
-      <a href="/index.html" class="back-button">
-        Dashboard
-      </a>
-    </div>
-  )}
-    </div>
+      <div class="wrapper-dashboardBtn">
+        {
+          showDashboardButton && (
+            <div class="wrapper-dashboardBtn">
+              <a href="/index.html" class="back-button">
+                Dashboard
+              </a>
+            </div>
+          )
+        }
+      </div>
       <div class="logo-mobile">
         <img
           src="/images/Mensenkenners-logo-hori.png"
@@ -90,7 +93,11 @@ const {
 
       <div class="content">
         <!-- Links op desktop: slot voor bv. een afbeelding of illustratie -->
-        <div class="panel-left" transition:name="panel-left" transition:animate="none">
+        <div
+          class="panel-left"
+          transition:name="panel-left"
+          transition:animate="none"
+        >
           <slot />
         </div>
 
@@ -104,7 +111,11 @@ const {
             />
           </div>
 
-          <div class="text-section"  transition:animate="none" transition:name="content">
+          <div
+            class="text-section"
+            transition:animate="none"
+            transition:name="content"
+          >
             {
               showProgress && (
                 <div class="progress-bar">
@@ -117,10 +128,13 @@ const {
               )
             }
 
-            <div class="question-wrapper">
-              <slot name="question" />
-            </div>
-
+            {
+              Astro.slots.has("question") && (
+                <div class="question-wrapper">
+                  <slot name="question" />
+                </div>
+              )
+            }
             <div class="questionnaire">
               <h1>{headingText}</h1>
               <p>{bodyText}</p>
@@ -204,7 +218,8 @@ const {
         body: JSON.stringify({
           userId: user.id,
           email: user.email || localStorage.getItem("email") || null,
-          name: user.user_metadata?.name || localStorage.getItem("name") || null,
+          name:
+            user.user_metadata?.name || localStorage.getItem("name") || null,
           stepId,
           category,
           currentUrl: window.location.pathname,
