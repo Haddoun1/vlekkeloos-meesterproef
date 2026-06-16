@@ -927,13 +927,13 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
 
   /* Knop om het instellingenpaneel te openen. */
 
-  .setting-btn {
-    font-family: var(--font-semi-bold);
-    font-size: var(--size-lg);
+ .setting-btn {
+        font-family: var(--font-semi-bold);
+    font-size: var(--size-sm);
     background: color-mix(in srgb, var(--color-accent) 35%, transparent);
     border: 1px solid color-mix(in srgb, var(--color-accent) 60%, transparent);
     border-radius: 999px;
-    padding: 0.15rem 0.45rem;
+    padding: 0.15rem 0.85rem;
     color: var(--color-text);
     margin-left: auto;
     line-height: 1.4;
@@ -941,12 +941,19 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     display: inline-flex;
     align-items: center;
     cursor: pointer;
+    gap: 0.3rem;
   }
 
   .setting-btn:hover {
-    background: var(--color-accent);
+  background: var(--color-accent);
+    border-color: color-mix(in srgb, var(--color-accent) 80%, black);
+    transform: translateY(-1px);
     box-shadow: 0 4px 14px color-mix(in srgb, var(--color-accent) 50%, transparent);
-    transform: scale(1.07);
+  }
+
+  .accessibility-icon {
+    width: 16px;
+    height: 16px;
   }
 
   /* Hoofdlayout van de cursuspagina. */
