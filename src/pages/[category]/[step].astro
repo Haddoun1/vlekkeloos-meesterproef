@@ -178,7 +178,6 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
   <!-- Bovenste navigatie met dashboardlink, modulelabel, stappenmenu en instellingen. -->
     <header class="page-header">
       <a href="/index.html" class="back-button">Dashboard</a>
-      <p class="category-pill">{category}</p>
 
       <QuestionNav
         category={category}
@@ -188,6 +187,8 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
         totalSteps={totalSteps}
         accentColor={accentColor}
       />
+
+      <p class="category-pill">{category}</p>
 
       <button
   class="setting-btn"
