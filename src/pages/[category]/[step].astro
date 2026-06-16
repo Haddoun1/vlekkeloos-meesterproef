@@ -544,6 +544,36 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
       });
   }
 
+  // Markeert matching-antwoorden visueel als goed of fout.
+function markMatchingFeedback() {
+  const matchingSelects = document.querySelectorAll(
+    ".matching-select[data-correct-answer]"
+  );
+
+  matchingSelects.forEach((select) => {
+    const row = select.closest(".matching-row");
+    const prompt = row?.querySelector(".matching-prompt");
+
+    select.classList.remove(
+      "matching-select--correct",
+      "matching-select--incorrect"
+    );
+
+    prompt?.classList.remove(
+      "matching-prompt--correct",
+      "matching-prompt--incorrect"
+    );
+
+    if (select.value === select.dataset.correctAnswer) {
+      select.classList.add("matching-select--correct");
+      prompt?.classList.add("matching-prompt--correct");
+    } else {
+      select.classList.add("matching-select--incorrect");
+      prompt?.classList.add("matching-prompt--incorrect");
+    }
+  });
+}
+
   function getOpenQuestionResult() {
     const openInput = document.querySelector(
       ".question-block textarea, .question-block input[type='text']",
@@ -590,10 +620,6 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
         };
       }
 
-      const allCorrect = [...matchingSelects].every(
-        (select) => select.value === select.dataset.correctAnswer,
-      );
-
       markMatchingFeedback();
 
       return {
@@ -616,6 +642,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
   checkAnswerBtn?.addEventListener("click", () => {
     const result = getQuestionResult();
     answerFeedback.hidden = false;
+    console.log("de button werkt");
 
     if (!result.valid) {
       answerFeedback.className = "answer-feedback answer-feedback--warning";
@@ -830,7 +857,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     justify-content: center;
     font-size: 16px;
     color: var(--color-text);
-    transition: background 0.15s;
+    transition: 0.15s;
     flex-shrink: 0;
   }
 
@@ -854,7 +881,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     padding: 0.6rem 1.25rem;
     text-decoration: none;
     color: var(--color-text);
-    transition: background 0.15s;
+    transition: 0.15s;
   }
 
   .nav-list li a:hover {
@@ -903,7 +930,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     line-height: 1.4;
     text-decoration: none;
     transition:
-      background 0.18s,
+      0.18s,
       color 0.18s,
       transform 0.12s,
       box-shadow 0.18s;
@@ -1036,8 +1063,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     transform: scale(0.97);
   }
 
-
-  /* ── Card ────────────────────────────────────────────────────── */
+  /* CARD */
 
   .card {
     background: rgba(255, 255, 255, 0.72);
@@ -1134,7 +1160,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     border: none;
   }
 
-  /* ── Question block ──────────────────────────────────────────── */
+  /* QUESTION */
 
   .question-block {
     display: flex;
@@ -1183,7 +1209,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 30%, transparent);
   }
 
-  /* ── Options ─────────────────────────────────────────────────── */
+  /* OPTIONS */
 
   .mc-hint {
     font-family: var(--font-light);
@@ -1280,7 +1306,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
 
   .mc-error[hidden] { display: none; }
 
-  /* ── Rating ──────────────────────────────────────────────────── */
+  /* RATING */
 
   .rating-block {
     display: flex;
@@ -1381,7 +1407,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 30%, transparent);
   }
 
-  /* ── Feedback ────────────────────────────────────────────────── */
+  /* FEEDBACK */
 
   .question-check-row {
     display: flex;
@@ -1557,6 +1583,58 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
   }
 
   .btn--ghost:active { transform: scale(0.97); }
+
+  /* BOTTOM NAV */
+
+  .bottom-nav {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(66.67%, 800px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    z-index: 100;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 0, 0, 0.07);
+    border-radius: 99px;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .nav-btn {
+    font-family: var(--font-bold);
+    font-size: var(--size-base);
+    padding: 0.6rem 1.4rem;
+    border-radius: 25px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    transition: background 0.18s, color 0.18s, transform 0.12s, box-shadow 0.18s;
+    background: var(--color-accent);
+    color: var(--color-text);
+    border: 1.5px solid rgba(0, 0, 0, 0.12);
+  }
+
+  .nav-btn:hover {
+    background: color-mix(in srgb, var(--color-accent) 70%, black);
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px color-mix(in srgb, var(--color-accent) 50%, transparent);
+  }
+
+  .nav-btn:active { transform: scale(0.97); }
+
+  .nav-btn--disabled {
+    background: rgba(0, 0, 0, 0.05);
+    color: rgba(0, 0, 0, 0.28);
+    border-color: transparent;
+    pointer-events: none;
+    cursor: default;
+  }
 
   /* Responsieve layout voor middelgrote schermen. */
 
