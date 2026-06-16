@@ -324,6 +324,11 @@ const courses = [
   document.querySelectorAll(".carousel-item").forEach((item) => {
     item.addEventListener("click", (e) => {
       e.preventDefault();
+      if (window.innerWidth < 426) {
+        const href = item.dataset.resumeHref || courseData[item.dataset.courseId]?.href;
+        if (href) window.location.href = href;
+        return;
+      }
 
       const courseId = item.dataset.courseId;
       const data = courseData[courseId];
@@ -628,4 +633,11 @@ const courses = [
       grid-template-columns: repeat(3, 1fr);
     }
   }
+
+  @media (max-width: 426px) {
+  .course-detail,
+  .course-detail.active {
+    display: none !important;
+  }
+}
 </style>
