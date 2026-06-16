@@ -1,4 +1,4 @@
- html {
+  html {
     background-image: var(--gradient-bg-cyan);
     animation: pulse 2s ease-in-out infinite;
   }
@@ -13,7 +13,7 @@
     }
   }
 
-  /* ── Layout ── */
+  /* LAYOUT */
   .container {
     display: flex;
     flex-direction: column;
@@ -70,7 +70,7 @@
     }
   }
 
-  /* ── Logo ── */
+  /* LOGO */
   .logo-mobile {
     display: flex;
     justify-content: center;
@@ -87,7 +87,7 @@
     padding: .3rem;
   }
 
-  /* ── Text & progress ── */
+  /* TEXT & PROGRESS */
   .text-section {
     display: flex;
     flex-direction: column;
@@ -138,7 +138,7 @@
     background-color: var(--color-green);
   }
 
-  /* ── Buttons ── */
+  /* BUTTONS */
 
   .wrapper-dashboardBtn {
     display: flex;
@@ -237,6 +237,7 @@
       backwards;
   }
 
+/* KEYFRAMES */
   @keyframes bounceIn {
     from {
       opacity: 0;
@@ -278,7 +279,7 @@
     }
   }
 
-  /* ── Desktop / tablet ── */
+  /* MEDIA */
   @media (min-width: 768px) {
     .container {
       padding: var(--size-2xl) var(--size-4xl);
@@ -393,10 +394,7 @@
   }
 }
 
-/* ── Login variant ── */
-/* ══════════════════════════════
-   LOGIN VARIANT
-══════════════════════════════ */
+/* LOGIN VARIANT */
 
 .login {
   .error {
@@ -631,9 +629,7 @@
   }
 }
 
-/* ══════════════════════════════
-   WELKOM VARIANT
-══════════════════════════════ */
+/* WELKOM VARIANT */
 
 .welkom {
   .loader {
