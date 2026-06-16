@@ -8,7 +8,7 @@
   100% {
     background-size: 100% 100%;
   }
-
+}
   /* LAYOUT */
   .container {
     display: flex;
@@ -18,7 +18,6 @@
     overflow: hidden;
     padding: var(--size-base) var(--size-2xl);
   }
-}
 
 /* ── Layout ── */
 .container {
@@ -316,6 +315,8 @@ html.is-going-back::view-transition-new(content) {
     align-items: stretch;
     gap: var(--size-2xl);
   }
+}
+
   /* MEDIA */
   @media (min-width: 768px) {
     .container {
