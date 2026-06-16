@@ -1,9 +1,5 @@
 ---
 // @ts-nocheck
-// AccessibilitySimulator.astro
-// Gebruik: <AccessibilitySimulator />
-// Plaatst de setting-overlay, setting-panel en cursor-dot in de pagina.
-// De setting-btn en openSetting/closeSetting logica blijven in de parent pagina.
 ---
 
 <!-- Vertraagde cursor stip (motorieke beperking simulatie) -->
@@ -15,7 +11,7 @@
 <!-- Slide-in setting panel (from right) -->
 <nav class="setting-panel" id="settingPanel" aria-label="Instellingen">
   <div class="setting-panel-header">
-    <span class="setting-panel-title">Accessibility Simulator</span>
+    <span class="setting-panel-title">Beperking Simulator</span>
     <button class="setting-close-btn" id="settingCloseBtn" aria-label="Sluit instellingen"
       >&#10005</button
     >
@@ -28,7 +24,7 @@
       <div class="setting-row">
         <div class="nav-step-title setting-label">Contrast<small>Lager = slechter zicht</small></div>
         <div class="setting-slider-wrap">
-          <input type="range" id="contrastRange" min="0" max="200" value="100" step="1" />
+          <input type="range" id="contrastRange" min="0" max="100" value="100" step="1" />
           <span class="setting-val" id="contrastVal">100%</span>
         </div>
       </div>
@@ -64,7 +60,6 @@
           <button class="setting-chip" data-val="1">Licht</button>
           <button class="setting-chip" data-val="2">Matig</button>
           <button class="setting-chip" data-val="3">Zwaar</button>
-          <button class="setting-chip" data-val="4">Extreem</button>
         </div>
       </div>
     </div>
@@ -98,48 +93,6 @@
 
 <script>
   // @ts-nocheck
-
-  //////////////////
-  // COLOR SCHEME //
-  //////////////////
-
-  function setColorScheme(colorScheme) {
-    if(colorScheme == "system") {
-      if(window.matchMedia('(prefers-color-scheme: light)').matches) {
-        document.documentElement.setAttribute("data-color-scheme", "light");
-      } else {
-        document.documentElement.setAttribute("data-color-scheme", "dark");
-      }
-    } else {
-      document.documentElement.setAttribute("data-color-scheme", colorScheme);
-    }
-  }
-
-  function handleColorSchemeChange(e) {
-    const colorScheme = e.currentTarget.dataset.val;
-    document.querySelectorAll('#schemeGroup .setting-chip').forEach(b => b.classList.remove("active"));
-    e.currentTarget.classList.add("active");
-    setColorScheme(colorScheme);
-  }
-
-  function iniColorScheme() {
-    setColorScheme("light");
-  }
-
-  window.matchMedia("(prefers-color-scheme: light)").addEventListener('change', () => {
-    const activeChip = document.querySelector('#schemeGroup .setting-chip.active');
-    if(activeChip?.dataset.val == "system") {
-      setColorScheme("system");
-    }
-  });
-
-  document.querySelectorAll('#schemeGroup .setting-chip').forEach(chip => {
-    chip.addEventListener("click", handleColorSchemeChange);
-  });
-
-  // INI
-  iniColorScheme();
-
 
   ////////////////////////////
   // RANGES - ACCESSIBILITY //
@@ -189,8 +142,6 @@
   ////////////////////
 
   let textNodes = [];
-  let letterChangeChance = 0.1;
-  let letterChangeTempo  = 250;
   let letterChangeInterval;
 
   function iniDyslexia() {
@@ -208,7 +159,6 @@
       case '1': startMessUpWords(0.1, 250);  break;
       case '2': startMessUpWords(0.2, 100);  break;
       case '3': startMessUpWords(0.3, 40);   break;
-      case '4': startMessUpWords(1,   1);    break;
     }
   }
 
@@ -235,38 +185,34 @@
     }
   }
 
-  function messUpWords() {
-    function messUpWord(word) {
-      if(word.length < 4) return word;
-      return word[0] + messUpMessyPart(word.slice(1, -1)) + word[word.length - 1];
-    }
-
-    function messUpMessyPart(messyPart) {
-      let a, b;
-      while(!(a < b)) {
-        a = Math.floor(Math.random() * messyPart.length);
-        b = Math.floor(Math.random() * messyPart.length);
-      }
-      return messyPart.slice(0, a) + messyPart[b] + messyPart.slice(a + 1, b) + messyPart[a] + messyPart.slice(b + 1);
-    }
-
-    textNodes.forEach(textNode => {
-      textNode.wordsMeta.forEach(wordMeta => {
-        if(letterChangeChance > Math.random()) {
-          let before = textNode.text.nodeValue.slice(0, wordMeta.position);
-          let after  = textNode.text.nodeValue.slice(wordMeta.position + wordMeta.length);
-          let word   = textNode.text.nodeValue.slice(wordMeta.position, wordMeta.position + wordMeta.length);
-          textNode.text.nodeValue = before + messUpWord(word) + after;
-        }
-      });
-    });
-  }
-
   function startMessUpWords(chance, tempo) {
     stopMessUpWords();
-    letterChangeChance = chance;
-    letterChangeTempo  = tempo;
-    letterChangeInterval = setInterval(messUpWords, letterChangeTempo);
+    letterChangeInterval = setInterval(() => {
+      textNodes.forEach(textNode => {
+        textNode.wordsMeta.forEach(wordMeta => {
+          if(chance > Math.random()) {
+            let before = textNode.text.nodeValue.slice(0, wordMeta.position);
+            let after  = textNode.text.nodeValue.slice(wordMeta.position + wordMeta.length);
+            let word   = textNode.text.nodeValue.slice(wordMeta.position, wordMeta.position + wordMeta.length);
+            textNode.text.nodeValue = before + messUpWord(word) + after;
+          }
+        });
+      });
+    }, tempo);
+  }
+
+  function messUpWord(word) {
+    if(word.length < 4) return word;
+    return word[0] + messUpMessyPart(word.slice(1, -1)) + word[word.length - 1];
+  }
+
+  function messUpMessyPart(messyPart) {
+    let a, b;
+    while(!(a < b)) {
+      a = Math.floor(Math.random() * messyPart.length);
+      b = Math.floor(Math.random() * messyPart.length);
+    }
+    return messyPart.slice(0, a) + messyPart[b] + messyPart.slice(a + 1, b) + messyPart[a] + messyPart.slice(b + 1);
   }
 
   function stopMessUpWords() {
@@ -364,9 +310,7 @@
     document.getElementById("tremorRange").value     = 0;
     document.getElementById("tremorVal").textContent = "0";
 
-    document.documentElement.removeAttribute("data-color-scheme");
-
-    ["schemeGroup","dyslexiaGroup","cursorDelayGroup"].forEach(gid => {
+    ["dyslexiaGroup","cursorDelayGroup"].forEach(gid => {
       const chips = document.querySelectorAll(`#${gid} .setting-chip`);
       chips.forEach((b, i) => b.classList.toggle("active", i === 0));
     });
@@ -398,6 +342,8 @@
   }
 
   /* ── Setting panel (slides in from right) ────────────────────── */
+
+  
 
   .setting-panel {
     position: fixed;
@@ -566,7 +512,7 @@
 
   .setting-reset {
     font-family: var(--font-semi-bold);
-    font-size: var(--size-sm);
+    font-size: var(--size-base);
     color: rgba(0, 0, 0, 0.45);
     background: none;
     border: none;
@@ -576,6 +522,7 @@
     height: auto;
     border-radius: 0;
     transition: color 0.15s;
+    text-decoration: underline;
   }
 
   .setting-reset:hover {

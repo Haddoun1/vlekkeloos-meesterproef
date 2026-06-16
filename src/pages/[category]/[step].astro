@@ -3,33 +3,34 @@
 export const prerender = true;
 import data from "../../data/mensenkennersvragen.json";
 import { slugify } from "../../utils/slugify";
-import AccessibilitySimulator from "../../components/AccessibilitySimulator.astro";
-
+import AccessibilitySimulator from "../../components/Accessibilitysimulator.astro";
+import QuestionNav from "../../components/Questionnav.astro";
+import BottomNav from "../../components/BottomNav.astro";
 
 export async function getStaticPaths() {
 
-  const getCategory = (item) => item.Category ?? item.category;
-  const getCategorySlug = (item) => slugify(getCategory(item));
+  const getCategory = (item) => item.Category ?? item.category; // Haalt de categorie op, bijvoorbeeld 'Module 1'.
+  const getCategorySlug = (item) => slugify(getCategory(item)); // Zet de categorie om naar een URL-vriendelijke slug.
 
-  const items = data.blocks.filter(
+  const items = data.blocks.filter( // Selecteert alleen blokken die als cursuspagina getoond worden.
     (item) =>
       getCategory(item) &&
       ["content", "video", "question"].includes(item.type),
   );
 
-  return items.map((item) => {
+  return items.map((item) => { // Maakt voor elk blok een aparte route aan.
     const categorySlug = getCategorySlug(item);
-    const categoryItems = items.filter(
+    const categoryItems = items.filter( // Haalt alle stappen binnen dezelfde module op.
       (x) => getCategorySlug(x) === categorySlug,
     );
-    const stepIndex = categoryItems.findIndex((x) => x.id === item.id);
+    const stepIndex = categoryItems.findIndex((x) => x.id === item.id); // Bepaalt het stapnummer binnen de module.
 
-    return {
+    return { // Geeft de URL-parameters en paginadata terug aan Astro.
       params: {
         category: categorySlug,
         step: String(stepIndex + 1),
       },
-      props: {
+      props: { // Geeft data mee aan de gegenereerde pagina.
         item,
         currentStep: stepIndex + 1,
         totalSteps: categoryItems.length,
@@ -40,11 +41,25 @@ export async function getStaticPaths() {
   });
 }
 
+// Haalt de huidige stapdata op en bouwt de vorige/volgende links.
+
 const { item, currentStep, totalSteps, category, categoryItems } = Astro.props;
 const categorySlug = slugify(category);
-
 const previousPage = currentStep > 1 ? `/${categorySlug}/${currentStep - 1}` : null;
 const nextPage = currentStep < totalSteps ? `/${categorySlug}/${currentStep + 1}` : null;
+
+// Haalt vraagopties, schaalinstellingen en ratingwaarden op.
+
+const options = item.options || [];
+const scale = item.scale || {};
+const minRating = scale.min || 1;
+const maxRating = scale.max || 10;
+const ratings = Array.from(
+  { length: maxRating - minRating + 1 },
+  (_, i) => minRating + i,
+);
+
+// Zet video-URL's om naar embed-URL's wanneer een videoblok wordt gebruikt.
 
 let embedUrl = item.url;
 if (item.url?.includes("vimeo.com")) {
@@ -60,14 +75,7 @@ if (item.url?.includes("youtu.be/")) {
   embedUrl = `https://www.youtube.com/embed/${id}`;
 }
 
-const options = item.options || [];
-const scale = item.scale || {};
-const minRating = scale.min || 1;
-const maxRating = scale.max || 10;
-const ratings = Array.from(
-  { length: maxRating - minRating + 1 },
-  (_, i) => minRating + i,
-);
+// Bepaalt welk type vraag getoond wordt en of de check-knop nodig is.
 
 const hasCorrectOptions =
   item.type === "question" &&
@@ -82,6 +90,8 @@ const isCheckableQuestion =
   item.type === "question" &&
   (hasCorrectOptions || item.input_type === "matching" || isOpenReflectionQuestion);
 
+// Stelt feedback en voorbeeldantwoorden in.
+
 const maxSelections = item.max_selections || 2;
 const exampleAnswer =
   item.example_answer ||
@@ -89,6 +99,8 @@ const exampleAnswer =
   item.sample_answer ||
   item.explanation ||
   "Er is nog geen voorbeeldantwoord ingesteld voor deze vraag. Voeg bijvoorbeeld `example_answer` toe aan deze vraag in de JSON.";
+
+// Bepaalt naar welke module de gebruiker gaat na een eindscherm.
 
 let nextSectionUrl = null;
 
@@ -99,7 +111,13 @@ if (item.id?.endsWith("_submit")) {
   if (item.id === "m3_submit") nextSectionUrl = "/module-4/1";
 }
 
-const progressPct = Math.round((currentStep / totalSteps) * 100);
+// Berekent de voortgang binnen de huidige module.
+
+const progressPct = Math.round(
+  (currentStep / totalSteps) * 100,
+);
+
+// Koppelt elke module aan een accentkleur.
 
 const categoryColorMap: Record<string, string> = {
   "intro": "#B1F2D9",
@@ -114,10 +132,9 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
 
 <link rel="stylesheet" href="/styles/global.css" />
 
-<!-- Nav overlay (backdrop) -->
+<!-- Zijmenu met alle stappen binnen de huidige module. -->
 <div class="nav-overlay" id="navOverlay"></div>
 
-<!-- Slide-in nav panel -->
 <nav class="nav-panel" id="navPanel" aria-label="Vragennavigatie">
   <div class="nav-panel-header">
     <span class="nav-panel-title">{category}</span>
@@ -144,8 +161,10 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
   </ul>
 </nav>
 
+<!-- Toegankelijkheidssimulator voor ervaringsopdrachten. -->
 <AccessibilitySimulator />
 
+<!-- Hoofdlayout van de cursuspagina. -->
 <div class="page-shell" style={`--color-accent: ${accentColor}`}>
   <aside class="sidebar-left" aria-label="Navigatiemenu"></aside>
 
@@ -156,30 +175,42 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     data-requires-check={isCheckableQuestion ? "true" : "false"}
     data-input-type={item.input_type || ""}
   >
+
+  <!-- Bovenste navigatie met dashboardlink, modulelabel, stappenmenu en instellingen. -->
     <header class="page-header">
-      <a href="/index.html" class="back-button"> Dashboard </a>
+      <a href="/index.html" class="back-button">Dashboard</a>
+
+      <QuestionNav
+        category={category}
+        categorySlug={categorySlug}
+        categoryItems={categoryItems}
+        currentStep={currentStep}
+        totalSteps={totalSteps}
+        accentColor={accentColor}
+      />
+
       <p class="category-pill">{category}</p>
-      <button
-        class="hamburger-btn"
-        id="hamburgerBtn"
-        aria-label="Open vragennavigatie"
-      >
-        {currentStep}<span class="step-total">/{totalSteps}</span>
-      </button>
 
       <button
         class="setting-btn"
         id="settingBtn"
         aria-label="Open instellingen"
       >
-        &#9881;
+        <img class="accessibility-icon" src="/images/accessibility.svg" alt="Accessibility" aria-hidden="true">
+        Menu
       </button>
     </header>
 
+  <!-- Contentkaart met tekst, video, vraag of eindscherm. -->
     <section class="card">
       {item.title && <h1 class="card-title">{item.title}</h1>}
       {item.subtitle && <p class="card-subtitle">{item.subtitle}</p>}
       {item.text && <p class="card-body">{item.text}</p>}
+      {item.list && Array.isArray(item.list) && (
+        <ul class="card-list">
+          {item.list.map((point) => <li>{point}</li>)}
+        </ul>
+      )}
 
       {item.source && (
         <p class="card-source">
@@ -188,6 +219,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
         </p>
       )}
 
+    <!-- Videoblok. -->
       {item.type === "video" && embedUrl && embedUrl.trim() !== "" && (
         <div class="video-wrapper">
           <iframe
@@ -200,6 +232,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
         </div>
       )}
 
+    <!-- Vraagblok. De inhoud wordt bepaald door input_type uit de JSON. -->
       {item.type === "question" && (
         <div class="question-block">
           {item.question && <h2 class="question-text">{item.question}</h2>}
@@ -210,9 +243,11 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
             <input class="text-input" type="text" placeholder={item.placeholder || "Typ hier je antwoord"} />
           )}
 
-          {item.input_type === "email" && (
+          {/* Input type email is ongebruikt
+
+          {item.input_type === "email" && ( 
             <input class="text-input" type="email" placeholder="Typ hier je e-mailadres" />
-          )}
+          )} */}
 
           {item.input_type === "long_text" && (
             <textarea class="text-area" rows="5" placeholder={item.placeholder || "Typ hier je antwoord"} />
@@ -241,6 +276,8 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
             </ul>
           )}
 
+          {/* Multiple-choicevraag. */}
+
           {item.input_type === "multiple_choice" && (
             <div data-multiple-choice data-max-selections={maxSelections}>
               <p class="mc-hint">Selecteer maximaal {maxSelections} opties</p>
@@ -257,32 +294,24 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
                           class="option-input"
                           data-correct={typeof option === "object" && option.is_correct === true ? "true" : "false"}
                         />
-                        <span class="option-key">
-                          {String.fromCharCode(65 + index)}
-                        </span>
+                        <span class="option-key">{String.fromCharCode(65 + index)}</span>
                         <span class="option-text">{text}</span>
                       </label>
                     </li>
                   );
                 })}
               </ul>
-              <div
-                class="mc-error"
-                role="alert"
-                aria-live="polite"
-                id="mc-error"
-                hidden
-              >
+              <div class="mc-error" role="alert" aria-live="polite" id="mc-error" hidden>
                 Je kunt maximaal {maxSelections} opties selecteren.
               </div>
             </div>
           )}
 
+          {/* Ratingvraag. */}
+
           {item.input_type === "rating" && (
             <div class="rating-block">
-              {scale.min_label && (
-                <span class="rating-label">{scale.min_label}</span>
-              )}
+              {scale.min_label && <span class="rating-label">{scale.min_label}</span>}
               <div class="rating-row">
                 {ratings.map((ratingValue) => (
                   <label class="rating-option">
@@ -297,11 +326,11 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
                   </label>
                 ))}
               </div>
-              {scale.max_label && (
-                <span class="rating-label">{scale.max_label}</span>
-              )}
+              {scale.max_label && <span class="rating-label">{scale.max_label}</span>}
             </div>
           )}
+
+          {/* Zin-afmaken-vraag. */}
 
           {item.input_type === "sentence_completion" && (
             <div class="sentence-completion-block">
@@ -315,13 +344,15 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
             </div>
           )}
 
+          {/* Matchingvraag. */}
+
           {item.input_type === "matching" && (
             <div class="matching-block" data-matching data-question-id={item.id}>
               <div class="matching-grid">
                 {(item.pairs || []).map((pair, index) => (
                   <div class="matching-row">
                     <div class="matching-prompt">
-                      <span class="option-key">{String.fromCharCode(65 + index)}</span>
+                      <span class="option-key">{index + 1}</span>
                       <span>{pair.prompt}</span>
                     </div>
                     <select
@@ -360,49 +391,21 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
         </div>
       )}
 
-      {
-        item.id?.endsWith("_submit") && (
-          <div class="action-row">
-            <a href="/index.html" class="btn btn--ghost">
-              Dashboard
-            </a>
-            {nextSectionUrl && (
-              <a href={nextSectionUrl} class="btn btn--primary">
-                Volgend deel
-              </a>
-            )}
-          </div>
-        )
-      }
+      <!-- Eindscherm met dashboardlink en optionele link naar de volgende module. -->
+
+      {item.id?.endsWith("_submit") && (
+        <div class="action-row">
+          <a href="/index.html" class="btn btn--ghost">Dashboard</a>
+          {nextSectionUrl && (
+            <a href={nextSectionUrl} class="btn btn--primary">Volgend deel</a>
+          )}
+        </div>
+      )}
     </section>
 
-    <nav class="bottom-nav" aria-label="Navigatie">
-      {
-        previousPage ? (
-          <a class="nav-btn nav-btn--prev" href={previousPage}>
-            {" "}
-            Vorige
-          </a>
-        ) : (
-          <span class="nav-btn nav-btn--disabled" aria-disabled="true">
-            {" "}
-            Vorige
-          </span>
-        )
-      }
+    <!-- Vaste navigatie onderaan met vorige en volgende stap. -->
+    <BottomNav previousPage={previousPage} nextPage={nextPage} />
 
-      {
-        nextPage ? (
-          <a class="nav-btn nav-btn--next" href={nextPage} id="nav-next">
-            Volgende{" "}
-          </a>
-        ) : (
-          <span class="nav-btn nav-btn--disabled" aria-disabled="true">
-            Volgende{" "}
-          </span>
-        )
-      }
-    </nav>
   </main>
 
   <aside class="sidebar-right" aria-hidden="true"></aside>
@@ -412,6 +415,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
   // @ts-nocheck
   import { supabase } from "../../lib/supabase";
 
+  // Haalt de belangrijkste DOM-elementen en stapmetadata op.
   const main = document.querySelector("main.content-col");
   const navNext = document.getElementById("nav-next");
   const checkAnswerBtn = document.getElementById("check-answer-btn");
@@ -424,6 +428,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
 
   let alreadySaved = false;
 
+  // Slaat de huidige stap op in Supabase, zodat de gebruiker later kan hervatten.
   async function saveProgress() {
     if (alreadySaved) return;
     if (!stepId || !category) return;
@@ -437,29 +442,26 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
       data: { user },
     } = await supabase.auth.getUser();
 
-    const response = await fetch("/api/track-step", {
+    await fetch("/api/track-step", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        userId: user?.id || "anonymous",
+        userId: user?.id || null,
         email: user?.email || null,
         name: user?.user_metadata?.name || null,
         stepId,
         category,
+        currentUrl: window.location.pathname,
         startedAt: startedAt.toISOString(),
         endedAt: endedAt.toISOString(),
         durationSeconds,
       }),
     });
-
-    const result = await response.json();
   }
 
+  // Zet de volgende-knop pas vrij nadat een checkbare vraag is nagekeken.
   function setNextEnabled(enabled) {
     if (!navNext || !requiresCheck) return;
-
     navNext.dataset.checked = enabled ? "true" : "false";
     navNext.setAttribute("aria-disabled", enabled ? "false" : "true");
     navNext.classList.toggle("nav-btn--disabled", !enabled);
@@ -483,6 +485,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     });
   }
 
+  // Maakt tekst veilig voordat deze als HTML-feedback wordt getoond.
   function escapeHtml(value) {
     return String(value || "")
       .replaceAll("&", "&amp;")
@@ -492,6 +495,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
       .replaceAll("'", "&#039;");
   }
 
+  // Haalt het zichtbare label van een antwoordoptie op.
   function getOptionLabel(input) {
     const label = input.closest(".option-label");
     const key = label?.querySelector(".option-key")?.textContent?.trim();
@@ -500,21 +504,14 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
   }
 
   function getCorrectOptionLabels() {
-    const correctInputs = document.querySelectorAll(
-      ".question-block input[data-correct='true']",
-    );
-    return [...correctInputs].map(getOptionLabel);
+    return [...document.querySelectorAll(".question-block input[data-correct='true']")].map(getOptionLabel);
   }
 
+  // Markeert keuzeantwoorden visueel als goed of fout.
   function markChoiceFeedback() {
-    const choiceInputs = document.querySelectorAll(
-      ".question-block input[data-correct]",
-    );
-
-    choiceInputs.forEach((input) => {
+    document.querySelectorAll(".question-block input[data-correct]").forEach((input) => {
       const label = input.closest(".option-label");
       if (!label) return;
-
       label.classList.remove("option-label--correct", "option-label--incorrect");
 
       if (input.dataset.correct === "true") {
@@ -527,24 +524,55 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     });
   }
 
+  // Bepaalt welke matching-antwoorden fout zijn en wat de juiste koppeling is.
   function getMatchingCorrections() {
-    const matchingSelects = document.querySelectorAll(".matching-select[data-correct-answer]");
-
-    return [...matchingSelects]
+    return [...document.querySelectorAll(".matching-select[data-correct-answer]")]
       .filter((select) => select.value !== select.dataset.correctAnswer)
       .map((select) => {
-        const prompt = select
-          .closest(".matching-row")
+        const row = select.closest(".matching-row");
+        const key = row?.querySelector(".matching-prompt .option-key")?.textContent?.trim();
+        const prompt = row
           ?.querySelector(".matching-prompt span:last-child")
           ?.textContent
           ?.trim();
 
         return {
+          key,
           prompt,
           correctAnswer: select.dataset.correctAnswer,
         };
       });
   }
+
+  // Markeert matching-antwoorden visueel als goed of fout.
+function markMatchingFeedback() {
+  const matchingSelects = document.querySelectorAll(
+    ".matching-select[data-correct-answer]"
+  );
+
+  matchingSelects.forEach((select) => {
+    const row = select.closest(".matching-row");
+    const prompt = row?.querySelector(".matching-prompt");
+
+    select.classList.remove(
+      "matching-select--correct",
+      "matching-select--incorrect"
+    );
+
+    prompt?.classList.remove(
+      "matching-prompt--correct",
+      "matching-prompt--incorrect"
+    );
+
+    if (select.value === select.dataset.correctAnswer) {
+      select.classList.add("matching-select--correct");
+      prompt?.classList.add("matching-prompt--correct");
+    } else {
+      select.classList.add("matching-select--incorrect");
+      prompt?.classList.add("matching-prompt--incorrect");
+    }
+  });
+}
 
   function getOpenQuestionResult() {
     const openInput = document.querySelector(
@@ -552,70 +580,36 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     );
 
     if (!openInput) return null;
-
-    if (!openInput.value.trim()) {
-      return {
-        valid: false,
-        message: "Vul eerst je antwoord in.",
-      };
-    }
-
-    return {
-      valid: true,
-      correct: true,
-      isOpenQuestion: true,
-    };
+    if (!openInput.value.trim()) return { valid: false, message: "Vul eerst je antwoord in." };
+    return { valid: true, correct: true, isOpenQuestion: true };
   }
 
+  // Controleert het antwoord op basis van het vraagtype.
   function getQuestionResult() {
     const inputType = main?.dataset.inputType;
 
-    if (["long_text", "sentence_completion"].includes(inputType)) {
-      return getOpenQuestionResult();
-    }
+    if (["long_text", "sentence_completion"].includes(inputType)) return getOpenQuestionResult();
 
-    const selectedRadio = document.querySelector(".question-block input[type='radio']:checked");
     const radioOptions = document.querySelectorAll(".question-block input[type='radio'][data-correct]");
-
     if (radioOptions.length > 0) {
-      if (!selectedRadio) {
-        return {
-          valid: false,
-          message: "Kies eerst een antwoord.",
-        };
-      }
-
-      return {
-        valid: true,
-        correct: selectedRadio.dataset.correct === "true",
-        correctOptions: getCorrectOptionLabels(),
-      };
+      const selectedRadio = document.querySelector(".question-block input[type='radio']:checked");
+      if (!selectedRadio) return { valid: false, message: "Kies eerst een antwoord." };
+      return { valid: true, correct: selectedRadio.dataset.correct === "true", correctOptions: getCorrectOptionLabels() };
     }
 
     const checkboxOptions = document.querySelectorAll(".question-block input[type='checkbox'][data-correct]");
-    const checkedBoxes = [...checkboxOptions].filter((checkbox) => checkbox.checked);
-    const correctBoxes = [...checkboxOptions].filter((checkbox) => checkbox.dataset.correct === "true");
-
     if (checkboxOptions.length > 0) {
-      if (checkedBoxes.length === 0) {
-        return {
-          valid: false,
-          message: "Kies eerst minimaal één antwoord.",
-        };
-      }
-
-      const allSelectedAreCorrect = checkedBoxes.every((checkbox) => checkbox.dataset.correct === "true");
-      const allCorrectSelected = correctBoxes.every((checkbox) => checkbox.checked);
-
+      const checkedBoxes = [...checkboxOptions].filter((cb) => cb.checked);
+      const correctBoxes = [...checkboxOptions].filter((cb) => cb.dataset.correct === "true");
+      if (checkedBoxes.length === 0) return { valid: false, message: "Kies eerst minimaal één antwoord." };
       return {
         valid: true,
-        correct: allSelectedAreCorrect && allCorrectSelected,
+        correct: checkedBoxes.every((cb) => cb.dataset.correct === "true") && correctBoxes.every((cb) => cb.checked),
         correctOptions: getCorrectOptionLabels(),
       };
     }
 
     const matchingSelects = document.querySelectorAll(".matching-select[data-correct-answer]");
-
     if (matchingSelects.length > 0) {
       const unanswered = [...matchingSelects].some((select) => !select.value);
 
@@ -626,37 +620,29 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
         };
       }
 
-      const allCorrect = [...matchingSelects].every(
-        (select) => select.value === select.dataset.correctAnswer,
-      );
+      markMatchingFeedback();
 
       return {
         valid: true,
-        correct: allCorrect,
+        correct: [...matchingSelects].every((s) => s.value === s.dataset.correctAnswer),
         matchingCorrections: getMatchingCorrections(),
       };
     }
 
-    return {
-      valid: true,
-      correct: true,
-    };
+    return { valid: true, correct: true };
   }
 
+  // Zet invoervelden vast nadat het antwoord is nagekeken.
   function lockQuestionInputs() {
-    const inputs = document.querySelectorAll(
-      ".question-block input, .question-block textarea, .question-block select",
-    );
-
-    inputs.forEach((input) => {
-      input.disabled = true;
-    });
+    document.querySelectorAll(".question-block input, .question-block textarea, .question-block select")
+      .forEach((input) => { input.disabled = true; });
   }
 
+  // Handelt de check-knop af en toont passende feedback.
   checkAnswerBtn?.addEventListener("click", () => {
     const result = getQuestionResult();
-
     answerFeedback.hidden = false;
+    console.log("de button werkt");
 
     if (!result.valid) {
       answerFeedback.className = "answer-feedback answer-feedback--warning";
@@ -669,15 +655,12 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
 
     if (result.isOpenQuestion) {
       answerFeedback.className = "answer-feedback answer-feedback--example";
-      answerFeedback.innerHTML = `
-        <p>${escapeHtml(exampleAnswer)}</p>
-      `;
+      answerFeedback.innerHTML = `<p>${escapeHtml(exampleAnswer)}</p>`;
     } else if (result.correct) {
       markChoiceFeedback();
+      if (result.matchingCorrections) markMatchingFeedback();
       answerFeedback.className = "answer-feedback answer-feedback--correct";
-      answerFeedback.textContent = explanation
-        ? `Goed! ${explanation}`
-        : "Goed! Dit antwoord klopt.";
+      answerFeedback.textContent = explanation ? `Goed! ${explanation}` : "Goed! Dit antwoord klopt.";
     } else {
       markChoiceFeedback();
       answerFeedback.className = "answer-feedback answer-feedback--incorrect";
@@ -692,20 +675,25 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
       if (correctOptions.length > 0) {
         feedbackHtml += `
           <p><strong>Het juiste antwoord${correctOptions.length > 1 ? "en waren" : " was"}:</strong></p>
-          <ul>${correctOptions.map((option) => `<li>${escapeHtml(option)}</li>`).join("")}</ul>
+          <div class="correct-answer-list">
+            ${correctOptions
+              .map((option, index) => `<div class="correct-answer-row">${index + 1}. ${escapeHtml(option)}</div>`)
+              .join("")}
+          </div>
         `;
       }
 
       if (matchingCorrections.length > 0) {
         feedbackHtml += `
           <p><strong>Juiste koppelingen:</strong></p>
-          <ul>
+          <div class="correct-answer-list">
             ${matchingCorrections
-              .map(
-                (item) => `<li>${escapeHtml(item.prompt)}: ${escapeHtml(item.correctAnswer)}</li>`,
-              )
+              .map((item, index) => {
+                const number = item.key || index + 1;
+                return `<div class="correct-answer-row">${number}. ${escapeHtml(item.prompt)} → ${escapeHtml(item.correctAnswer)}</div>`;
+              })
               .join("")}
-          </ul>
+          </div>
         `;
       }
 
@@ -713,13 +701,13 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     }
 
     lockQuestionInputs();
-    checkAnswerBtn.disabled = true;
-    checkAnswerBtn.textContent = "Gecheckt";
+    checkAnswerBtn.style.display = "none";
+    
     setNextEnabled(true);
   });
 
+  // Beperkt het aantal keuzes bij multiple-choicevragen.
   const mcBlock = document.querySelector("[data-multiple-choice]");
-
   if (mcBlock) {
     const checkboxes = mcBlock.querySelectorAll("input[type='checkbox']");
     const errorEl = document.getElementById("mc-error");
@@ -731,13 +719,10 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
 
         if (checked.length > maxSelections) {
           e.target.checked = false;
-
           if (errorEl) {
             errorEl.hidden = false;
             clearTimeout(errorEl._timer);
-            errorEl._timer = setTimeout(() => {
-              errorEl.hidden = true;
-            }, 3000);
+            errorEl._timer = setTimeout(() => { errorEl.hidden = true; }, 3000);
           }
         } else {
           if (errorEl) errorEl.hidden = true;
@@ -746,7 +731,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     });
   }
 
-  // ── Hamburger nav ──────────────────────────────────────────────
+  // Zijmenu openen en sluiten.
   const hamburgerBtn = document.getElementById("hamburgerBtn");
   const navPanel = document.getElementById("navPanel");
   const navOverlay = document.getElementById("navOverlay");
@@ -772,7 +757,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
   navCloseBtn?.addEventListener("click", closeNav);
   navOverlay?.addEventListener("click", closeNav);
 
-  // ── Setting nav ────────────────────────────────────────────────
+  // Instellingenpaneel openen en sluiten.
   const settingBtn = document.getElementById("settingBtn");
   const settingPanel = document.getElementById("settingPanel");
   const settingOverlay = document.getElementById("settingOverlay");
@@ -781,23 +766,20 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
   function openSetting() {
     settingPanel?.classList.add("open");
     settingOverlay?.classList.add("open");
-    settingBtn?.classList.add("open");
     settingBtn?.setAttribute("aria-expanded", "true");
   }
 
   function closeSetting() {
     settingPanel?.classList.remove("open");
     settingOverlay?.classList.remove("open");
-    settingBtn?.classList.remove("open");
     settingBtn?.setAttribute("aria-expanded", "false");
   }
 
   settingBtn?.addEventListener("click", () =>
-    settingPanel?.classList.contains("open") ? closeSetting() : openSetting(),
+    settingPanel?.classList.contains("open") ? closeSetting() : openSetting()
   );
   settingCloseBtn?.addEventListener("click", closeSetting);
   settingOverlay?.addEventListener("click", closeSetting);
-
 </script>
 
 <style>
@@ -806,7 +788,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     min-height: 100vh;
   }
 
-  /* ── Nav overlay ─────────────────────────────────────────────── */
+  /* Achtergrondlaag voor het zijmenu. */
 
   .nav-overlay {
     position: fixed;
@@ -823,7 +805,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     pointer-events: all;
   }
 
-  /* ── Nav panel ───────────────────────────────────────────────── */
+  /* Zijmenu met alle stappen binnen de module. */
 
   .nav-panel {
     position: fixed;
@@ -875,7 +857,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     justify-content: center;
     font-size: 16px;
     color: var(--color-text);
-    transition: background 0.15s;
+    transition: 0.15s;
     flex-shrink: 0;
   }
 
@@ -899,7 +881,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     padding: 0.6rem 1.25rem;
     text-decoration: none;
     color: var(--color-text);
-    transition: background 0.15s;
+    transition: 0.15s;
   }
 
   .nav-list li a:hover {
@@ -933,8 +915,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     color: var(--color-text);
   }
 
-
-  /* ── Hamburger button ────────────────────────────────────────── */
+  /* Knop om het zijmenu te openen. */
 
   .hamburger-btn {
     font-family: var(--font-semi-bold);
@@ -949,7 +930,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     line-height: 1.4;
     text-decoration: none;
     transition:
-      background 0.18s,
+      0.18s,
       color 0.18s,
       transform 0.12s,
       box-shadow 0.18s;
@@ -965,39 +946,38 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     transform: scale(1.07);
   }
 
-  /* ── Setting button ──────────────────────────────────────────── */
+  /* Knop om het instellingenpaneel te openen. */
 
   .setting-btn {
     font-family: var(--font-semi-bold);
-    font-size: var(--size-lg);
-    letter-spacing: 0.06em;
+    font-size: var(--size-sm);
     background: color-mix(in srgb, var(--color-accent) 35%, transparent);
     border: 1px solid color-mix(in srgb, var(--color-accent) 60%, transparent);
     border-radius: 999px;
-    padding: 0.15rem 0.45rem;
+    padding: 0.15rem 0.85rem;
     color: var(--color-text);
     margin-left: auto;
     line-height: 1.4;
-    text-decoration: none;
-    transition:
-      background 0.18s,
-      color 0.18s,
-      transform 0.12s,
-      box-shadow 0.18s;
+    transition: background 0.18s, transform 0.12s, box-shadow 0.18s;
     display: inline-flex;
     align-items: center;
-    gap: 0.2rem;
     cursor: pointer;
+    gap: 0.3rem;
   }
 
   .setting-btn:hover {
     background: var(--color-accent);
-    box-shadow: 0 4px 14px
-      color-mix(in srgb, var(--color-accent) 50%, transparent);
-    transform: scale(1.07);
+    border-color: color-mix(in srgb, var(--color-accent) 80%, black);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px color-mix(in srgb, var(--color-accent) 50%, transparent);
   }
 
-  /* ── Page shell ──────────────────────────────────────────────── */
+  .accessibility-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  /* Hoofdlayout van de cursuspagina. */
 
   .page-shell {
     display: grid;
@@ -1017,12 +997,6 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     padding-top: 5rem;
   }
 
-  .step-total {
-    font-family: var(--font-light);
-    font-size: var(--size-base);
-    opacity: 0.45;
-  }
-
   .content-col {
     padding: 5rem 0 7rem;
     display: flex;
@@ -1038,12 +1012,9 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
 
   .category-pill {
     font-family: var(--font-semi-bold);
-    font-size: var(--size-sm);
+    font-size: var(--size-base);
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    background: color-mix(in srgb, var(--color-accent) 35%, transparent);
-    border: 1px solid color-mix(in srgb, var(--color-accent) 60%, transparent);
-    border-radius: 99px;
     padding: 0.25rem 0.85rem;
     color: var(--color-text);
     margin: 0;
@@ -1062,37 +1033,37 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     margin: 0;
     line-height: 1.4;
     text-decoration: none;
-    transition:
-      background 0.18s,
-      color 0.18s,
-      transform 0.12s,
-      box-shadow 0.18s;
+    transition: background 0.18s, transform 0.12s, box-shadow 0.18s;
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
   }
 
-  .back-button::before {
+   .back-button::before {
     content: "←";
-    display: inline-block;
+    font-size: var(--size-lg);
     transition: transform 0.2s;
+        margin-top: -2px;
+
   }
 
   .back-button:hover {
     background: var(--color-accent);
     border-color: color-mix(in srgb, var(--color-accent) 80%, black);
     transform: translateY(-1px);
-    box-shadow: 0 4px 14px
-      color-mix(in srgb, var(--color-accent) 50%, transparent);
+    box-shadow: 0 4px 14px color-mix(in srgb, var(--color-accent) 50%, transparent);
   }
 
   .back-button:hover::before {
     transform: translateX(-2px);
+    
   }
 
   .back-button:active {
     transform: scale(0.97);
   }
+
+  /* CARD */
 
   .card {
     background: rgba(255, 255, 255, 0.72);
@@ -1128,6 +1099,35 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     color: var(--color-text);
   }
 
+  .card-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .card-list li {
+    font-family: var(--font-light);
+    font-size: var(--size-lg);
+    line-height: 1.5;
+    color: var(--color-text);
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .card-list li::before {
+    content: "";
+    flex-shrink: 0;
+    width: 0.5rem;
+    height: 0.5rem;
+    margin-top: 0.55rem;
+    border-radius: 50%;
+    background: var(--color-accent);
+  }
+
   .card-source {
     font-family: var(--font-light);
     font-size: var(--size-sm);
@@ -1141,6 +1141,8 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     font-family: var(--font-semi-bold);
     font-size: var(--size-sm);
   }
+
+  /* ── Video ───────────────────────────────────────────────────── */
 
   .video-wrapper {
     position: relative;
@@ -1157,6 +1159,8 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     height: 100%;
     border: none;
   }
+
+  /* QUESTION */
 
   .question-block {
     display: flex;
@@ -1190,9 +1194,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     background: rgba(255, 255, 255, 0.8);
     color: var(--color-text);
     outline: none;
-    transition:
-      border-color 0.2s,
-      box-shadow 0.2s;
+    transition: border-color 0.2s, box-shadow 0.2s;
     resize: vertical;
   }
 
@@ -1204,9 +1206,10 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
   .text-input:focus,
   .text-area:focus {
     border-color: var(--color-accent);
-    box-shadow: 0 0 0 3px
-      color-mix(in srgb, var(--color-accent) 30%, transparent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 30%, transparent);
   }
+
+  /* OPTIONS */
 
   .mc-hint {
     font-family: var(--font-light);
@@ -1241,11 +1244,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     border-radius: 12px;
     background: rgba(255, 255, 255, 0.5);
     cursor: pointer;
-    transition:
-      background 0.18s ease,
-      border-color 0.18s ease,
-      transform 0.12s ease,
-      box-shadow 0.18s ease;
+    transition: background 0.18s ease, border-color 0.18s ease, transform 0.12s ease, box-shadow 0.18s ease;
     user-select: none;
     position: relative;
   }
@@ -1257,15 +1256,10 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
   }
 
-  .option-label:active {
-    transform: translateX(2px) scale(0.995);
-  }
-
   .option-label:has(.option-input:checked) {
     background: color-mix(in srgb, var(--color-accent) 50%, white);
     border-color: rgba(0, 0, 0, 0.3);
-    box-shadow: 0 2px 12px
-      color-mix(in srgb, var(--color-accent) 40%, transparent);
+    box-shadow: 0 2px 12px color-mix(in srgb, var(--color-accent) 40%, transparent);
   }
 
   .option-label:has(.option-input:checked) .option-key {
@@ -1286,10 +1280,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     background: rgba(0, 0, 0, 0.04);
     font-family: var(--font-bold);
     font-size: var(--size-sm);
-    transition:
-      background 0.18s,
-      color 0.18s,
-      border-color 0.18s;
+    transition: background 0.18s, color 0.18s, border-color 0.18s;
   }
 
   .option-text {
@@ -1313,9 +1304,9 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     animation: shake 0.3s ease;
   }
 
-  .mc-error[hidden] {
-    display: none;
-  }
+  .mc-error[hidden] { display: none; }
+
+  /* RATING */
 
   .rating-block {
     display: flex;
@@ -1344,6 +1335,21 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     opacity: 0;
     pointer-events: none;
   }
+
+  .rating-option:hover .rating-pip {
+    background: rgba(255, 255, 255, 0.9);
+    border-color: rgba(0, 0, 0, 0.25);
+    transform: translateY(-2px);
+  }
+
+  .rating-option:has(.option-input:checked) .rating-pip {
+    background: var(--color-accent);
+    border-color: rgba(0, 0, 0, 0.3);
+    padding: 0.5rem 0.75rem;
+    box-shadow: 0 4px 10px color-mix(in srgb, var(--color-accent) 40%, transparent);
+  }
+
+  /* ── Matching ────────────────────────────────────────────────── */
 
   .sentence-completion-block {
     display: flex;
@@ -1375,9 +1381,9 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     align-items: center;
     gap: 0.85rem;
     padding: 0.7rem 1rem 0.7rem 0.75rem;
-    border: 1.5px solid rgba(0,0,0,0.1);
+    border: 1.5px solid rgba(0, 0, 0, 0.1);
     border-radius: 12px;
-    background: rgba(255,255,255,0.5);
+    background: rgba(255, 255, 255, 0.5);
     font-family: var(--font-semi-bold);
     font-size: var(--size-base);
     line-height: 1.35;
@@ -1388,41 +1394,20 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     padding: 0.75rem 1rem;
     font-family: var(--font-light);
     font-size: var(--size-base);
-    border: 2px solid rgba(0,0,0,0.15);
+    border: 2px solid rgba(0, 0, 0, 0.15);
     border-radius: 10px;
-    background: rgba(255,255,255,0.85);
+    background: rgba(255, 255, 255, 0.85);
     color: var(--color-text);
     outline: none;
   }
 
-  .matching-select:hover {
-    border-color: rgba(0,0,0,0.3);
-  }
-
+  .matching-select:hover { border-color: rgba(0, 0, 0, 0.3); }
   .matching-select:focus {
     border-color: var(--color-accent);
     box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 30%, transparent);
   }
 
-  @media (max-width: 700px) {
-    .matching-row {
-      grid-template-columns: 1fr;
-    }
-  }
-
-  .rating-option:hover .rating-pip {
-    background: rgba(255, 255, 255, 0.9);
-    border-color: rgba(0, 0, 0, 0.25);
-    transform: translateY(-2px);
-  }
-
-  .rating-option:has(.option-input:checked) .rating-pip {
-    background: var(--color-accent);
-    border-color: rgba(0, 0, 0, 0.3);
-    padding: 0.5rem 0.75rem;
-    box-shadow: 0 4px 10px
-      color-mix(in srgb, var(--color-accent) 40%, transparent);
-  }
+  /* FEEDBACK */
 
   .question-check-row {
     display: flex;
@@ -1437,7 +1422,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     font-family: var(--font-semi-bold);
     font-size: var(--size-base);
     line-height: 1.45;
-    border: 1.5px solid rgba(0,0,0,0.12);
+    border: 1.5px solid rgba(0, 0, 0, 0.12);
   }
 
   .answer-feedback[hidden] {
@@ -1474,18 +1459,73 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
   }
 
   .answer-feedback ul {
+    list-style: none;
     margin: 0.35rem 0 0;
-    padding-left: 1.3rem;
+    padding-left: 0;
   }
 
-  .option-label--correct {
-    border-color: #2fbf7f;
-    background: #ecfff7;
+  .correct-answer-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    margin-top: 0.5rem;
   }
 
-  .option-label--incorrect {
-    border-color: #ff6631;
-    background: #fff0ed;
+  .correct-answer-row {
+    border: 1.5px solid currentColor;
+    border-radius: 10px;
+    padding: 0.55rem 0.75rem;
+    background: rgba(255, 255, 255, 0.55);
+  }
+
+  .option-label.option-label--correct {
+    border-color: #2fbf7f !important;
+    background: #ecfff7 !important;
+    box-shadow: 0 0 0 2px rgba(47, 191, 127, 0.25) !important;
+  }
+
+  .option-label.option-label--incorrect {
+    border-color: #ff6631 !important;
+    background: #fff0ed !important;
+    box-shadow: 0 0 0 2px rgba(255, 102, 49, 0.25) !important;
+  }
+
+  .option-label.option-label--correct .option-key {
+    background: #2fbf7f !important;
+    color: white !important;
+    border-color: #2fbf7f !important;
+  }
+
+  .option-label.option-label--incorrect .option-key {
+    background: #ff6631 !important;
+    color: white !important;
+    border-color: #ff6631 !important;
+  }
+
+  .matching-prompt.matching-prompt--correct,
+  .matching-select.matching-select--correct {
+    border-color: #2fbf7f !important;
+    background: #ecfff7 !important;
+    box-shadow: 0 0 0 2px rgba(47, 191, 127, 0.25) !important;
+  }
+
+  .matching-prompt.matching-prompt--incorrect,
+  .matching-select.matching-select--incorrect {
+    border-color: #ff6631 !important;
+    background: #fff0ed !important;
+    box-shadow: 0 0 0 2px rgba(255, 102, 49, 0.25) !important;
+  }
+
+  .matching-prompt.matching-prompt--correct .option-key {
+    background: #2fbf7f !important;
+    color: white !important;
+    border-color: #2fbf7f !important;
+  }
+
+  .matching-prompt.matching-prompt--incorrect .option-key {
+    background: #ff6631 !important;
+    color: white !important;
+    border-color: #ff6631 !important;
   }
 
   .btn:disabled {
@@ -1511,11 +1551,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
-    transition:
-      background 0.18s,
-      color 0.18s,
-      transform 0.12s,
-      box-shadow 0.18s;
+    transition: background 0.18s, color 0.18s, transform 0.12s, box-shadow 0.18s;
     cursor: pointer;
     border: none;
   }
@@ -1529,14 +1565,11 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
   .btn--primary:hover {
     background: color-mix(in srgb, var(--color-accent) 70%, black);
     color: white;
-    box-shadow: 0 4px 14px
-      color-mix(in srgb, var(--color-accent) 50%, transparent);
+    box-shadow: 0 4px 14px color-mix(in srgb, var(--color-accent) 50%, transparent);
     transform: translateY(-1px);
   }
 
-  .btn--primary:active {
-    transform: scale(0.97);
-  }
+  .btn--primary:active { transform: scale(0.97); }
 
   .btn--ghost {
     background: transparent;
@@ -1549,9 +1582,9 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     border-color: rgba(0, 0, 0, 0.3);
   }
 
-  .btn--ghost:active {
-    transform: scale(0.97);
-  }
+  .btn--ghost:active { transform: scale(0.97); }
+
+  /* BOTTOM NAV */
 
   .bottom-nav {
     position: fixed;
@@ -1580,11 +1613,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     display: inline-flex;
     align-items: center;
     gap: 0.35rem;
-    transition:
-      background 0.18s,
-      color 0.18s,
-      transform 0.12s,
-      box-shadow 0.18s;
+    transition: background 0.18s, color 0.18s, transform 0.12s, box-shadow 0.18s;
     background: var(--color-accent);
     color: var(--color-text);
     border: 1.5px solid rgba(0, 0, 0, 0.12);
@@ -1594,13 +1623,10 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     background: color-mix(in srgb, var(--color-accent) 70%, black);
     color: white;
     transform: translateY(-1px);
-    box-shadow: 0 4px 14px
-      color-mix(in srgb, var(--color-accent) 50%, transparent);
+    box-shadow: 0 4px 14px color-mix(in srgb, var(--color-accent) 50%, transparent);
   }
 
-  .nav-btn:active {
-    transform: scale(0.97);
-  }
+  .nav-btn:active { transform: scale(0.97); }
 
   .nav-btn--disabled {
     background: rgba(0, 0, 0, 0.05);
@@ -1610,7 +1636,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     cursor: default;
   }
 
-  /* Medium size */
+  /* Responsieve layout voor middelgrote schermen. */
 
   @media (max-width: 900px) {
     .page-shell {
@@ -1618,68 +1644,30 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
       gap: 0 1rem;
       padding: 0 0.75rem;
     }
-
-    .bottom-nav {
-      width: min(80%, 700px);
-    }
   }
 
-  /* Small size */
+  @media (max-width: 700px) {
+    .matching-row { grid-template-columns: 1fr; }
+  }
+
+  /* Responsieve layout voor kleine schermen. */
 
   @media (max-width: 600px) {
-    .page-shell {
-      grid-template-columns: 1fr;
-      padding: 0 1rem;
-    }
-
-    .sidebar-left,
-    .sidebar-right {
-      display: none;
-    }
-
-    .content-col {
-      padding: 3.5rem 0 7rem;
-    }
-
-    .card {
-      padding: 1.5rem 1.25rem;
-      border-radius: 14px;
-    }
-
-    .card-title {
-      font-size: clamp(1.35rem, 6vw, 1.8rem);
-    }
-
-    .rating-pip {
-      width: 2.4rem;
-      height: 2.4rem;
-      font-size: var(--size-sm);
-    }
-
-    .bottom-nav {
-      width: calc(100% - 2rem);
-      bottom: 1rem;
-      border-radius: 16px;
-    }
+    .page-shell { grid-template-columns: 1fr; padding: 0 1rem; }
+    .sidebar-left, .sidebar-right { display: none; }
+    .content-col { padding: 3.5rem 0 7rem; }
+    .card { padding: 1.5rem 1.25rem; border-radius: 14px; }
+    .card-title { font-size: clamp(1.35rem, 6vw, 1.8rem); }
+    .rating-pip { width: 2.4rem; height: 2.4rem; font-size: var(--size-sm); }
   }
 
-  /* Keyframes */
+  /* Animatie voor foutmeldingen. */
 
   @keyframes shake {
-    0% {
-      transform: translateX(0);
-    }
-    25% {
-      transform: translateX(-5px);
-    }
-    50% {
-      transform: translateX(5px);
-    }
-    75% {
-      transform: translateX(-3px);
-    }
-    100% {
-      transform: translateX(0);
-    }
+    0%   { transform: translateX(0); }
+    25%  { transform: translateX(-5px); }
+    50%  { transform: translateX(5px); }
+    75%  { transform: translateX(-3px); }
+    100% { transform: translateX(0); }
   }
 </style>
