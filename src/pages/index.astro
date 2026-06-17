@@ -3,10 +3,10 @@
 export const prerender = false;
 import MainLayout from "../layouts/Layout.astro";
 import CourseCard from "../components/CourseCard.astro";
-import ThemeToggle from '../components/ThemeToggle.astro';
+import ThemeToggle from "../components/ThemeToggle.astro";
 
 // Course informatie voor genereren van cardss
-const courses = [ 
+const courses = [
   {
     id: "onboarding",
     title: "Onboarding",
@@ -50,8 +50,7 @@ const courses = [
   {
     id: "module_4",
     title: "Module 4: Praktijksituaties en toepassing",
-    description:
-      "In deze module oefen je met herkenbare situaties.",
+    description: "In deze module oefen je met herkenbare situaties.",
     image: "/images/Mensenkennerskadervisueel.png",
     progress: 0,
     href: "/module-4/1",
@@ -65,7 +64,8 @@ const courses = [
   <section class="dashboard">
     <div class="dashboard-left">
       <div class="dashboard-title">
-        <h1 id="welcome"></h1>  <!-- WELCOME tekst injected by JS -->
+        <h1 id="welcome"></h1>
+        <!-- WELCOME tekst injected by JS -->
         <hr />
       </div>
       <div class="dashboard-cursus">
@@ -75,12 +75,13 @@ const courses = [
             >Alle cursussen</button
           >
           <hr />
-          <button class="filter-button" id="not-started">Niet begonnen</button> <!-- Filters -->
+          <button class="filter-button" id="not-started">Niet begonnen</button>
+          <!-- Filters -->
           <button class="filter-button" id="in-progress">Bezig</button>
           <button class="filter-button" id="completed">Voltooid</button>
         </div>
 
-<!-- COURSES Cards -->
+        <!-- COURSES Cards -->
         <div class="carousel-wrapper">
           <ul class="carousel">
             {
@@ -102,7 +103,7 @@ const courses = [
       </div>
     </div>
 
-<!-- COURSE Details -->
+    <!-- COURSE Details -->
     <aside class="course-detail" id="course-detail">
       <div class="detail-image">
         <div class="detail-image-placeholder"></div>
@@ -123,14 +124,13 @@ const courses = [
   // @ts-nocheck
   import { supabase } from "../lib/supabase";
 
-// Get user data for progress
+  // Get user data for progress
 
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-
-// Totale aantal vragen van de course
+  // Totale aantal vragen van de course
   const totals = {
     module_1: 6,
     module_2: 10,
@@ -201,9 +201,16 @@ const courses = [
       completed[courseId].add(String(row.step_id));
 
       const currentLatest = latestByCourse[courseId];
-      const rowTime = new Date(row.ended_at || row.started_at || row.created_at || 0).getTime();
+      const rowTime = new Date(
+        row.ended_at || row.started_at || row.created_at || 0,
+      ).getTime();
       const latestTime = currentLatest
-        ? new Date(currentLatest.ended_at || currentLatest.started_at || currentLatest.created_at || 0).getTime()
+        ? new Date(
+            currentLatest.ended_at ||
+              currentLatest.started_at ||
+              currentLatest.created_at ||
+              0,
+          ).getTime()
         : -1;
 
       if (!currentLatest || rowTime > latestTime) {
@@ -312,8 +319,7 @@ const courses = [
     module_4: {
       title: "Module 4: Praktijksituaties en toepassing",
       href: "/module-4/1",
-      description:
-        "In deze module oefen je met herkenbare situaties.",
+      description: "In deze module oefen je met herkenbare situaties.",
       image: "/images/Mensenkennerskaderspraak.png",
       color: "var(--color-blue)",
     },
@@ -325,7 +331,8 @@ const courses = [
     item.addEventListener("click", (e) => {
       e.preventDefault();
       if (window.innerWidth < 426) {
-        const href = item.dataset.resumeHref || courseData[item.dataset.courseId]?.href;
+        const href =
+          item.dataset.resumeHref || courseData[item.dataset.courseId]?.href;
         if (href) window.location.href = href;
         return;
       }
@@ -382,7 +389,7 @@ const courses = [
 </script>
 
 <style>
-/* DASHBOARD */
+  /* DASHBOARD */
   .dashboard {
     margin: 0 auto;
     padding: 2rem;
@@ -435,6 +442,11 @@ const courses = [
         &:hover {
           background-color: var(--color-green);
           color: var(--color-background);
+          background: var(--color-cyan-dark);
+          border-color: color-mix(in srgb, var(--color-green) 80%, black);
+          transform: translateY(-1px);
+          box-shadow: 0 4px 14px
+            color-mix(in srgb, var(--color-green) 50%, transparent);
         }
 
         &.active {
@@ -473,7 +485,7 @@ const courses = [
     display: flex;
   }
 
-/* ASIDE/DETAIL */
+  /* ASIDE/DETAIL */
   .course-detail {
     display: flex;
     flex-direction: column;
@@ -559,9 +571,9 @@ const courses = [
     }
   }
 
-/* MEDIA */
+  /* MEDIA */
 
-    @media (min-width: 768px) {
+  @media (min-width: 768px) {
     h1 {
       font-size: var(--size-3xl);
     }
@@ -571,14 +583,14 @@ const courses = [
     }
   }
 
-    @media (min-width: 768px) {
+  @media (min-width: 768px) {
     .dashboard {
       flex-direction: row;
       align-items: start;
     }
   }
 
-    @media (min-width: 768px) {
+  @media (min-width: 768px) {
     .carousel {
       grid-template-columns: repeat(2, 1fr);
     }
@@ -590,7 +602,7 @@ const courses = [
     }
   }
 
-      @media (min-width: 768px) {
+  @media (min-width: 768px) {
     .course-detail {
       width: 0;
       min-width: 0;
@@ -606,7 +618,7 @@ const courses = [
     }
   }
 
-    @media (min-width: 768px) {
+  @media (min-width: 768px) {
     .course-detail.active {
       width: 320px;
       min-width: 320px;
@@ -616,11 +628,11 @@ const courses = [
     }
   }
 
-    @media (min-width: 1024px) {
+  @media (min-width: 1024px) {
     .carousel {
       grid-template-columns: repeat(3, 1fr);
     }
-    }
+  }
 
   @media (min-width: 1024px) {
     .dashboard:has(.course-detail.active) .carousel {
@@ -635,9 +647,9 @@ const courses = [
   }
 
   @media (max-width: 426px) {
-  .course-detail,
-  .course-detail.active {
-    display: none !important;
+    .course-detail,
+    .course-detail.active {
+      display: none !important;
+    }
   }
-}
 </style>
