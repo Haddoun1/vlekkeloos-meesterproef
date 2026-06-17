@@ -25,17 +25,17 @@
 
 <style>
   .theme-toggle-checkbox {
-  position: absolute;
-  opacity: 0;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-}
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
 
-.theme-toggle-checkbox:focus + .theme-toggle-label {
-  outline: 3px solid var(--color-text);
-  outline-offset: 4px;
-}
+  .theme-toggle-checkbox:focus + .theme-toggle-label {
+    outline: 3px solid var(--color-text);
+    outline-offset: 4px;
+  }
 
   .theme-toggle-label {
     display: flex;
@@ -52,15 +52,11 @@
     }
   }
 
-  /* .theme-toggle-icon-dark { display: none; }
-
-  :global(html:has(#theme-toggle-checkbox:checked)) .theme-toggle-icon-light { display: none; }
-  :global(html:has(#theme-toggle-checkbox:checked)) .theme-toggle-icon-dark { display: block; } */
-
   .theme-toggle-icon-dark { display: none; }
 
-:global(html.dark-mode) .theme-toggle-icon-light { display: none; }
-:global(html.dark-mode) .theme-toggle-icon-dark { display: block; }
+  :global(html.dark-mode) .theme-toggle-icon-light { display: none; }
+
+  :global(html.dark-mode) .theme-toggle-icon-dark { display: block; }
 </style>
 
 <script>
@@ -83,11 +79,8 @@
       }
     });
   }
-
-  // Run on initial load
   setupThemeToggle();
 
-  // Run after every Astro page transition
   document.addEventListener("astro:page-load", setupThemeToggle);
 </script>
 
