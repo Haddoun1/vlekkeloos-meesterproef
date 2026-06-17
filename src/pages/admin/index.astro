@@ -32,7 +32,7 @@ const { data: profile, error: profileError } = await supabase
 // Als er een fout is of de gebruiker is geen admin,
 // stuur diegene terug naar het normale dashboard.
 if (profileError || profile?.role !== "admin") {
-  return Astro.redirect("/index.html");
+  return Astro.redirect("/");
 }
 
 // Haalt alle opgeslagen cursusvoortgang op uit Supabase.
