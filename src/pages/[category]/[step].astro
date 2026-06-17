@@ -191,47 +191,6 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
         </p>
       )}
 
-    <!-- Videoblok. -->
-      {item.type === "video" && embedUrl && embedUrl.trim() !== "" && (
-        <div class="video-wrapper">
-          <iframe
-            src={embedUrl}
-            title={item.title}
-            frameborder="0"
-            allow="autoplay; fullscreen; picture-in-picture"
-            allowfullscreen
-          />
-
-          <p class="category-pill">{category}</p>
-
-          <button
-            class="setting-btn header-btn"
-            id="settingBtn"
-            aria-label="Open instellingen"
-          >
-            <img class="accessibility-icon" src="/images/accessibility.svg" alt="Accessibility" aria-hidden="true">
-            Menu
-          </button>
-        </header>
-
-      <!-- Contentkaart met tekst, video, vraag of eindscherm. -->
-        <section class="card">
-          {item.title && <h1 class="card-title">{item.title}</h1>}
-          {item.subtitle && <p class="card-subtitle">{item.subtitle}</p>}
-          {item.text && <p class="card-body">{item.text}</p>}
-          {item.list && Array.isArray(item.list) && (
-            <ul class="card-list">
-              {item.list.map((point) => <li>{point}</li>)}
-            </ul>
-          )}
-
-          {item.source && (
-            <p class="card-source">
-              <span class="source-label">Bron</span>
-              {item.source}
-            </p>
-          )}
-
         <!-- Videoblok. -->
           {item.type === "video" && embedUrl && embedUrl.trim() !== "" && (
             <div class="video-wrapper">
