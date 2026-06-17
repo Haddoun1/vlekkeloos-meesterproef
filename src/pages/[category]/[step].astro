@@ -559,34 +559,34 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
   }
 
   // Markeert matching-antwoorden visueel als goed of fout.
-function markMatchingFeedback() {
-  const matchingSelects = document.querySelectorAll(
-    ".matching-select[data-correct-answer]"
-  );
-
-  matchingSelects.forEach((select) => {
-    const row = select.closest(".matching-row");
-    const prompt = row?.querySelector(".matching-prompt");
-
-    select.classList.remove(
-      "matching-select--correct",
-      "matching-select--incorrect"
+  function markMatchingFeedback() {
+    const matchingSelects = document.querySelectorAll(
+      ".matching-select[data-correct-answer]"
     );
 
-    prompt?.classList.remove(
-      "matching-prompt--correct",
-      "matching-prompt--incorrect"
-    );
+    matchingSelects.forEach((select) => {
+      const row = select.closest(".matching-row");
+      const prompt = row?.querySelector(".matching-prompt");
 
-    if (select.value === select.dataset.correctAnswer) {
-      select.classList.add("matching-select--correct");
-      prompt?.classList.add("matching-prompt--correct");
-    } else {
-      select.classList.add("matching-select--incorrect");
-      prompt?.classList.add("matching-prompt--incorrect");
-    }
-  });
-}
+      select.classList.remove(
+        "matching-select--correct",
+        "matching-select--incorrect"
+      );
+
+      prompt?.classList.remove(
+        "matching-prompt--correct",
+        "matching-prompt--incorrect"
+      );
+
+      if (select.value === select.dataset.correctAnswer) {
+        select.classList.add("matching-select--correct");
+        prompt?.classList.add("matching-prompt--correct");
+      } else {
+        select.classList.add("matching-select--incorrect");
+        prompt?.classList.add("matching-prompt--incorrect");
+      }
+    });
+  }
 
   function getOpenQuestionResult() {
     const openInput = document.querySelector(
@@ -889,23 +889,26 @@ function markMatchingFeedback() {
     color: var(--color-text);
   }
 
-  /* Knop om het instellingenpaneel te openen. */
+  /* ── Header buttons (back + setting) — gelijke hoogte en stijl ── */
 
   .setting-button {
     font-family: var(--font-semi-bold);
     font-size: var(--size-sm);
+    height: 2.25rem;
+    padding: 0 0.85rem;
     background: color-mix(in srgb, var(--color-accent) 35%, transparent);
     border: 1px solid color-mix(in srgb, var(--color-accent) 60%, transparent);
     border-radius: 999px;
-    padding: 0.15rem 0.85rem;
     color: var(--color-text);
-    margin-left: auto;
-    line-height: 1.4;
-    transition: background 0.18s, transform 0.12s, box-shadow 0.18s;
+    line-height: 1;
+    text-decoration: none;
+    white-space: nowrap;
     display: inline-flex;
     align-items: center;
+    gap: 0.35rem;
     cursor: pointer;
-    gap: 0.3rem;
+    transition: background 0.18s, transform 0.12s, box-shadow 0.18s;
+    flex-shrink: 0;
   }
 
   .setting-button:hover {
@@ -915,9 +918,30 @@ function markMatchingFeedback() {
     box-shadow: 0 4px 14px color-mix(in srgb, var(--color-accent) 50%, transparent);
   }
 
+  .header-btn:active {
+    transform: scale(0.97);
+  }
+
+  /* Pijltje alleen op back-button */
+  .back-button::before {
+    content: "←";
+    font-size: var(--size-lg);
+    transition: transform 0.2s;
+    margin-top: -2px;
+  }
+
+  .back-button:hover::before {
+    transform: translateX(-2px);
+  }
+
   .accessibility-icon {
     width: 16px;
     height: 16px;
+  }
+
+  /* Knop om het instellingenpaneel te openen (margin-left auto blijft) */
+  .setting-btn {
+    margin-left: auto;
   }
 
   /* Hoofdlayout van de cursuspagina. */
@@ -953,6 +977,8 @@ function markMatchingFeedback() {
     gap: 1rem;
   }
 
+  /* Category pill — verborgen op mobile */
+
   .module-title {
     font-family: var(--font-semi-bold);
     font-size: var(--size-base);
@@ -962,48 +988,6 @@ function markMatchingFeedback() {
     color: var(--color-text);
     margin: 0;
     line-height: 1.4;
-  }
-
-  .back-button {
-    font-family: var(--font-semi-bold);
-    font-size: var(--size-sm);
-    letter-spacing: 0.06em;
-    background: color-mix(in srgb, var(--color-accent) 35%, transparent);
-    border: 1px solid color-mix(in srgb, var(--color-accent) 60%, transparent);
-    border-radius: 99px;
-    padding: 0.25rem 0.85rem;
-    color: var(--color-text);
-    margin: 0;
-    line-height: 1.4;
-    text-decoration: none;
-    transition: background 0.18s, transform 0.12s, box-shadow 0.18s;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-  }
-
-   .back-button::before {
-    content: "←";
-    font-size: var(--size-lg);
-    transition: transform 0.2s;
-        margin-top: -2px;
-
-  }
-
-  .back-button:hover {
-    background: var(--color-accent);
-    border-color: color-mix(in srgb, var(--color-accent) 80%, black);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 14px color-mix(in srgb, var(--color-accent) 50%, transparent);
-  }
-
-  .back-button:hover::before {
-    transform: translateX(-2px);
-    
-  }
-
-  .back-button:active {
-    transform: scale(0.97);
   }
 
   /* CARD */
