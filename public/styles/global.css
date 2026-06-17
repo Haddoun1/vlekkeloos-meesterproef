@@ -102,6 +102,7 @@ html {
   --module-option-label-hover: #ffffffe6;
   --module-option-checked: color-mix(in srgb, var(--color-accent) 50%, white);
   --module-option-checked-letter: #ffffff;
+  --module-text-input: #ffffffcc;
 
   --simulator-background: #000;
   --simulator-background-panel: #ffffff;
@@ -190,6 +191,7 @@ html.dark-mode {
   --module-option-label-hover: #e2e2e290;
   --module-option-checked: var(--color-accent);
   --module-option-checked-letter: #ffffff00;
+  --module-text-input: #a0b4acab;
 
   --simulator-background: #000;
   --simulator-background-panel: #bababa;
