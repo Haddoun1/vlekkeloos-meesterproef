@@ -178,7 +178,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
 
   <!-- Bovenste navigatie met dashboardlink, modulelabel, stappenmenu en instellingen. -->
     <header class="page-header">
-      <a href="/index.html" class="back-button header-btn">Dashboard</a>
+      <a href="/" class="back-button header-btn">Dashboard</a>
 
       <QuestionNav
         category={category}
@@ -395,7 +395,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
 
       {item.id?.endsWith("_submit") && (
         <div class="action-row">
-          <a href="/index.html" class="btn btn--ghost" id="dashboard-btn">Dashboard</a>
+          <a href="/" class="btn btn--ghost" id="dashboard-btn">Dashboard</a>
           {nextSectionUrl && (
             <a href={nextSectionUrl} class="btn btn--primary" id="nextsection-btn">Volgend deel</a>
           )}
