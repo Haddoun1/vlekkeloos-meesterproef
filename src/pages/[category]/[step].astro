@@ -132,38 +132,6 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
 
 <link rel="stylesheet" href="/styles/global.css" />
 
-<!-- Zijmenu met alle stappen binnen de huidige module. -->
-<div class="nav-overlay" id="navOverlay"></div>
-
-<nav class="nav-panel" id="navPanel" aria-label="Vragennavigatie">
-  <div class="nav-panel-header">
-    <span class="nav-panel-title">{category}</span>
-    <button class="nav-close-btn" id="navCloseBtn" aria-label="Sluit menu"
-      >&#10005</button
-    >
-  </div>
-  <ul class="nav-list">
-    {
-      categoryItems.map((navItem, idx) => (
-        <li>
-          <a
-            href={`/${categorySlug}/${idx + 1}`}
-            class={idx + 1 === currentStep ? "active" : ""}
-          >
-            <span class="nav-step-num">{idx + 1}</span>
-            <span class="nav-step-title">
-              {navItem.title || navItem.question || `Stap ${idx + 1}`}
-            </span>
-          </a>
-        </li>
-      ))
-    }
-  </ul>
-</nav>
-
-<!-- Toegankelijkheidssimulator voor ervaringsopdrachten. -->
-<AccessibilitySimulator />
-
 <!-- Hoofdlayout van de cursuspagina. -->
 <div class="page-shell" style={`--color-accent: ${accentColor}`}>
   <aside class="sidebar-left" aria-label="Navigatiemenu"></aside>
@@ -192,14 +160,17 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
       <p class="category-pill">{category}</p>
 
       <button
-        class="setting-btn header-btn"
-        id="settingBtn"
-        aria-label="Open instellingen"
-      >
+  class="setting-btn header-btn"
+  id="settingBtn"
+  aria-label="Open instellingen"
+  aria-expanded="false"
+>
         <img class="accessibility-icon" src="/images/accessibility.svg" alt="Accessibility" aria-hidden="true">
         Menu
       </button>
     </header>
+
+    <AccessibilitySimulator />
 
   <!-- Contentkaart met tekst, video, vraag of eindscherm. -->
     <section class="card">
@@ -752,55 +723,38 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     });
   }
 
-  // Zijmenu openen en sluiten.
-  const hamburgerBtn = document.getElementById("hamburgerBtn");
-  const navPanel = document.getElementById("navPanel");
-  const navOverlay = document.getElementById("navOverlay");
-  const navCloseBtn = document.getElementById("navCloseBtn");
-
-  function openNav() {
-    navPanel?.classList.add("open");
-    navOverlay?.classList.add("open");
-    hamburgerBtn?.classList.add("open");
-    hamburgerBtn?.setAttribute("aria-expanded", "true");
-  }
-
-  function closeNav() {
-    navPanel?.classList.remove("open");
-    navOverlay?.classList.remove("open");
-    hamburgerBtn?.classList.remove("open");
-    hamburgerBtn?.setAttribute("aria-expanded", "false");
-  }
-
-  hamburgerBtn?.addEventListener("click", () =>
-    navPanel?.classList.contains("open") ? closeNav() : openNav(),
-  );
-  navCloseBtn?.addEventListener("click", closeNav);
-  navOverlay?.addEventListener("click", closeNav);
-
   // Instellingenpaneel openen en sluiten.
-  const settingBtn = document.getElementById("settingBtn");
-  const settingPanel = document.getElementById("settingPanel");
-  const settingOverlay = document.getElementById("settingOverlay");
-  const settingCloseBtn = document.getElementById("settingCloseBtn");
+ const settingBtn = document.getElementById("settingBtn");
+const settingPanel = document.getElementById("settingPanel");
+const settingOverlay = document.getElementById("settingOverlay");
+const settingCloseBtn = document.getElementById("settingCloseBtn");
 
-  function openSetting() {
-    settingPanel?.classList.add("open");
-    settingOverlay?.classList.add("open");
-    settingBtn?.setAttribute("aria-expanded", "true");
-  }
+function handleSettingKeydown(e) {
+  if (e.key === "Escape") closeSetting();
+}
 
-  function closeSetting() {
-    settingPanel?.classList.remove("open");
-    settingOverlay?.classList.remove("open");
-    settingBtn?.setAttribute("aria-expanded", "false");
-  }
+function openSetting() {
+  settingPanel?.removeAttribute("inert");
+  settingPanel?.classList.add("open");
+  settingOverlay?.classList.add("open");
+  settingBtn?.setAttribute("aria-expanded", "true");
+  document.addEventListener("keydown", handleSettingKeydown);
+}
 
-  settingBtn?.addEventListener("click", () =>
-    settingPanel?.classList.contains("open") ? closeSetting() : openSetting()
-  );
-  settingCloseBtn?.addEventListener("click", closeSetting);
-  settingOverlay?.addEventListener("click", closeSetting);
+function closeSetting() {
+  settingPanel?.classList.remove("open");
+  settingOverlay?.classList.remove("open");
+  settingBtn?.setAttribute("aria-expanded", "false");
+  settingPanel?.setAttribute("inert", "");
+  document.removeEventListener("keydown", handleSettingKeydown);
+  settingBtn?.focus();
+}
+
+settingBtn?.addEventListener("click", () =>
+  settingPanel?.classList.contains("open") ? closeSetting() : openSetting()
+);
+settingCloseBtn?.addEventListener("click", closeSetting);
+settingOverlay?.addEventListener("click", closeSetting);
 </script>
 
 
