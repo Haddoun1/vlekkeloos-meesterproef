@@ -395,9 +395,9 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
 
       {item.id?.endsWith("_submit") && (
         <div class="action-row">
-          <a href="/index.html" class="btn btn--ghost">Dashboard</a>
+          <a href="/index.html" class="btn btn--ghost" id="dashboard-btn">Dashboard</a>
           {nextSectionUrl && (
-            <a href={nextSectionUrl} class="btn btn--primary">Volgend deel</a>
+            <a href={nextSectionUrl} class="btn btn--primary" id="nextsection-btn">Volgend deel</a>
           )}
         </div>
       )}
@@ -416,6 +416,25 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
 <script>
   // @ts-nocheck
   import { supabase } from "../../lib/supabase";
+
+  const dashboardBtn = document.getElementById("dashboard-btn");
+  const nextBtn = document.getElementById("nextsection-btn");
+
+  dashboardBtn?.addEventListener("click", async (e) => {
+  e.preventDefault();
+
+  await saveProgress();
+
+  window.location.href = dashboardBtn.href;
+  });
+
+    nextBtn?.addEventListener("click", async (e) => {
+  e.preventDefault();
+
+  await saveProgress();
+
+  window.location.href = dashboardBtn.href;
+  });
 
   // Haalt de belangrijkste DOM-elementen en stapmetadata op.
   const main = document.querySelector("main.content-col");
