@@ -88,9 +88,33 @@ html {
   --color-red: #FF6631;
   --color-yellow: #E9F279;
   --onboarding-text: #7e7676;
+  --onboarding-label:#73747a;
   --onboarding-text-dark: #525252;
+  --onboarding-back-button: #ABADAC;
   --error-login: #b43f3f;
   --button-background: transparent;
+
+  --module-card-background: #ffffffb8;
+  --module-wrong-error: #fff0ed;
+  --module-right-correct: #ecfff7;
+  --module-feedback-wrong: #fff0ed;
+  --module-option-label: #ffffff80;
+  --module-option-label-hover: #ffffffe6;
+  --module-option-checked: color-mix(in srgb, var(--color-accent) 50%, white);
+  --module-option-checked-letter: #ffffff;
+
+
+  --accent-intro: #B1F2D9;
+  --accent-module-1: #FF94E1;
+  --accent-module-2: #E9F279;
+  --accent-module-3: #FF6631;
+  --accent-module-4: #647bef;
+
+  --accent-intro-dark: #1e4d3a;
+  --accent-module-1-dark: #7a3d63;
+  --accent-module-2-dark: #6b6e12;
+  --accent-module-3-dark: #8a3318;
+  --accent-module-4-dark: #2d3f8a;
 
   --gradient-bg-cyan: radial-gradient(circle at 0% 0%, rgb(181 219 206 / 0.4) 0%, transparent);
   --gradient-bg-cyan-card: #fff;
@@ -146,10 +170,29 @@ html.dark-mode {
   --color-blue: #2d3f8a;
   --color-red: #8a3318;
   --color-yellow: #6b6e12;
-  --onboarding-text: #ffffff;
-  --onboarding-text-dark: #ffffff;
+  --onboarding-text: #fff;
+  --onboarding-text-dark: #fff;
+  --onboarding-label:#fff;
+  --onboarding-back-button: #565656;
   --error-login: #fa4545;
   --button-background: #6ecfab2b;
+
+  --module-card-background: #9ebfaf47;
+  --module-wrong-error: #ffffff00;
+  --module-right-correct: #ffffff00;
+  --module-feedback-wrong: #eec6be;
+  --module-option-label: #789889c7;
+  --module-option-label-hover: #e2e2e290;
+  --module-option-checked: var(--color-accent);
+  --module-option-checked-letter: #ffffff00;
+
+
+
+  --accent-intro: var(--accent-intro-dark);
+  --accent-module-1: var(--accent-module-1-dark);
+  --accent-module-2: var(--accent-module-2-dark);
+  --accent-module-3: var(--accent-module-3-dark);
+  --accent-module-4: var(--accent-module-4-dark);
 
   --gradient-bg-cyan: radial-gradient(circle at 0% 0%, rgb(59, 129, 102) 0%, rgb(26 26 26));
   --gradient-bg-cyan-card: radial-gradient(circle at 0% 0%, rgb(181 219 206 / 0.4) 0%);
