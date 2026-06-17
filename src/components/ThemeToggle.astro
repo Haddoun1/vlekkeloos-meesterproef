@@ -25,8 +25,17 @@
 
 <style>
   .theme-toggle-checkbox {
-    display: none;
-  }
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.theme-toggle-checkbox:focus + .theme-toggle-label {
+  outline: 3px solid var(--color-text);
+  outline-offset: 4px;
+}
 
   .theme-toggle-label {
     display: flex;
