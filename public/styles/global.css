@@ -77,19 +77,20 @@
 
 html {
   scroll-behavior: smooth;
-  color-scheme: light;
 
---color-text: light-dark(#222020, #ffffff);
---color-background: light-dark(#ffffff, #ffffff);
---color-green: light-dark(#2AB789, #142621);
---color-cyan: light-dark(#B1F2D9, #1e4d3a);
---color-cyan-dark: light-dark(#8bcab2, #2d6b52);
---color-pink: light-dark(#FF94E1, #7a3d63);
---color-blue: light-dark(#2241dd, #2d3f8a);
---color-red: light-dark(#FF6631, #8a3318);
---color-yellow: light-dark(#E9F279, #6b6e12);
---button-background: light-dark(transparent, #6ecfab2b);
-
+  --color-text: #222020;
+  --color-background: #ffffff;
+  --color-green: #2AB789;
+  --color-cyan: #B1F2D9;
+  --color-cyan-dark: #8bcab2;
+  --color-pink: #FF94E1;
+  --color-blue: #647bef;
+  --color-red: #FF6631;
+  --color-yellow: #E9F279;
+  --onboarding-text: #7e7676;
+  --onboarding-text-dark: #525252;
+  --error-login: #b43f3f;
+  --button-background: transparent;
 
   --gradient-bg-cyan: radial-gradient(circle at 0% 0%, rgb(181 219 206 / 0.4) 0%, transparent);
   --gradient-bg-cyan-card: #fff;
@@ -98,21 +99,7 @@ html {
   --gradient-bg-blue: radial-gradient(circle at 0% 0%, rgb(34 65 221 / 0.2) 0%, transparent);
   --gradient-bg-yellow: radial-gradient(circle at 0% 0%, rgb(233 242 121 / 0.4) 0%, transparent);
   --gradient-bg-red: radial-gradient(circle at 0% 0%, rgb(255 102 49 / 0.4) 0%, transparent);
-  --gradient-bg-header: radial-gradient(circle at 0% 0%,rgb(181 219 206 / 0.4) 0%,transparent);
-
-  &:has(#theme-toggle-checkbox:checked) {
-    color-scheme: dark;
-
-    --gradient-bg-cyan: radial-gradient(circle at 0% 0%, rgb(59, 129, 102) 0%, rgb(26 26 26));
-    --gradient-bg-cyan-card: radial-gradient(circle at 0% 0%, rgb(181 219 206 / 0.4) 0%);
-    --gradient-bg-green: radial-gradient(circle at 0% 0%, rgb(29 143 105) 0%, rgb(26 26 26));
-    --gradient-bg-pink: radial-gradient(circle at 0% 0%, rgb(196 96 159) 0%, rgb(26 26 26));
-    --gradient-bg-blue: radial-gradient(circle at 0% 0%, rgb(79 106 245) 0%, rgb(26 26 26));
-    --gradient-bg-yellow: radial-gradient(circle at 0% 0%, rgb(184 193 42) 0%, rgb(26 26 26));
-    --gradient-bg-red: radial-gradient(circle at 0% 0%, rgb(204 74 31) 0%, rgb(26 26 26));
-    --gradient-bg-header: radial-gradient(circle at 0% 0%, rgb(4 5 5 / 40%) 0%,transparent);
-
-  }
+  --gradient-bg-header: radial-gradient(circle at 0% 0%, rgb(181 219 206 / 0.4) 0%, transparent);
 
   --font-bold: 'Plus Jakarta Sans Bold', sans-serif;
   --font-bold-italic: 'Plus Jakarta Sans Bold Italic', sans-serif;
@@ -147,10 +134,31 @@ html {
   font-family: var(--font-bold);
   color: var(--color-text);
   background-color: var(--color-background);
+}
 
-  &:has(#theme-toggle-checkbox:checked) {
-    color-scheme: dark;
-  }
+html.dark-mode {
+  --color-text: #ffffff;
+  --color-background: #fff;
+  --color-green: #142621;
+  --color-cyan: #1e4d3a;
+  --color-cyan-dark: #2d6b52;
+  --color-pink: #7a3d63;
+  --color-blue: #2d3f8a;
+  --color-red: #8a3318;
+  --color-yellow: #6b6e12;
+  --onboarding-text: #ffffff;
+  --onboarding-text-dark: #ffffff;
+  --error-login: #fa4545;
+  --button-background: #6ecfab2b;
+
+  --gradient-bg-cyan: radial-gradient(circle at 0% 0%, rgb(59, 129, 102) 0%, rgb(26 26 26));
+  --gradient-bg-cyan-card: radial-gradient(circle at 0% 0%, rgb(181 219 206 / 0.4) 0%);
+  --gradient-bg-green: radial-gradient(circle at 0% 0%, rgb(29 143 105) 0%, rgb(26 26 26));
+  --gradient-bg-pink: radial-gradient(circle at 0% 0%, rgb(196 96 159) 0%, rgb(26 26 26));
+  --gradient-bg-blue: radial-gradient(circle at 0% 0%, rgb(79 106 245) 0%, rgb(26 26 26));
+  --gradient-bg-yellow: radial-gradient(circle at 0% 0%, rgb(184 193 42) 0%, rgb(26 26 26));
+  --gradient-bg-red: radial-gradient(circle at 0% 0%, rgb(204 74 31) 0%, rgb(26 26 26));
+  --gradient-bg-header: radial-gradient(circle at 0% 0%, rgb(4 5 5 / 40%) 0%, transparent);
 }
 
 
