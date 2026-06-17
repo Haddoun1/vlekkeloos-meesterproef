@@ -3,14 +3,14 @@ html {
   animation: pulse 2s ease-in-out infinite;
 }
 
-  @keyframes pulse {
+@keyframes pulse {
 
     0%,
     100% {
       background-size: 100% 100%;
     }
-  }
 }
+
 
   /* ── Layout ── */
   .container {
