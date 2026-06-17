@@ -105,6 +105,9 @@ html {
 
   --simulator-background: #000;
   --simulator-background-panel: #ffffff;
+  --simulator-num: #00000014;
+
+  --select-dropdown: #ffffff00;
 
   --accent-intro: #B1F2D9;
   --accent-module-1: #FF94E1;
@@ -190,6 +193,9 @@ html.dark-mode {
 
   --simulator-background: #000;
   --simulator-background-panel: #bababa;
+  --simulator-num: #00000033;
+
+  --select-dropdown: #9ebfaf47;
 
   --accent-intro: var(--accent-intro-dark);
   --accent-module-1: var(--accent-module-1-dark);

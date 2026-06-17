@@ -188,7 +188,7 @@ const { category, categorySlug, categoryItems, currentStep, totalSteps, accentCo
     padding: 1.25rem 1.25rem 1rem;
     border-bottom: 1.5px solid rgba(0, 0, 0, 0.12);
     flex-shrink: 0;
-    background: white;
+    background: var(--simulator-background-panel);
   }
 
   .qnav-title {
@@ -197,6 +197,7 @@ const { category, categorySlug, categoryItems, currentStep, totalSteps, accentCo
     letter-spacing: 0.07em;
     text-transform: uppercase;
     opacity: 0.6;
+    color: var(--simulator-background)
   }
 
   .qnav-close-btn {
@@ -225,7 +226,7 @@ const { category, categorySlug, categoryItems, currentStep, totalSteps, accentCo
     margin: 0;
     overflow-y: auto;
     flex: 1;
-    background: white;
+    background: var(--simulator-background-panel);
   }
 
   .qnav-list li a {
@@ -252,13 +253,13 @@ const { category, categorySlug, categoryItems, currentStep, totalSteps, accentCo
     width: 26px;
     height: 26px;
     border-radius: 7px;
-    background: rgba(0, 0, 0, 0.08);
+    background: var(--simulator-num);
     display: flex;
     align-items: center;
     justify-content: center;
     font-family: var(--font-bold);
     font-size: var(--size-sm);
-    color: var(--color-text);
+    color: var(--simulator-background);
   }
 
   .qnav-step-title {
@@ -266,6 +267,6 @@ const { category, categorySlug, categoryItems, currentStep, totalSteps, accentCo
     font-size: var(--size-sm);
     line-height: 1.35;
     flex: 1;
-    color: var(--color-text);
+    color: var(--simulator-background);
   }
 </style>
