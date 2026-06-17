@@ -130,66 +130,99 @@ const categoryColorMap = {
 
 const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
 ---
+<html lang="nl">
+  <head>
+    <BaseHead title={category} />
+    <link rel="stylesheet" href="/styles/global.css" />
+  </head>
+  <body>
 
-<link rel="stylesheet" href="/styles/global.css" />
+    <!-- Zijmenu met alle stappen binnen de huidige module. -->
+    <div class="nav-overlay" id="navOverlay"></div>
 
-<!-- Hoofdlayout van de cursuspagina. -->
-<div class="page-shell" style={`--color-accent: ${accentColor}`}>
-  <aside class="sidebar-left" aria-label="Navigatiemenu"></aside>
+    <nav class="nav-panel" id="navPanel" aria-label="Vragennavigatie">
+      <div class="nav-panel-header">
+        <span class="nav-panel-title">{category}</span>
+        <button class="nav-close-btn" id="navCloseBtn" aria-label="Sluit menu"
+          >&#10005</button
+        >
+      </div>
+      <ul class="nav-list">
+        {
+          categoryItems.map((navItem, idx) => (
+            <li>
+              <a
+                href={`/${categorySlug}/${idx + 1}`}
+                class={idx + 1 === currentStep ? "active" : ""}
+              >
+                <span class="nav-step-num">{idx + 1}</span>
+                <span class="nav-step-title">
+                  {navItem.title || navItem.question || `Stap ${idx + 1}`}
+                </span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
 
-  <main
-    class="content-col"
-    data-step-id={String(currentStep)}
-    data-category={categorySlug}
-    data-requires-check={isCheckableQuestion ? "true" : "false"}
-    data-input-type={item.input_type || ""}
-  >
-
-  <!-- Bovenste navigatie met dashboardlink, modulelabel, stappenmenu en instellingen. -->
-    <header class="page-header">
-      <a href="/" class="back-button header-btn">Dashboard</a>
-
-      <QuestionNav
-        category={category}
-        categorySlug={categorySlug}
-        categoryItems={categoryItems}
-        currentStep={currentStep}
-        totalSteps={totalSteps}
-        accentColor={accentColor}
-      />
-
-      <p class="category-pill">{category}</p>
-
-      <button
-  class="setting-btn header-btn"
-  id="settingBtn"
-  aria-label="Open instellingen"
-  aria-expanded="false"
->
-        <img class="accessibility-icon" src="/images/accessibility.svg" alt="Accessibility" aria-hidden="true">
-        Menu
-      </button>
-    </header>
-
+    <!-- Toegankelijkheidssimulator voor ervaringsopdrachten. -->
     <AccessibilitySimulator />
 
-  <!-- Contentkaart met tekst, video, vraag of eindscherm. -->
-    <section class="card">
-      {item.title && <h1 class="card-title">{item.title}</h1>}
-      {item.subtitle && <p class="card-subtitle">{item.subtitle}</p>}
-      {item.text && <p class="card-body">{item.text}</p>}
-      {item.list && Array.isArray(item.list) && (
-        <ul class="card-list">
-          {item.list.map((point) => <li>{point}</li>)}
-        </ul>
-      )}
+    <!-- Hoofdlayout van de cursuspagina. -->
+    <div class="page-shell" style={`--color-accent: ${accentColor}`}>
+      <aside class="sidebar-left" aria-label="Navigatiemenu"></aside>
 
-      {item.source && (
-        <p class="card-source">
-          <span class="source-label">Bron</span>
-          {item.source}
-        </p>
-      )}
+      <main
+        class="content-col"
+        data-step-id={String(currentStep)}
+        data-category={categorySlug}
+        data-requires-check={isCheckableQuestion ? "true" : "false"}
+        data-input-type={item.input_type || ""}
+      >
+
+      <!-- Bovenste navigatie met dashboardlink, modulelabel, stappenmenu en instellingen. -->
+        <header class="page-header">
+          <a href="/index.html" class="back-button header-btn">Dashboard</a>
+
+          <QuestionNav
+            category={category}
+            categorySlug={categorySlug}
+            categoryItems={categoryItems}
+            currentStep={currentStep}
+            totalSteps={totalSteps}
+            accentColor={accentColor}
+          />
+
+          <p class="category-pill">{category}</p>
+
+          <button
+            class="setting-btn header-btn"
+            id="settingBtn"
+            aria-label="Open instellingen"
+          >
+            <img class="accessibility-icon" src="/images/accessibility.svg" alt="Accessibility" aria-hidden="true">
+            Menu
+          </button>
+        </header>
+
+      <!-- Contentkaart met tekst, video, vraag of eindscherm. -->
+        <section class="card">
+          {item.title && <h1 class="card-title">{item.title}</h1>}
+          {item.subtitle && <p class="card-subtitle">{item.subtitle}</p>}
+          {item.text && <p class="card-body">{item.text}</p>}
+          {item.list && Array.isArray(item.list) && (
+            <ul class="card-list">
+              {item.list.map((point) => <li>{point}</li>)}
+            </ul>
+          )}
+
+          {item.source && (
+            <p class="card-source">
+              <span class="source-label">Bron</span>
+              {item.source}
+            </p>
+          )}
 
         <!-- Videoblok. -->
           {item.type === "video" && embedUrl && embedUrl.trim() !== "" && (
@@ -365,15 +398,15 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
 
           <!-- Eindscherm met dashboardlink en optionele link naar de volgende module. -->
 
-      {item.id?.endsWith("_submit") && (
-        <div class="action-row">
-          <a href="/" class="btn btn--ghost" id="dashboard-btn">Dashboard</a>
-          {nextSectionUrl && (
-            <a href={nextSectionUrl} class="btn btn--primary" id="nextsection-btn">Volgend deel</a>
+          {item.id?.endsWith("_submit") && (
+            <div class="action-row">
+              <a href="/index.html" class="btn btn--ghost">Dashboard</a>
+              {nextSectionUrl && (
+                <a href={nextSectionUrl} class="btn btn--primary">Volgend deel</a>
+              )}
+            </div>
           )}
-        </div>
-      )}
-    </section>
+        </section>
 
         <!-- Vaste navigatie onderaan met vorige en volgende stap. -->
         <BottomNav previousPage={previousPage} nextPage={nextPage} />
@@ -391,25 +424,6 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
 <script>
   // @ts-nocheck
   import { supabase } from "../../lib/supabase";
-
-  const dashboardBtn = document.getElementById("dashboard-btn");
-  const nextBtn = document.getElementById("nextsection-btn");
-
-  dashboardBtn?.addEventListener("click", async (e) => {
-  e.preventDefault();
-
-  await saveProgress();
-
-  window.location.href = dashboardBtn.href;
-  });
-
-    nextBtn?.addEventListener("click", async (e) => {
-  e.preventDefault();
-
-  await saveProgress();
-
-  window.location.href = nextBtn.href;
-  });
 
   // Haalt de belangrijkste DOM-elementen en stapmetadata op.
   const main = document.querySelector("main.content-col");
@@ -727,38 +741,55 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     });
   }
 
+  // Zijmenu openen en sluiten.
+  const hamburgerBtn = document.getElementById("hamburgerBtn");
+  const navPanel = document.getElementById("navPanel");
+  const navOverlay = document.getElementById("navOverlay");
+  const navCloseBtn = document.getElementById("navCloseBtn");
+
+  function openNav() {
+    navPanel?.classList.add("open");
+    navOverlay?.classList.add("open");
+    hamburgerBtn?.classList.add("open");
+    hamburgerBtn?.setAttribute("aria-expanded", "true");
+  }
+
+  function closeNav() {
+    navPanel?.classList.remove("open");
+    navOverlay?.classList.remove("open");
+    hamburgerBtn?.classList.remove("open");
+    hamburgerBtn?.setAttribute("aria-expanded", "false");
+  }
+
+  hamburgerBtn?.addEventListener("click", () =>
+    navPanel?.classList.contains("open") ? closeNav() : openNav(),
+  );
+  navCloseBtn?.addEventListener("click", closeNav);
+  navOverlay?.addEventListener("click", closeNav);
+
   // Instellingenpaneel openen en sluiten.
- const settingBtn = document.getElementById("settingBtn");
-const settingPanel = document.getElementById("settingPanel");
-const settingOverlay = document.getElementById("settingOverlay");
-const settingCloseBtn = document.getElementById("settingCloseBtn");
+  const settingBtn = document.getElementById("settingBtn");
+  const settingPanel = document.getElementById("settingPanel");
+  const settingOverlay = document.getElementById("settingOverlay");
+  const settingCloseBtn = document.getElementById("settingCloseBtn");
 
-function handleSettingKeydown(e) {
-  if (e.key === "Escape") closeSetting();
-}
+  function openSetting() {
+    settingPanel?.classList.add("open");
+    settingOverlay?.classList.add("open");
+    settingBtn?.setAttribute("aria-expanded", "true");
+  }
 
-function openSetting() {
-  settingPanel?.removeAttribute("inert");
-  settingPanel?.classList.add("open");
-  settingOverlay?.classList.add("open");
-  settingBtn?.setAttribute("aria-expanded", "true");
-  document.addEventListener("keydown", handleSettingKeydown);
-}
+  function closeSetting() {
+    settingPanel?.classList.remove("open");
+    settingOverlay?.classList.remove("open");
+    settingBtn?.setAttribute("aria-expanded", "false");
+  }
 
-function closeSetting() {
-  settingPanel?.classList.remove("open");
-  settingOverlay?.classList.remove("open");
-  settingBtn?.setAttribute("aria-expanded", "false");
-  settingPanel?.setAttribute("inert", "");
-  document.removeEventListener("keydown", handleSettingKeydown);
-  settingBtn?.focus();
-}
-
-settingBtn?.addEventListener("click", () =>
-  settingPanel?.classList.contains("open") ? closeSetting() : openSetting()
-);
-settingCloseBtn?.addEventListener("click", closeSetting);
-settingOverlay?.addEventListener("click", closeSetting);
+  settingBtn?.addEventListener("click", () =>
+    settingPanel?.classList.contains("open") ? closeSetting() : openSetting()
+  );
+  settingCloseBtn?.addEventListener("click", closeSetting);
+  settingOverlay?.addEventListener("click", closeSetting);
 </script>
 
 
@@ -1645,12 +1676,9 @@ settingOverlay?.addEventListener("click", closeSetting);
     }
   }
 
-  html.dark-mode .accessibility-icon {
-  filter: invert(1);
-}
-
 
   /* Animatie voor foutmeldingen. */
+
   @keyframes shake {
     0%   { transform: translateX(0); }
     25%  { transform: translateX(-5px); }
