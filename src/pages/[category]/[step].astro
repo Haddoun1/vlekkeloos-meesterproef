@@ -59,13 +59,6 @@ const ratings = Array.from(
   (_, i) => minRating + i,
 );
 
-const ratingGroupLabel =
-  item.question ||
-  item.label ||
-  (scale.min_label && scale.max_label
-    ? `Beoordeling van ${scale.min_label} (${minRating}) naar ${scale.max_label} (${maxRating})`
-    : `Beoordeling van ${minRating} tot ${maxRating}`);
-
 // Zet video-URL's om naar embed-URL's wanneer een videoblok wordt gebruikt.
 
 let embedUrl = item.url;
@@ -139,6 +132,9 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
 
 <link rel="stylesheet" href="/styles/global.css" />
 
+<!-- Zijmenu met alle stappen binnen de huidige module. -->
+<div class="nav-overlay" id="navOverlay"></div>
+
 <nav class="nav-panel" id="navPanel" aria-label="Vragennavigatie">
   <div class="nav-panel-header">
     <span class="nav-panel-title">{category}</span>
@@ -169,11 +165,11 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
 <AccessibilitySimulator />
 
 <!-- Hoofdlayout van de cursuspagina. -->
-<div class="structure" style={`--color-accent: ${accentColor}`}>
-  <aside class="sidebar-left"></aside>
+<div class="page-shell" style={`--color-accent: ${accentColor}`}>
+  <aside class="sidebar-left" aria-label="Navigatiemenu"></aside>
 
   <main
-    class="main-content"
+    class="content-col"
     data-step-id={String(currentStep)}
     data-category={categorySlug}
     data-requires-check={isCheckableQuestion ? "true" : "false"}
@@ -181,8 +177,8 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
   >
 
   <!-- Bovenste navigatie met dashboardlink, modulelabel, stappenmenu en instellingen. -->
-    <header class="module-header">
-      <a href="/index.html" class="back-button">Dashboard</a>
+    <header class="page-header">
+      <a href="/index.html" class="back-button header-btn">Dashboard</a>
 
       <QuestionNav
         category={category}
@@ -193,11 +189,11 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
         accentColor={accentColor}
       />
 
-      <p class="module-title">{category}</p>
+      <p class="category-pill">{category}</p>
 
       <button
-        class="setting-button"
-        id="settingButton"
+        class="setting-btn header-btn"
+        id="settingBtn"
         aria-label="Open instellingen"
       >
         <img class="accessibility-icon" src="/images/accessibility.svg" alt="Accessibility" aria-hidden="true">
@@ -313,32 +309,24 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
 
           {/* Ratingvraag. */}
 
-         {item.input_type === "rating" && (
+          {item.input_type === "rating" && (
             <div class="rating-block">
+              {scale.min_label && <span class="rating-label">{scale.min_label}</span>}
               <div class="rating-row">
-                {scale.min_label && (
-                  <span class="rating-label rating-label--min">{scale.min_label}</span>
-                )}
-
-                <div class="rating-options" role="radiogroup" aria-label={ratingGroupLabel}>
-                  {ratings.map((ratingValue) => (
-                    <label class="rating-option" for={`rating-${item.id}-${ratingValue}`}>
-                      <input
-                        type="radio"
-                        id={`rating-${item.id}-${ratingValue}`}
-                        name={`rating-${item.id}`}
-                        value={ratingValue}
-                        class="option-input"
-                      />
-                      <span class="rating-pip">{ratingValue}</span>
-                    </label>
-                  ))}
-                </div>
-
-                {scale.max_label && (
-                  <span class="rating-label rating-label--max">{scale.max_label}</span>
-                )}
+                {ratings.map((ratingValue) => (
+                  <label class="rating-option">
+                    <input
+                      type="radio"
+                      id={`rating-${item.id}-${ratingValue}`}
+                      name={`rating-${item.id}`}
+                      value={ratingValue}
+                      class="option-input"
+                    />
+                    <span class="rating-pip">{ratingValue}</span>
+                  </label>
+                ))}
               </div>
+              {scale.max_label && <span class="rating-label">{scale.max_label}</span>}
             </div>
           )}
 
@@ -430,7 +418,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
   import { supabase } from "../../lib/supabase";
 
   // Haalt de belangrijkste DOM-elementen en stapmetadata op.
-  const main = document.querySelector("main.main-content");
+  const main = document.querySelector("main.content-col");
   const navNext = document.getElementById("nav-next");
   const checkAnswerBtn = document.getElementById("check-answer-btn");
   const answerFeedback = document.getElementById("answer-feedback");
@@ -745,28 +733,54 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     });
   }
 
+  // Zijmenu openen en sluiten.
+  const hamburgerBtn = document.getElementById("hamburgerBtn");
+  const navPanel = document.getElementById("navPanel");
+  const navOverlay = document.getElementById("navOverlay");
+  const navCloseBtn = document.getElementById("navCloseBtn");
+
+  function openNav() {
+    navPanel?.classList.add("open");
+    navOverlay?.classList.add("open");
+    hamburgerBtn?.classList.add("open");
+    hamburgerBtn?.setAttribute("aria-expanded", "true");
+  }
+
+  function closeNav() {
+    navPanel?.classList.remove("open");
+    navOverlay?.classList.remove("open");
+    hamburgerBtn?.classList.remove("open");
+    hamburgerBtn?.setAttribute("aria-expanded", "false");
+  }
+
+  hamburgerBtn?.addEventListener("click", () =>
+    navPanel?.classList.contains("open") ? closeNav() : openNav(),
+  );
+  navCloseBtn?.addEventListener("click", closeNav);
+  navOverlay?.addEventListener("click", closeNav);
+
   // Instellingenpaneel openen en sluiten.
-  const settingButton = document.getElementById("settingButton");
+  const settingBtn = document.getElementById("settingBtn");
   const settingPanel = document.getElementById("settingPanel");
   const settingOverlay = document.getElementById("settingOverlay");
-  const settingCloseButton = document.getElementById("settingCloseButton");
+  const settingCloseBtn = document.getElementById("settingCloseBtn");
 
   function openSetting() {
     settingPanel?.classList.add("open");
     settingOverlay?.classList.add("open");
-    settingButton?.setAttribute("aria-expanded", "true");
+    settingBtn?.setAttribute("aria-expanded", "true");
   }
 
   function closeSetting() {
     settingPanel?.classList.remove("open");
     settingOverlay?.classList.remove("open");
-    settingButton?.setAttribute("aria-expanded", "false");
+    settingBtn?.setAttribute("aria-expanded", "false");
   }
 
-  settingButton?.addEventListener("click", () =>
+  settingBtn?.addEventListener("click", () =>
     settingPanel?.classList.contains("open") ? closeSetting() : openSetting()
   );
-  settingCloseButton?.addEventListener("click", closeSetting);
+  settingCloseBtn?.addEventListener("click", closeSetting);
   settingOverlay?.addEventListener("click", closeSetting);
 </script>
 
@@ -777,6 +791,23 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
   body {
     background: var(--gradient-bg-cyan);
     min-height: 100vh;
+  }
+
+  /* Achtergrondlaag voor het zijmenu. */
+
+  .nav-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.25);
+    z-index: 250;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+  }
+
+  .nav-overlay.open {
+    opacity: 1;
+    pointer-events: all;
   }
 
   /* Zijmenu met alle stappen binnen de module. */
@@ -889,9 +920,35 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     color: var(--color-text);
   }
 
+  /* Knop om het zijmenu te openen. */
+
+  .hamburger-btn {
+    font-family: var(--font-semi-bold);
+    font-size: var(--size-lg);
+    letter-spacing: 0.06em;
+    background: color-mix(in srgb, var(--color-accent) 35%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-accent) 60%, transparent);
+    border-radius: 99px;
+    padding: 0.15rem 0.85rem;
+    color: var(--color-text);
+    margin: 0;
+    line-height: 1.4;
+    text-decoration: none;
+    transition: 0.18s, color 0.18s, transform 0.12s, box-shadow 0.18s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2rem;
+  }
+
+  .hamburger-btn:hover {
+    background: var(--color-accent);
+    box-shadow: 0 4px 14px color-mix(in srgb, var(--color-accent) 50%, transparent);
+    transform: scale(1.07);
+  }
+
   /* ── Header buttons (back + setting) — gelijke hoogte en stijl ── */
 
-  .setting-button {
+  .header-btn {
     font-family: var(--font-semi-bold);
     font-size: var(--size-sm);
     height: 2.25rem;
@@ -911,7 +968,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     flex-shrink: 0;
   }
 
-  .setting-button:hover {
+  .header-btn:hover {
     background: var(--color-accent);
     border-color: color-mix(in srgb, var(--color-accent) 80%, black);
     transform: translateY(-1px);
@@ -946,7 +1003,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
 
   /* Hoofdlayout van de cursuspagina. */
 
-  .structure {
+  .page-shell {
     display: grid;
     grid-template-columns: 1fr 4fr 1fr;
     min-height: 100vh;
@@ -964,14 +1021,14 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     padding-top: 5rem;
   }
 
-  .main-content {
+  .content-col {
     padding: 5rem 0 7rem;
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
   }
 
-  .module-header {
+  .page-header {
     display: flex;
     align-items: center;
     gap: 1rem;
@@ -979,7 +1036,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
 
   /* Category pill — verborgen op mobile */
 
-  .module-title {
+  .category-pill {
     font-family: var(--font-semi-bold);
     font-size: var(--size-base);
     letter-spacing: 0.06em;
@@ -1235,36 +1292,22 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
 
   /* RATING */
 
-  /* ── Rating ──────────────────────────────────────────────────── */
-
   .rating-block {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
   }
 
-  .rating-row {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    align-items: center;
-    gap: 0.5rem 1rem;
-  }
-
   .rating-label {
     font-family: var(--font-light);
-    font-size: var(--size-xs);
+    font-size: var(--size-sm);
     opacity: 0.6;
-    white-space: nowrap;
   }
 
-  .rating-label--min { text-align: left; }
-  .rating-label--max { text-align: right; }
-
-  .rating-options {
+  .rating-row {
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
-    gap: 0.5rem;
   }
 
   .rating-option {
@@ -1275,25 +1318,6 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     position: absolute;
     opacity: 0;
     pointer-events: none;
-    width: 1px;
-    height: 1px;
-  }
-
-  .rating-pip {
-    box-sizing: border-box;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 2rem;
-    height: 2rem;
-    padding: 0.5rem 0.75rem;
-    border: 1.5px solid rgba(0, 0, 0, 0.15);
-    border-radius: 10px;
-    background: rgba(255, 255, 255, 0.85);
-    font-family: var(--font-bold);
-    font-size: var(--size-base);
-    color: var(--color-text);
-    transition: background 0.18s, border-color 0.18s, transform 0.12s, box-shadow 0.18s;
   }
 
   .rating-option:hover .rating-pip {
@@ -1309,10 +1333,6 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     box-shadow: 0 4px 10px color-mix(in srgb, var(--color-accent) 40%, transparent);
   }
 
-  .rating-option:has(.option-input:focus-visible) .rating-pip {
-    outline: 3px solid var(--color-text);
-    outline-offset: 2px;
-  }
   /* ── Matching ────────────────────────────────────────────────── */
 
   .sentence-completion-block {
@@ -1603,7 +1623,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
   /* Responsieve layout voor middelgrote schermen. */
 
   @media (max-width: 900px) {
-    .structure {
+    .page-shell {
       grid-template-columns: 1fr 4fr 1fr;
       gap: 0 1rem;
       padding: 0 0.75rem;
@@ -1617,14 +1637,32 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
   /* Responsieve layout voor kleine schermen. */
 
   @media (max-width: 600px) {
-    .structure { grid-template-columns: 1fr; padding: 0 1rem; }
+    .page-shell { grid-template-columns: 1fr; padding: 0 1rem; }
     .sidebar-left, .sidebar-right { display: none; }
-    .main-content { padding: 3.5rem 0 7rem; }
+    .content-col { padding: 3.5rem 0 7rem; }
     .card { padding: 1.5rem 1.25rem; border-radius: 14px; }
     .card-title { font-size: clamp(1.35rem, 6vw, 1.8rem); }
     .rating-pip { width: 2.4rem; height: 2.4rem; font-size: var(--size-sm); }
-    .rating-row { grid-template-columns: 1fr; }
-    .rating-label--min, .rating-label--max { text-align: center; }
+
+    /* Verberg category-pill op mobile */
+    .category-pill { display: none; }
+
+    /* Iets kleinere header-knoppen op mobile */
+    .header-btn {
+      font-size: var(--size-xs, 0.75rem);
+      height: 2rem;
+      padding: 0 0.65rem;
+      gap: 0.25rem;
+    }
+
+    .back-button::before {
+      font-size: var(--size-base);
+    }
+
+    .accessibility-icon {
+      width: 14px;
+      height: 14px;
+    }
   }
 
   /* Animatie voor foutmeldingen. */
