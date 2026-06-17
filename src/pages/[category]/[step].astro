@@ -6,6 +6,7 @@ import { slugify } from "../../utils/slugify";
 import AccessibilitySimulator from "../../components/Accessibilitysimulator.astro";
 import QuestionNav from "../../components/Questionnav.astro";
 import BottomNav from "../../components/BottomNav.astro";
+import BaseHead from '../../components/BaseHead.astro';
 
 export async function getStaticPaths() {
 
@@ -119,50 +120,18 @@ const progressPct = Math.round(
 
 // Koppelt elke module aan een accentkleur.
 
-const categoryColorMap: Record<string, string> = {
-  "intro": "#B1F2D9",
-  "module-1": "#FF94E1",
-  "module-2": "#E9F279",
-  "module-3": "#FF6631",
-  "module-4": "#2241dd",
+const categoryColorMap = {
+  "intro": "var(--accent-intro)",
+  "module-1": "var(--accent-module-1)",
+  "module-2": "var(--accent-module-2)",
+  "module-3": "var(--accent-module-3)",
+  "module-4": "var(--accent-module-4)",
 };
 
 const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
 ---
 
 <link rel="stylesheet" href="/styles/global.css" />
-
-<!-- Zijmenu met alle stappen binnen de huidige module. -->
-<div class="nav-overlay" id="navOverlay"></div>
-
-<nav class="nav-panel" id="navPanel" aria-label="Vragennavigatie">
-  <div class="nav-panel-header">
-    <span class="nav-panel-title">{category}</span>
-    <button class="nav-close-btn" id="navCloseBtn" aria-label="Sluit menu"
-      >&#10005</button
-    >
-  </div>
-  <ul class="nav-list">
-    {
-      categoryItems.map((navItem, idx) => (
-        <li>
-          <a
-            href={`/${categorySlug}/${idx + 1}`}
-            class={idx + 1 === currentStep ? "active" : ""}
-          >
-            <span class="nav-step-num">{idx + 1}</span>
-            <span class="nav-step-title">
-              {navItem.title || navItem.question || `Stap ${idx + 1}`}
-            </span>
-          </a>
-        </li>
-      ))
-    }
-  </ul>
-</nav>
-
-<!-- Toegankelijkheidssimulator voor ervaringsopdrachten. -->
-<AccessibilitySimulator />
 
 <!-- Hoofdlayout van de cursuspagina. -->
 <div class="page-shell" style={`--color-accent: ${accentColor}`}>
@@ -192,14 +161,17 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
       <p class="category-pill">{category}</p>
 
       <button
-        class="setting-btn header-btn"
-        id="settingBtn"
-        aria-label="Open instellingen"
-      >
+  class="setting-btn header-btn"
+  id="settingBtn"
+  aria-label="Open instellingen"
+  aria-expanded="false"
+>
         <img class="accessibility-icon" src="/images/accessibility.svg" alt="Accessibility" aria-hidden="true">
         Menu
       </button>
     </header>
+
+    <AccessibilitySimulator />
 
   <!-- Contentkaart met tekst, video, vraag of eindscherm. -->
     <section class="card">
@@ -219,179 +191,179 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
         </p>
       )}
 
-    <!-- Videoblok. -->
-      {item.type === "video" && embedUrl && embedUrl.trim() !== "" && (
-        <div class="video-wrapper">
-          <iframe
-            src={embedUrl}
-            title={item.title}
-            frameborder="0"
-            allow="autoplay; fullscreen; picture-in-picture"
-            allowfullscreen
-          />
-        </div>
-      )}
-
-    <!-- Vraagblok. De inhoud wordt bepaald door input_type uit de JSON. -->
-      {item.type === "question" && (
-        <div class="question-block">
-          {item.question && <h2 class="question-text">{item.question}</h2>}
-          {item.description && <p class="card-body">{item.description}</p>}
-          {item.label && <label class="field-label">{item.label}</label>}
-
-          {item.input_type === "text" && (
-            <input class="text-input" type="text" placeholder={item.placeholder || "Typ hier je antwoord"} />
-          )}
-
-          {/* Input type email is ongebruikt
-
-          {item.input_type === "email" && ( 
-            <input class="text-input" type="email" placeholder="Typ hier je e-mailadres" />
-          )} */}
-
-          {item.input_type === "long_text" && (
-            <textarea class="text-area" rows="5" placeholder={item.placeholder || "Typ hier je antwoord"} />
-          )}
-
-          {item.input_type === "single_choice" && (
-            <ul class="options-list" role="radiogroup">
-              {options.map((option, index) => {
-                const text = typeof option === "string" ? option : option.text;
-                return (
-                  <li>
-                    <label class="option-label">
-                      <input
-                        type="radio"
-                        name={item.id}
-                        value={text}
-                        class="option-input"
-                        data-correct={typeof option === "object" && option.is_correct === true ? "true" : "false"}
-                      />
-                      <span class="option-key">{String.fromCharCode(65 + index)}</span>
-                      <span class="option-text">{text}</span>
-                    </label>
-                  </li>
-                );
-              })}
-            </ul>
-          )}
-
-          {/* Multiple-choicevraag. */}
-
-          {item.input_type === "multiple_choice" && (
-            <div data-multiple-choice data-max-selections={maxSelections}>
-              <p class="mc-hint">Selecteer maximaal {maxSelections} opties</p>
-              <ul class="options-list" role="group">
-                {options.map((option, index) => {
-                  const text = typeof option === "string" ? option : option.text;
-                  return (
-                    <li>
-                      <label class="option-label">
-                        <input
-                          type="checkbox"
-                          name={item.id}
-                          value={text}
-                          class="option-input"
-                          data-correct={typeof option === "object" && option.is_correct === true ? "true" : "false"}
-                        />
-                        <span class="option-key">{String.fromCharCode(65 + index)}</span>
-                        <span class="option-text">{text}</span>
-                      </label>
-                    </li>
-                  );
-                })}
-              </ul>
-              <div class="mc-error" role="alert" aria-live="polite" id="mc-error" hidden>
-                Je kunt maximaal {maxSelections} opties selecteren.
-              </div>
-            </div>
-          )}
-
-          {/* Ratingvraag. */}
-
-          {item.input_type === "rating" && (
-            <div class="rating-block">
-              {scale.min_label && <span class="rating-label">{scale.min_label}</span>}
-              <div class="rating-row">
-                {ratings.map((ratingValue) => (
-                  <label class="rating-option">
-                    <input
-                      type="radio"
-                      id={`rating-${item.id}-${ratingValue}`}
-                      name={`rating-${item.id}`}
-                      value={ratingValue}
-                      class="option-input"
-                    />
-                    <span class="rating-pip">{ratingValue}</span>
-                  </label>
-                ))}
-              </div>
-              {scale.max_label && <span class="rating-label">{scale.max_label}</span>}
-            </div>
-          )}
-
-          {/* Zin-afmaken-vraag. */}
-
-          {item.input_type === "sentence_completion" && (
-            <div class="sentence-completion-block">
-              <textarea
-                class="text-area"
-                rows="4"
-                name={item.id}
-                placeholder={item.placeholder || "Vul je antwoord aan"}
-                required={item.required}
+        <!-- Videoblok. -->
+          {item.type === "video" && embedUrl && embedUrl.trim() !== "" && (
+            <div class="video-wrapper">
+              <iframe
+                src={embedUrl}
+                title={item.title}
+                frameborder="0"
+                allow="autoplay; fullscreen; picture-in-picture"
+                allowfullscreen
               />
             </div>
           )}
 
-          {/* Matchingvraag. */}
+        <!-- Vraagblok. De inhoud wordt bepaald door input_type uit de JSON. -->
+          {item.type === "question" && (
+            <div class="question-block">
+              {item.question && <h2 class="question-text">{item.question}</h2>}
+              {item.description && <p class="card-body">{item.description}</p>}
+              {item.label && <label class="field-label">{item.label}</label>}
 
-          {item.input_type === "matching" && (
-            <div class="matching-block" data-matching data-question-id={item.id}>
-              <div class="matching-grid">
-                {(item.pairs || []).map((pair, index) => (
-                  <div class="matching-row">
-                    <div class="matching-prompt">
-                      <span class="option-key">{index + 1}</span>
-                      <span>{pair.prompt}</span>
-                    </div>
-                    <select
-                      class="matching-select"
-                      name={`${item.id}-${index}`}
-                      required={item.required}
-                      data-correct-answer={pair.answer}
-                    >
-                      <option value="">Kies een antwoord</option>
-                      {(item.pairs || []).map((answerPair) => (
-                        <option value={answerPair.answer}>{answerPair.answer}</option>
-                      ))}
-                    </select>
+              {item.input_type === "text" && (
+                <input class="text-input" type="text" placeholder={item.placeholder || "Typ hier je antwoord"} />
+              )}
+
+              {/* Input type email is ongebruikt
+
+              {item.input_type === "email" && ( 
+                <input class="text-input" type="email" placeholder="Typ hier je e-mailadres" />
+              )} */}
+
+              {item.input_type === "long_text" && (
+                <textarea class="text-area" rows="5" placeholder={item.placeholder || "Typ hier je antwoord"} />
+              )}
+
+              {item.input_type === "single_choice" && (
+                <ul class="options-list" role="radiogroup">
+                  {options.map((option, index) => {
+                    const text = typeof option === "string" ? option : option.text;
+                    return (
+                      <li>
+                        <label class="option-label">
+                          <input
+                            type="radio"
+                            name={item.id}
+                            value={text}
+                            class="option-input"
+                            data-correct={typeof option === "object" && option.is_correct === true ? "true" : "false"}
+                          />
+                          <span class="option-key">{String.fromCharCode(65 + index)}</span>
+                          <span class="option-text">{text}</span>
+                        </label>
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+
+              {/* Multiple-choicevraag. */}
+
+              {item.input_type === "multiple_choice" && (
+                <div data-multiple-choice data-max-selections={maxSelections}>
+                  <p class="mc-hint">Selecteer maximaal {maxSelections} opties</p>
+                  <ul class="options-list" role="group">
+                    {options.map((option, index) => {
+                      const text = typeof option === "string" ? option : option.text;
+                      return (
+                        <li>
+                          <label class="option-label">
+                            <input
+                              type="checkbox"
+                              name={item.id}
+                              value={text}
+                              class="option-input"
+                              data-correct={typeof option === "object" && option.is_correct === true ? "true" : "false"}
+                            />
+                            <span class="option-key">{String.fromCharCode(65 + index)}</span>
+                            <span class="option-text">{text}</span>
+                          </label>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                  <div class="mc-error" role="alert" aria-live="polite" id="mc-error" hidden>
+                    Je kunt maximaal {maxSelections} opties selecteren.
                   </div>
-                ))}
-              </div>
+                </div>
+              )}
+
+              {/* Ratingvraag. */}
+
+              {item.input_type === "rating" && (
+                <div class="rating-block">
+                  {scale.min_label && <span class="rating-label">{scale.min_label}</span>}
+                  <div class="rating-row">
+                    {ratings.map((ratingValue) => (
+                      <label class="rating-option">
+                        <input
+                          type="radio"
+                          id={`rating-${item.id}-${ratingValue}`}
+                          name={`rating-${item.id}`}
+                          value={ratingValue}
+                          class="option-input"
+                        />
+                        <span class="rating-pip">{ratingValue}</span>
+                      </label>
+                    ))}
+                  </div>
+                  {scale.max_label && <span class="rating-label">{scale.max_label}</span>}
+                </div>
+              )}
+
+              {/* Zin-afmaken-vraag. */}
+
+              {item.input_type === "sentence_completion" && (
+                <div class="sentence-completion-block">
+                  <textarea
+                    class="text-area"
+                    rows="4"
+                    name={item.id}
+                    placeholder={item.placeholder || "Vul je antwoord aan"}
+                    required={item.required}
+                  />
+                </div>
+              )}
+
+              {/* Matchingvraag. */}
+
+              {item.input_type === "matching" && (
+                <div class="matching-block" data-matching data-question-id={item.id}>
+                  <div class="matching-grid">
+                    {(item.pairs || []).map((pair, index) => (
+                      <div class="matching-row">
+                        <div class="matching-prompt">
+                          <span class="option-key">{index + 1}</span>
+                          <span>{pair.prompt}</span>
+                        </div>
+                        <select
+                          class="matching-select"
+                          name={`${item.id}-${index}`}
+                          required={item.required}
+                          data-correct-answer={pair.answer}
+                        >
+                          <option value="">Kies een antwoord</option>
+                          {(item.pairs || []).map((answerPair) => (
+                            <option value={answerPair.answer}>{answerPair.answer}</option>
+                          ))}
+                        </select>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {isCheckableQuestion && (
+                <div class="question-check-row">
+                  <button type="button" class="btn btn--primary" id="check-answer-btn">
+                    Check antwoord
+                  </button>
+                  <div
+                    class="answer-feedback"
+                    id="answer-feedback"
+                    role="status"
+                    aria-live="polite"
+                    hidden
+                    data-explanation={item.explanation || ""}
+                    data-example-answer={exampleAnswer}
+                  />
+                </div>
+              )}
             </div>
           )}
 
-          {isCheckableQuestion && (
-            <div class="question-check-row">
-              <button type="button" class="btn btn--primary" id="check-answer-btn">
-                Check antwoord
-              </button>
-              <div
-                class="answer-feedback"
-                id="answer-feedback"
-                role="status"
-                aria-live="polite"
-                hidden
-                data-explanation={item.explanation || ""}
-                data-example-answer={exampleAnswer}
-              />
-            </div>
-          )}
-        </div>
-      )}
-
-      <!-- Eindscherm met dashboardlink en optionele link naar de volgende module. -->
+          <!-- Eindscherm met dashboardlink en optionele link naar de volgende module. -->
 
       {item.id?.endsWith("_submit") && (
         <div class="action-row">
@@ -403,13 +375,16 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
       )}
     </section>
 
-    <!-- Vaste navigatie onderaan met vorige en volgende stap. -->
-    <BottomNav previousPage={previousPage} nextPage={nextPage} />
+        <!-- Vaste navigatie onderaan met vorige en volgende stap. -->
+        <BottomNav previousPage={previousPage} nextPage={nextPage} />
 
-  </main>
+      </main>
 
-  <aside class="sidebar-right" aria-hidden="true"></aside>
-</div>
+      <aside class="sidebar-right" aria-hidden="true"></aside>
+    </div>
+
+  </body>
+</html>
 
 <!-- MARK: JAVASCRIPT  -->
 
@@ -433,7 +408,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
 
   await saveProgress();
 
-  window.location.href = dashboardBtn.href;
+  window.location.href = nextBtn.href;
   });
 
   // Haalt de belangrijkste DOM-elementen en stapmetadata op.
@@ -752,55 +727,38 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     });
   }
 
-  // Zijmenu openen en sluiten.
-  const hamburgerBtn = document.getElementById("hamburgerBtn");
-  const navPanel = document.getElementById("navPanel");
-  const navOverlay = document.getElementById("navOverlay");
-  const navCloseBtn = document.getElementById("navCloseBtn");
-
-  function openNav() {
-    navPanel?.classList.add("open");
-    navOverlay?.classList.add("open");
-    hamburgerBtn?.classList.add("open");
-    hamburgerBtn?.setAttribute("aria-expanded", "true");
-  }
-
-  function closeNav() {
-    navPanel?.classList.remove("open");
-    navOverlay?.classList.remove("open");
-    hamburgerBtn?.classList.remove("open");
-    hamburgerBtn?.setAttribute("aria-expanded", "false");
-  }
-
-  hamburgerBtn?.addEventListener("click", () =>
-    navPanel?.classList.contains("open") ? closeNav() : openNav(),
-  );
-  navCloseBtn?.addEventListener("click", closeNav);
-  navOverlay?.addEventListener("click", closeNav);
-
   // Instellingenpaneel openen en sluiten.
-  const settingBtn = document.getElementById("settingBtn");
-  const settingPanel = document.getElementById("settingPanel");
-  const settingOverlay = document.getElementById("settingOverlay");
-  const settingCloseBtn = document.getElementById("settingCloseBtn");
+ const settingBtn = document.getElementById("settingBtn");
+const settingPanel = document.getElementById("settingPanel");
+const settingOverlay = document.getElementById("settingOverlay");
+const settingCloseBtn = document.getElementById("settingCloseBtn");
 
-  function openSetting() {
-    settingPanel?.classList.add("open");
-    settingOverlay?.classList.add("open");
-    settingBtn?.setAttribute("aria-expanded", "true");
-  }
+function handleSettingKeydown(e) {
+  if (e.key === "Escape") closeSetting();
+}
 
-  function closeSetting() {
-    settingPanel?.classList.remove("open");
-    settingOverlay?.classList.remove("open");
-    settingBtn?.setAttribute("aria-expanded", "false");
-  }
+function openSetting() {
+  settingPanel?.removeAttribute("inert");
+  settingPanel?.classList.add("open");
+  settingOverlay?.classList.add("open");
+  settingBtn?.setAttribute("aria-expanded", "true");
+  document.addEventListener("keydown", handleSettingKeydown);
+}
 
-  settingBtn?.addEventListener("click", () =>
-    settingPanel?.classList.contains("open") ? closeSetting() : openSetting()
-  );
-  settingCloseBtn?.addEventListener("click", closeSetting);
-  settingOverlay?.addEventListener("click", closeSetting);
+function closeSetting() {
+  settingPanel?.classList.remove("open");
+  settingOverlay?.classList.remove("open");
+  settingBtn?.setAttribute("aria-expanded", "false");
+  settingPanel?.setAttribute("inert", "");
+  document.removeEventListener("keydown", handleSettingKeydown);
+  settingBtn?.focus();
+}
+
+settingBtn?.addEventListener("click", () =>
+  settingPanel?.classList.contains("open") ? closeSetting() : openSetting()
+);
+settingCloseBtn?.addEventListener("click", closeSetting);
+settingOverlay?.addEventListener("click", closeSetting);
 </script>
 
 
@@ -1069,7 +1027,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
   /* CARD */
 
   .card {
-    background: rgba(255, 255, 255, 0.72);
+    background: var(--module-card-background);
     backdrop-filter: blur(8px);
     border: 1px solid rgba(0, 0, 0, 0.08);
     border-radius: 20px;
@@ -1245,7 +1203,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     padding: 0.7rem 1rem 0.7rem 0.75rem;
     border: 1.5px solid rgba(0, 0, 0, 0.1);
     border-radius: 12px;
-    background: rgba(255, 255, 255, 0.5);
+    background: var(--module-card-background);
     cursor: pointer;
     transition: background 0.18s ease, border-color 0.18s ease, transform 0.12s ease, box-shadow 0.18s ease;
     user-select: none;
@@ -1253,7 +1211,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
   }
 
   .option-label:hover {
-    background: rgba(255, 255, 255, 0.9);
+    background: var(--module-option-label-hover);
     border-color: rgba(0, 0, 0, 0.22);
     transform: translateX(3px);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
@@ -1265,9 +1223,12 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     box-shadow: 0 2px 12px color-mix(in srgb, var(--color-accent) 40%, transparent);
   }
 
+  html.dark-mode .option-label:has(.option-input:checked) {
+    background: color-mix(in srgb, var(--color-accent) 50%, #1a1a1a56);
+  }
+
   .option-label:has(.option-input:checked) .option-key {
-    background: var(--color-text);
-    color: white;
+    background: var(--module-option-checked-letter);
     border-color: var(--color-text);
   }
 
@@ -1386,7 +1347,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     padding: 0.7rem 1rem 0.7rem 0.75rem;
     border: 1.5px solid rgba(0, 0, 0, 0.1);
     border-radius: 12px;
-    background: rgba(255, 255, 255, 0.5);
+    background: var(--module-card-background);
     font-family: var(--font-semi-bold);
     font-size: var(--size-base);
     line-height: 1.35;
@@ -1399,7 +1360,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     font-size: var(--size-base);
     border: 2px solid rgba(0, 0, 0, 0.15);
     border-radius: 10px;
-    background: rgba(255, 255, 255, 0.85);
+    background: var(--module-card-background);
     color: var(--color-text);
     outline: none;
   }
@@ -1439,7 +1400,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
   }
 
   .answer-feedback--incorrect {
-    background: #fff0ed;
+    background: var(--module-feedback-wrong);
     border-color: #ff6631;
     color: #9f2b00;
     padding-left: 2vw;
@@ -1483,13 +1444,13 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
 
   .option-label.option-label--correct {
     border-color: #2fbf7f !important;
-    background: #ecfff7 !important;
+    background: var(--module-right-correct) !important;
     box-shadow: 0 0 0 2px rgba(47, 191, 127, 0.25) !important;
   }
 
   .option-label.option-label--incorrect {
     border-color: #ff6631 !important;
-    background: #fff0ed !important;
+    background: var(--module-wrong-error) !important;
     box-shadow: 0 0 0 2px rgba(255, 102, 49, 0.25) !important;
   }
 
@@ -1508,14 +1469,14 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
   .matching-prompt.matching-prompt--correct,
   .matching-select.matching-select--correct {
     border-color: #2fbf7f !important;
-    background: #ecfff7 !important;
+    background: var(--module-right-correct) !important;
     box-shadow: 0 0 0 2px rgba(47, 191, 127, 0.25) !important;
   }
 
   .matching-prompt.matching-prompt--incorrect,
   .matching-select.matching-select--incorrect {
     border-color: #ff6631 !important;
-    background: #fff0ed !important;
+    background: var(--module-wrong-error) !important;
     box-shadow: 0 0 0 2px rgba(255, 102, 49, 0.25) !important;
   }
 
@@ -1600,7 +1561,7 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
     justify-content: space-between;
     gap: 1rem;
     z-index: 100;
-    background: rgba(255, 255, 255, 0.6);
+    background: var(--module-card-background);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(0, 0, 0, 0.07);
     border-radius: 99px;
@@ -1683,6 +1644,11 @@ const accentColor = categoryColorMap[categorySlug] ?? "#B1F2D9";
       height: 14px;
     }
   }
+
+  html.dark-mode .accessibility-icon {
+  filter: invert(1);
+}
+
 
   /* Animatie voor foutmeldingen. */
   @keyframes shake {

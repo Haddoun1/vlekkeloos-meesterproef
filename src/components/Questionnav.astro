@@ -127,6 +127,10 @@ const { category, categorySlug, categoryItems, currentStep, totalSteps, accentCo
     opacity: 0.45;
   }
 
+  :global(html.dark-mode) .table-of-contents-icon {
+  filter: invert(1);
+}
+
   /* Responsive — zelfde breakpoint als [step].astro */
   @media (max-width: 600px) {
     .hamburger-btn {
