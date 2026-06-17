@@ -103,6 +103,8 @@ html {
   --module-option-checked: color-mix(in srgb, var(--color-accent) 50%, white);
   --module-option-checked-letter: #ffffff;
 
+  --simulator-background: #000;
+  --simulator-background-panel: #ffffff;
 
   --accent-intro: #B1F2D9;
   --accent-module-1: #FF94E1;
@@ -186,7 +188,8 @@ html.dark-mode {
   --module-option-checked: var(--color-accent);
   --module-option-checked-letter: #ffffff00;
 
-
+  --simulator-background: #000;
+  --simulator-background-panel: #bababa;
 
   --accent-intro: var(--accent-intro-dark);
   --accent-module-1: var(--accent-module-1-dark);
