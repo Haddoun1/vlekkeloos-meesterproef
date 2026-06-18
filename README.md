@@ -13,8 +13,42 @@ Een webapplicatie waarmee medewerkers inclusiviteitstrainingen kunnen volgen. Ge
 | Framework | [Astro](https://astro.build) v6 (SSR, Node adapter) |
 | Database & Auth | [Supabase](https://supabase.com) |
 | Animaties | [GSAP](https://gsap.com) |
-| Hosting | Render (of een andere Node-server) |
+| Hosting | Render |
 | Font | Plus Jakarta Sans (lokaal, in `public/fonts/`) |
+
+---
+
+## Lokaal opstarten
+
+### 1. Vereisten
+
+- Node.js >= 22.12.0
+- Een Supabase-project (zie het [Supabase-hoofdstuk](#database--authenticatie-supabase))
+
+### 2. Omgevingsvariabelen
+
+Maak een `.env`-bestand aan in de root:
+
+```env
+PUBLIC_SUPABASE_URL=https://<jouw-project>.supabase.co
+PUBLIC_SUPABASE_ANON_KEY=<jouw-anon-key>
+SUPABASE_SERVICE_ROLE_KEY=<jouw-service-role-key>
+```
+
+Alle drie zijn te vinden in Supabase onder **Project Settings → API**.
+
+### 3. Installeren en starten
+
+```sh
+npm install
+npm run dev       # start op http://localhost:4321
+```
+
+| Commando | Actie |
+|----------|-------|
+| `npm run dev` | Ontwikkelserver op `localhost:4321` |
+| `npm run build` | Bouw productieversie naar `./dist/` |
+| `npm run preview` | Preview de gebouwde versie lokaal |
 
 ---
 
@@ -30,149 +64,115 @@ Een webapplicatie waarmee medewerkers inclusiviteitstrainingen kunnen volgen. Ge
 │       └── onboarding.css  # Stijlen specifiek voor de onboarding
 │
 ├── src/
-│   ├── components/
-│   │   ├── Accessibilitysimulator.astro  # Simulatiepaneel (bijv. wazig zicht)
-│   │   ├── BaseHead.astro               # <head>-tags, meta, favicon
-│   │   ├── BottomNav.astro              # Vorige/volgende navigatie (module-pagina's)
-│   │   ├── CourseCard.astro             # Cursuskaart op het dashboard
-│   │   ├── Footer.astro
-│   │   ├── Header.astro                 # Topbalk met logo en uitlogknop
-│   │   ├── QuestionMulti.astro          # (component, niet actief in routing)
-│   │   ├── QuestionSingle.astro         # (component, niet actief in routing)
-│   │   ├── Questionnav.astro            # Hamburger + stappenlijst in module-header
-│   │   └── ThemeToggle.astro            # Dark/light mode knop
-│   │
+│   ├── components/         # Herbruikbare UI-componenten
 │   ├── data/
-│   │   ├── mensenkennersvragen.json     # Alle content voor intro + 4 modules
-│   │   └── onboarding-steps.json        # (reservebestand, onboarding gebruikt eigen pagina's)
-│   │
-│   ├── layouts/
-│   │   ├── Layout.astro                 # Hoofdlayout (header + footer)
-│   │   ├── Layout-onboarding.astro      # Onboarding-layout (stapindicator, voortgang)
-│   │   └── DetailLayout.astro           # Alternatieve detaillayout
-│   │
-│   ├── lib/
-│   │   ├── supabase.js                  # Client-side Supabase client
-│   │   └── supabaseServer.ts            # Server-side Supabase client (cookies)
-│   │
-│   ├── pages/
-│   │   ├── index.astro                  # Dashboard (cursusoverzicht + voortgang)
-│   │   ├── update-password.astro        # Wachtwoord bijwerken na reset-link
-│   │   │
-│   │   ├── [category]/
-│   │   │   └── [step].astro             # Dynamische module-pagina's (gegenereerd vanuit JSON)
-│   │   │
-│   │   ├── onboarding/
-│   │   │   ├── step-1.astro … step-5.astro   # Onboarding stappen
-│   │   │   ├── welkom.astro / welkom-no-loader.astro
-│   │   │   ├── login.astro
-│   │   │   ├── register.astro
-│   │   │   └── result.astro             # Eindscherm onboarding
-│   │   │
-│   │   ├── admin/
-│   │   │   ├── index.astro              # Admin-dashboard (voortgang per gebruiker)
-│   │   │   └── login.astro              # Admin-inlogpagina
-│   │   │
-│   │   └── api/
-│   │       ├── track-step.js            # POST: sla een stap op in course_progress
-│   │       ├── get-progress.js          # POST: haal voortgang op voor een gebruiker
-│   │       ├── admin-role.ts            # POST: maak gebruiker admin of verwijder rol
-│   │       └── test-supabase.js         # Debug-endpoint (kan verwijderd worden)
-│   │
+│   │   └── mensenkennersvragen.json  # Alle content voor intro + 4 modules
+│   ├── layouts/            # Pagina-layouts
+│   ├── lib/                # Supabase-clients
+│   ├── pages/              # Alle pagina's en API-routes
 │   └── utils/
-│       └── slugify.js                   # Zet categorie-namen om naar URL-slugs
+│       └── slugify.js      # Zet categorie-namen om naar URL-slugs
 │
-├── astro.config.mjs                     # Astro-config (SSR + Node adapter)
-├── tsconfig.json
+├── astro.config.mjs        # Astro-config (SSR + Node adapter)
 └── package.json
 ```
 
 ---
 
-## Lokaal opstarten
+## Onboarding
 
-### 1. Vereisten
+### Wat is de onboarding?
 
-- Node.js >= 22.12.0
-- Een Supabase-project (zie hieronder)
+De onboarding is een korte introductie die nieuwe gebruikers doorlopen voordat ze beginnen met de modules. Het legt uit wat Mensenkenners is en vraagt de gebruiker een account aan te maken of in te loggen.
 
-### 2. Omgevingsvariabelen
+### Paginavolgorde
 
-Maak een `.env`-bestand aan in de root:
-
-```env
-PUBLIC_SUPABASE_URL=https://<jouw-project>.supabase.co
-PUBLIC_SUPABASE_ANON_KEY=<jouw-anon-key>
+```
+/onboarding/welkom          → Welkomstscherm met loader
+/onboarding/login           → Inloggen
+/onboarding/register        → Account aanmaken
+/onboarding/step-1 … step-5 → Inhoudelijke onboarding-stappen
+/onboarding/result          → Eindscherm van de onboarding
 ```
 
-Beide waarden zijn te vinden in Supabase onder **Project Settings → API**.
+Na de onboarding gaat de gebruiker naar het dashboard (`/`).
 
-### 3. Installeren en starten
+### Layout-onboarding.astro
 
-```sh
-npm install
-npm run dev       # start op http://localhost:4321
+Alle onboarding-pagina's gebruiken `src/layouts/Layout-onboarding.astro`. Dit is een tweekoloms-layout: links een afbeelding of illustratie (via `<slot />`), rechts logo, tekst, voortgangsindicator en knoppen.
+
+De layout accepteert de volgende props:
+
+| Prop | Type | Standaard | Omschrijving |
+|------|------|-----------|--------------|
+| `title` | string | — | Paginatitel (`<title>`) |
+| `headingText` | string | `"Welkom!"` | Grote koptekst rechts |
+| `bodyText` | string | `"..."` | Beschrijvende tekst rechts |
+| `nextHref` | string | `"/"` | URL van de volgende stap |
+| `backHref` | string | `"/"` | URL van de vorige stap |
+| `step` | number | `1` | Huidige stap (voor voortgangsindicator) |
+| `totalSteps` | number | `5` | Totaal aantal stappen |
+| `stepId` | string | — | ID voor voortgang opslaan (bijv. `onboarding_step-1`) |
+| `category` | string | — | Categorie voor voortgang opslaan (bijv. `onboarding`) |
+| `showProgress` | boolean | `true` | Toon/verberg voortgangsindicator |
+| `showNext` | boolean | `true` | Toon/verberg "Ga verder"-knop |
+| `showBack` | boolean | `true` | Toon/verberg "Ga terug"-knop |
+| `showDashboardButton` | boolean | `true` | Toon/verberg "Dashboard"-link bovenaan |
+| `mockupSrc` | string | `""` | Afbeelding in het rechterpaneel (op desktop) |
+| `variant` | string | `""` | Extra CSS-class op `<main>` (bijv. `"login"`) |
+
+**Voorbeeld — een onboarding-stap:**
+
+```astro
+---
+import MainLayout from "../../layouts/Layout-onboarding.astro";
+---
+
+<MainLayout
+  title="Stap 1"
+  nextHref="/onboarding/step-2"
+  backHref="/onboarding/login"
+  headingText="Wat is Mensenkenners?"
+  bodyText="Met Mensenkenners trainen we onze inclusiviteitsspier."
+  step={1}
+  totalSteps={5}
+  stepId="onboarding_step-1"
+  category="onboarding"
+>
+  <img src="/images/Mensenkennerskaderdoof.png" alt="Illustratie" />
+</MainLayout>
 ```
 
-Andere commando's:
+Alles binnen de `<MainLayout>`-tags verschijnt in het **linkerpaneel** (de `<slot />`).
 
-| Commando | Actie |
-|----------|-------|
-| `npm run build` | Bouw de productieversie naar `./dist/` |
-| `npm run preview` | Preview de gebouwde versie lokaal |
+### Paginatransities
+
+De onboarding gebruikt Astro's `<ClientRouter />` voor vloeiende animaties tussen stappen. Bij "Ga verder" schuift de nieuwe pagina van rechts in; bij "Ga terug" van links. Dit wordt geregeld via de klasse `is-going-back` op `<html>` en de CSS-animaties in `onboarding.css`.
+
+### Onboarding-stap toevoegen
+
+1. Maak een nieuw bestand aan, bijv. `src/pages/onboarding/step-6.astro`
+2. Gebruik de layout hierboven met het juiste `step`-nummer en de juiste `nextHref`/`backHref`
+3. Pas in de vorige stap (`step-5.astro`) de `nextHref` aan naar `/onboarding/step-6`
 
 ---
 
-## Database (Supabase)
+## Modules
 
-### Tabellen
+### Hoe modules werken
 
-#### `profiles`
-Aangemaakt automatisch bij registratie via een Supabase trigger.
-
-| Kolom | Type | Omschrijving |
-|-------|------|--------------|
-| `id` | uuid (FK → auth.users) | Gebruikers-ID |
-| `role` | text | `'admin'` of leeg/null |
-
-#### `course_progress`
-Elke keer dat een gebruiker een stap voltooit, wordt hier een rij aangemaakt.
-
-| Kolom | Type | Omschrijving |
-|-------|------|--------------|
-| `id` | bigint (PK) | Auto-increment |
-| `user_id` | text | Supabase user-ID of `'anonymous'` |
-| `email` | text | E-mailadres van de gebruiker |
-| `name` | text | Naam uit user_metadata |
-| `step_id` | text | ID van de stap (bijv. `m1_q1`) |
-| `category` | text | URL-slug van de module (bijv. `module-1`) |
-| `current_url` | text | Huidige URL voor hervatten |
-| `started_at` | timestamptz | Wanneer de stap begon |
-| `ended_at` | timestamptz | Wanneer de gebruiker verder ging |
-| `duration_seconds` | integer | Aantal seconden op de stap |
-
-### Row Level Security (RLS)
-
-Zorg dat de volgende RLS-policies ingesteld zijn in Supabase:
-
-- `course_progress`: iedereen mag INSERT (ook niet-ingelogde gebruikers met `anonymous`), alleen de eigenaar mag SELECT.
-- `profiles`: alleen de eigenaar mag lezen en schrijven.
-
-De admin-functies (rol toekennen) lopen via een **service-role key** op de server. Pas op dat de service-role key nooit in de frontend terechtkomt.
-
----
-
-## Hoe content werkt
-
-### Modules (Intro + Module 1–4)
-
-Alle content voor de cursusmodules staat in één JSON-bestand:
+Alle content voor de modules staat in één JSON-bestand:
 
 ```
 src/data/mensenkennersvragen.json
 ```
 
-Het bestand bevat een array `blocks`. Elk blok is één pagina en heeft een `type`:
+Astro leest dit bestand tijdens de build en genereert voor elk blok een statische pagina via `src/pages/[category]/[step].astro`. De URL wordt bepaald door:
+
+- `Category` → URL-prefix (bijv. `"Module 1"` → `/module-1/`)
+- Positie in de array → stapnummer (bijv. `/module-1/3`)
+
+Het JSON-bestand bevat een array `blocks`. Elk blok is één pagina met een `type`:
 
 | Type | Omschrijving |
 |------|--------------|
@@ -180,17 +180,9 @@ Het bestand bevat een array `blocks`. Elk blok is één pagina en heeft een `typ
 | `video` | Videopagina (YouTube of Vimeo URL) |
 | `question` | Vraagpagina (zie input-types hieronder) |
 
-Het veld `Category` bepaalt in welke module het blok valt. De slug-versie daarvan (`module-1`, `module-2`, etc.) wordt de URL-prefix.
+De volgorde van blokken in de array bepaalt de volgorde van stappen. Een nieuw blok ertussen plakken = dat wordt de nieuwe stap op die plek.
 
-**Voorbeeld URL:** `/module-1/3` → derde blok in categorie "Module 1"
-
-De volgorde van blokken in de array bepaalt de volgorde van de stappen. Nieuw blok ertussen plakken = dat wordt de nieuwe stap op die plek.
-
----
-
-### Nieuwe vraag of pagina toevoegen
-
-Voeg een nieuw object toe in de `blocks`-array op de gewenste positie. Zorg dat het `id` uniek is — gebruik een duidelijke naamgevingsconventie, bijv. `m1_q04_jouw_onderwerp`.
+### Nieuwe inhoud toevoegen aan de JSON
 
 #### Tekstpagina
 
@@ -208,7 +200,7 @@ Voeg een nieuw object toe in de `blocks`-array op de gewenste positie. Zorg dat 
 }
 ```
 
-`text` en `list` zijn allebei optioneel — je kunt ze apart of samen gebruiken.
+`text` en `list` zijn beide optioneel — je kunt ze apart of samen gebruiken.
 
 #### Videopagina
 
@@ -299,7 +291,7 @@ Geen juist of fout antwoord — na checken verschijnt een voorbeeldantwoord.
   "title": "Paginatitel",
   "question": "Beschrijf een situatie waarbij je iemand bewust ruimte hebt gegeven.",
   "input_type": "long_text",
-  "example_answer": "Bijvoorbeeld: Ik wachtte rustig tot iemand klaar was met spreken in plaats van de zin af te maken."
+  "example_answer": "Bijvoorbeeld: Ik wachtte rustig tot iemand klaar was met spreken."
 }
 ```
 
@@ -321,7 +313,7 @@ Werkt hetzelfde als `long_text`, maar is bedoeld voor het afmaken van een zin.
 
 #### Matchingvraag (matching)
 
-De gebruiker koppelt prompts aan antwoorden. De antwoorden in de dropdowns worden automatisch gemixt vanuit alle `answer`-waarden in `pairs`.
+De gebruiker koppelt prompts aan antwoorden via dropdowns. De antwoorden worden automatisch gemixt vanuit alle `answer`-waarden in `pairs`.
 
 ```json
 {
@@ -346,85 +338,320 @@ De gebruiker koppelt prompts aan antwoorden. De antwoorden in de dropdowns worde
 
 ---
 
-### Onboarding
+## Components
 
-De onboarding gebruikt **aparte Astro-pagina's** (`src/pages/onboarding/step-1.astro` t/m `step-5.astro`) met de `Layout-onboarding.astro` layout. Elke pagina geeft props mee:
+### `Header.astro`
 
-```astro
-<MainLayout
-  title="Stap 1"
-  nextHref="/onboarding/step-2"
-  backHref="/onboarding/login"
-  headingText="Wat is Mensenkenners?"
-  bodyText="..."
-  step={1}
-  totalSteps={11}
-  stepId="onboarding_step-1"
-  category="onboarding"
->
+De vaste topbalk die op alle dashboardpagina's verschijnt (via `Layout.astro`). Bevat het logo, navigatielinks naar externe sites, een uitlogknop en de `ThemeToggle`.
+
+De uitlogknop roept `supabase.auth.signOut()` aan en stuurt de gebruiker naar `/onboarding/login`.
+
+---
+
+### `Footer.astro`
+
+Eenvoudige footer onderaan de dashboardpagina's.
+
+---
+
+### `BaseHead.astro`
+
+Bevat gedeelde `<head>`-inhoud: charset, viewport, favicon en meta-tags. Wordt gebruikt in alle layouts.
+
+---
+
+### `CourseCard.astro`
+
+De kaart die één cursus weergeeft op het dashboard. Toont afbeelding, titel, beschrijving en een voortgangsbalk.
+
+**Props:**
+
+| Prop | Type | Omschrijving |
+|------|------|--------------|
+| `title` | string | Naam van de cursus |
+| `description` | string | Korte omschrijving |
+| `image` | string | Pad naar de afbeelding |
+| `progress` | number | Percentage (0–100), wordt na laden overschreven door JS |
+| `href` | string | Startpagina van de cursus |
+| `color` | string | Achtergrondkleur van de kaart (CSS-waarde of variabele) |
+
+De kaart heeft twee `data`-attributen die door het dashboard-script worden ingevuld:
+- `data-progress` — huidig percentage
+- `data-status` — `not-started`, `in-progress` of `completed`
+- `data-resume-href` — URL om te hervatten (laatste bekende stap)
+
+---
+
+### `BottomNav.astro`
+
+De vaste navigatiebalk onderaan module-pagina's met een "Vorige"- en "Volgende"-knop. Staat vastzittend onderaan het scherm (`position: fixed`).
+
+**Props:**
+
+| Prop | Type | Omschrijving |
+|------|------|--------------|
+| `previousPage` | string \| null | URL van de vorige stap, of `null` (knop wordt dan disabled) |
+| `nextPage` | string \| null | URL van de volgende stap, of `null` |
+
+Als een stap een checkbare vraag heeft, wordt de "Volgende"-knop pas klikbaar nadat de gebruiker op "Check antwoord" heeft geklikt. Dit wordt geregeld via `data-checked` op de knop in `[step].astro`.
+
+---
+
+### `Questionnav.astro`
+
+De hamburgerknop in de module-header die een zijmenu opent met alle stappen van de huidige module. Toont het huidige stapnummer en totaal (bijv. `3/6`).
+
+**Props:**
+
+| Prop | Type | Omschrijving |
+|------|------|--------------|
+| `category` | string | Modulenaam (bijv. `"Module 1"`) |
+| `categorySlug` | string | URL-slug (bijv. `"module-1"`) |
+| `categoryItems` | array | Alle blokken van deze module (uit JSON) |
+| `currentStep` | number | Huidige stap |
+| `totalSteps` | number | Totaal aantal stappen |
+| `accentColor` | string | CSS-kleurwaarde voor de knop en het paneel |
+
+Het zijmenu schuift van links in met een overlay op de achtergrond. De actieve stap wordt gemarkeerd.
+
+---
+
+### `Accessibilitysimulator.astro`
+
+Een paneel dat vanuit rechts inschuift en waarmee gebruikers beperkingen kunnen simuleren. Zichtbaar op module-pagina's via de "Menu"-knop rechts in de header.
+
+**Beschikbare simulaties:**
+
+| Simulatie | Wat het doet |
+|-----------|--------------|
+| Contrast | Verlaagt het contrast van de hele pagina via CSS `filter` |
+| Helderheid | Past de helderheid aan via CSS `filter` |
+| Wazig zicht | Voegt een `blur`-filter toe aan de pagina |
+| Dyslexie | Verwisselt willekeurig letters in woorden op de pagina (licht/matig/zwaar) |
+| Trilling | Laat de pagina trillen via een `transform` op `<body>` |
+| Cursor vertraging | Verbergt de echte cursor en toont een vertraagde stip, simuleert motorieke beperking |
+
+Alle filters werken met CSS op `document.documentElement.style.filter` of `document.body.style`. Er is een "Reset"-knop om alles terug te zetten.
+
+---
+
+### `ThemeToggle.astro`
+
+Een toggle-knop (zon/maan-icoon) die dark mode in- en uitschakelt. Slaat de voorkeur op in `localStorage` onder de sleutel `theme`. Zet de class `dark-mode` op `<html>`.
+
+---
+
+## Database & authenticatie (Supabase)
+
+Supabase verzorgt twee dingen: **gebruikersauthenticatie** (inloggen, registreren, sessies) en de **database** (voortgang opslaan, rollen beheren).
+
+---
+
+### Twee Supabase-clients
+
+Het project gebruikt twee verschillende clients, afhankelijk van waar de code draait:
+
+#### `src/lib/supabase.js` — browser-client
+
+Wordt gebruikt in `<script>`-blokken die in de browser draaien (inloggen, uitloggen, voortgang ophalen).
+
+```js
+import { createClient } from "@supabase/supabase-js";
+export const supabase = createClient(url, anonKey);
 ```
 
-Om een onboarding-stap toe te voegen: maak een nieuw `.astro`-bestand aan en pas `nextHref`/`backHref` aan in de omliggende stappen.
+#### `src/lib/supabaseServer.ts` — server-client
+
+Wordt gebruikt in de frontmatter van Astro-pagina's (`---` blokken) en in API-routes op de server. Dit is nodig om de ingelogde gebruiker via cookies te controleren — dat kan de browser-client niet vanuit de server.
+
+```ts
+import { createSupabaseServerClient } from "../../lib/supabaseServer";
+const supabase = createSupabaseServerClient(Astro);
+const { data: { user } } = await supabase.auth.getUser();
+```
+
+De server-client leest en schrijft cookies automatisch via Astro's cookie-API.
 
 ---
 
-## Voortgang bijhouden
+### Authenticatie-flow
 
-Wanneer een gebruiker op "Volgende" klikt op een module-pagina, wordt automatisch een POST gedaan naar `/api/track-step`. De volgende data wordt opgeslagen:
+#### Registreren (`/onboarding/register`)
 
-- Gebruikers-ID, naam, e-mail
-- Stap-ID en categorie
-- Huidige URL (voor hervatten)
-- Starttijd, eindtijd en duur in seconden
+```js
+await supabase.auth.signUp({
+  email,
+  password,
+  options: { data: { name: "Jan", surname: "Jansen" } }
+});
+```
 
-Op het dashboard haalt de browser alle voortgang op via `/api/get-progress` en berekent het percentage per cursus.
+Naam en achternaam worden opgeslagen in `user_metadata` en zijn later beschikbaar via `user.user_metadata.name`.
+
+> **Let op:** Supabase heeft standaard e-mailbevestiging aan. Zet dit uit via **Supabase → Authentication → Providers → Email → Confirm email** als je wil dat gebruikers meteen kunnen inloggen.
+
+#### Inloggen (`/onboarding/login`)
+
+```js
+await supabase.auth.signInWithPassword({ email, password });
+```
+
+Supabase slaat de sessie op als cookie. De gebruiker gaat naar `/onboarding/step-1`.
+
+#### Uitloggen (knop in de header)
+
+```js
+await supabase.auth.signOut();
+// → doorsturen naar /onboarding/login
+```
+
+#### Wachtwoord resetten (twee stappen)
+
+1. Admin stuurt via het admin-dashboard een resetlink — Supabase mailt een link naar `/update-password`
+2. Op `/update-password` stelt de gebruiker een nieuw wachtwoord in:
+
+```js
+await supabase.auth.updateUser({ password: nieuwWachtwoord });
+```
 
 ---
 
-## Admin-dashboard
+### Sessiebeveiliging op pagina's
 
-Toegankelijk via `/admin`. Vereist een account met `role = 'admin'` in de `profiles`-tabel.
+Beveiligde pagina's controleren op de server of iemand is ingelogd vóór de HTML wordt teruggestuurd:
 
-**Functies:**
-- Overzicht van alle stappen per module per gebruiker
-- Totaalstatistieken (opgeslagen stappen, unieke gebruikers, actieve tijd)
-- Wachtwoord-resetlink versturen naar een gebruiker
+```ts
+// src/pages/admin/index.astro
+const supabase = createSupabaseServerClient(Astro);
+const { data: { user } } = await supabase.auth.getUser();
+
+if (!user) return Astro.redirect("/admin/login");
+```
+
+Dit werkt bewust met de **server-client** — de browser-client kan dit niet op de server doen.
+
+---
+
+### Tabellen
+
+#### `profiles`
+
+Bevat de rol van elke gebruiker. Wordt automatisch gevuld via een database-trigger zodra een nieuw account wordt aangemaakt.
+
+| Kolom | Type | Omschrijving |
+|-------|------|--------------|
+| `id` | uuid (FK → auth.users) | Gebruikers-ID |
+| `email` | text | E-mailadres |
+| `role` | text | `'admin'` of `'user'` |
+
+SQL om de tabel en trigger aan te maken bij een nieuw Supabase-project:
+
+```sql
+create table public.profiles (
+  id uuid references auth.users on delete cascade primary key,
+  email text,
+  role text default 'user'
+);
+
+create function public.handle_new_user()
+returns trigger as $$
+begin
+  insert into public.profiles (id, email)
+  values (new.id, new.email);
+  return new;
+end;
+$$ language plpgsql security definer;
+
+create trigger on_auth_user_created
+  after insert on auth.users
+  for each row execute procedure public.handle_new_user();
+```
+
+#### `course_progress`
+
+Elke keer dat een gebruiker op "Volgende" klikt, wordt hier een nieuwe rij toegevoegd. Er wordt niet geüpdatet — elk stap-bezoek is een aparte rij.
+
+| Kolom | Type | Omschrijving |
+|-------|------|--------------|
+| `id` | bigint (PK) | Auto-increment |
+| `user_id` | text | Supabase user-ID of `'anonymous'` |
+| `email` | text | E-mailadres van de gebruiker |
+| `name` | text | Naam uit user_metadata |
+| `step_id` | text | ID van de stap (bijv. `m1_q01_matching`) |
+| `category` | text | URL-slug van de module (bijv. `module-1`) |
+| `current_url` | text | Huidige URL, gebruikt voor hervatten |
+| `started_at` | timestamptz | Wanneer de gebruiker de stap opende |
+| `ended_at` | timestamptz | Wanneer de gebruiker verder klikte |
+| `duration_seconds` | integer | Tijd op de stap in seconden |
+
+Voortgangspercentages worden **in de browser berekend**: unieke `step_id`-waarden ÷ totaal aantal stappen per module.
+
+---
+
+### API-routes
+
+| Route | Methode | Wat het doet |
+|-------|---------|--------------|
+| `/api/track-step` | POST | Slaat één stap op in `course_progress` |
+| `/api/get-progress` | POST | Haalt alle voortgang op voor een `userId` |
+| `/api/admin-role` | POST | Geeft of verwijdert adminrechten op basis van e-mail |
+
+De admin-role route gebruikt een **service-role key** die alleen server-side beschikbaar is:
+
+```env
+SUPABASE_SERVICE_ROLE_KEY=<jouw-service-role-key>
+```
+
+Te vinden in Supabase onder **Project Settings → API → service_role**. Deze key mag nooit in de browser terechtkomen.
+
+---
+
+### Row Level Security (RLS)
+
+Stel de volgende policies in via **Supabase → Table Editor → [tabel] → RLS**:
+
+**`course_progress`**
+- `INSERT`: toegestaan voor iedereen (ook anoniem)
+- `SELECT`: alleen de eigenaar (`user_id = auth.uid()::text`)
+
+**`profiles`**
+- `SELECT`: alleen de eigenaar
+- `UPDATE`: alleen de eigenaar
+
+Admin-acties via `/api/admin-role` gebruiken de service-role key en omzeilen RLS bewust.
+
+---
+
+### Nieuw Supabase-project opzetten
+
+1. Maak de tabellen `profiles` en `course_progress` aan
+2. Voeg de database-trigger toe voor `profiles` (SQL hierboven)
+3. Stel RLS-policies in op beide tabellen
+4. Kopieer `PUBLIC_SUPABASE_URL`, `PUBLIC_SUPABASE_ANON_KEY` en `SUPABASE_SERVICE_ROLE_KEY` naar `.env`
+5. Zet e-mailbevestiging uit als je dat wil
+6. Zet alle drie de variabelen in als environment variables op Render
+
+---
+
+## Admin-dashboard (`/admin`)
+
+Toegankelijk voor accounts met `role = 'admin'` in de `profiles`-tabel. Niet-admins worden doorgestuurd naar `/`.
+
+**Het dashboard toont:**
+- Totaalstatistieken: opgeslagen stappen, unieke gebruikers, actieve tijd, actieve cursussen
+- Per module: een tabel met alle gebruikers, hun stapcount, tijdsbesteding, laatste stap en laatste activiteit
+
+**Admin-tools onderaan:**
+- Wachtwoord-resetlink versturen naar een gebruiker op basis van e-mailadres
 - Adminrechten toekennen of intrekken op basis van e-mailadres
 
-Een nieuwe admin aanmaken: log in op het admin-dashboard en gebruik het formulier "Maak admin" onderaan de pagina, of stel de rol direct in via de Supabase-interface.
-
----
-
-## Toegankelijkheidssimulator
-
-De component `Accessibilitysimulator.astro` voegt een paneel toe waarmee gebruikers kunnen ervaren hoe de interface eruitziet met verschillende beperkingen (bijv. wazig zicht, kleurenblindheid). Dit paneel is zichtbaar op module-pagina's via de "Menu"-knop rechts in de header.
-
----
-
-## Dark mode
-
-Dark mode wordt opgeslagen in `localStorage` onder de sleutel `theme`. De class `dark-mode` wordt op `<html>` gezet. CSS-variabelen in `global.css` regelen de kleuren per thema.
-
----
-
-## Deployment
-
-Het project draait als een Node.js server (`output: 'server'` in `astro.config.mjs`).
-
-1. Bouw de app: `npm run build`
-2. Start de server: `node ./dist/server/entry.mjs`
-3. Zorg dat de omgevingsvariabelen (`PUBLIC_SUPABASE_URL`, `PUBLIC_SUPABASE_ANON_KEY`) beschikbaar zijn op de server.
-
-Het project is geconfigureerd voor [Render](https://render.com). Stel bij Render in:
-- **Build command:** `npm install && npm run build`
-- **Start command:** `node ./dist/server/entry.mjs`
-- Voeg de twee Supabase-omgevingsvariabelen toe onder Environment.
+**Eerste admin aanmaken:** stel de rol handmatig in via de Supabase-interface onder **Table Editor → profiles → [rij van de gebruiker] → role = admin**.
 
 ---
 
 ## CSS-variabelen (`public/styles/global.css`)
 
-Alle kleuren, fonts en groottes worden via CSS-variabelen beheerd op het `html`-element. Dark mode overschrijft een deel van deze variabelen via de class `html.dark-mode`.
+Alle kleuren, fonts en groottes worden via CSS-variabelen beheerd op het `html`-element. Dark mode overschrijft een deel hiervan via `html.dark-mode {}`.
 
 ### Merkkleuren
 
@@ -435,14 +662,14 @@ Alle kleuren, fonts en groottes worden via CSS-variabelen beheerd op het `html`-
 | `--color-green` | `#2AB789` | Primaire accentkleur, dashboard-knoppen |
 | `--color-cyan` | `#B1F2D9` | Lichte accenttint, knoppen en tags |
 | `--color-cyan-dark` | `#8bcab2` | Hover-variant van cyan |
-| `--color-pink` | `#FF94E1` | Module 1 accentkleur |
-| `--color-yellow` | `#E9F279` | Module 2 accentkleur |
-| `--color-red` | `#FF6631` | Module 3 accentkleur |
-| `--color-blue` | `#647bef` | Module 4 accentkleur |
+| `--color-pink` | `#FF94E1` | Module 1 |
+| `--color-yellow` | `#E9F279` | Module 2 |
+| `--color-red` | `#FF6631` | Module 3 |
+| `--color-blue` | `#647bef` | Module 4 |
 
 ### Module-accentkleuren
 
-Elke module krijgt automatisch zijn eigen accentkleur via `--color-accent`. Deze variabele wordt per pagina ingesteld als inline style op `.page-shell`:
+Elke module krijgt zijn eigen accentkleur via `--color-accent`. Deze wordt per pagina als inline style op `.page-shell` gezet door `[step].astro`.
 
 ```css
 --accent-intro:    #B1F2D9   /* Onboarding / Intro */
@@ -452,60 +679,45 @@ Elke module krijgt automatisch zijn eigen accentkleur via `--color-accent`. Deze
 --accent-module-4: #647bef   /* Module 4 */
 ```
 
-Wil je de kleur van een module aanpassen? Verander de waarde van de bijbehorende `--accent-module-X` variabele. De dark mode-varianten staan eronder (`--accent-module-X-dark`).
+De dark mode-varianten staan eronder als `--accent-module-X-dark`. Wil je de kleur van een module aanpassen, verander dan beide waarden.
 
-### Module-specifieke UI-kleuren
-
-Deze variabelen bepalen hoe de kaarten, invoervelden en feedbackblokken eruitzien in de modules:
+### Module-UI kleuren
 
 | Variabele | Omschrijving |
 |-----------|--------------|
 | `--module-card-background` | Achtergrond van de contentkaart |
-| `--module-option-label` | Achtergrond van een niet-geselecteerde antwoordoptie |
+| `--module-option-label` | Achtergrond van een antwoordoptie |
 | `--module-option-label-hover` | Achtergrond bij hover |
 | `--module-option-checked` | Achtergrond van een geselecteerde optie |
 | `--module-option-checked-letter` | Kleur van de letterbox (A/B/C) bij selectie |
 | `--module-text-input` | Achtergrond van tekstvelden en textareas |
-| `--module-right-correct` | Achtergrond feedbackblok bij goed antwoord |
-| `--module-wrong-error` | Achtergrond feedbackblok bij fout antwoord |
-| `--module-feedback-wrong` | Alternatieve achtergrond foutfeedback |
+| `--module-right-correct` | Feedbackblok bij goed antwoord |
+| `--module-wrong-error` | Feedbackblok bij fout antwoord |
 
 ### Achtergrondgradiënten
 
 | Variabele | Gebruik |
 |-----------|---------|
-| `--gradient-bg-cyan` | Standaard pagina-achtergrond (subtiele cyantint) |
-| `--gradient-bg-green` | Groene variant |
-| `--gradient-bg-pink` | Roze variant (Module 1) |
-| `--gradient-bg-yellow` | Gele variant (Module 2) |
-| `--gradient-bg-red` | Rode variant (Module 3) |
-| `--gradient-bg-blue` | Blauwe variant (Module 4) |
-| `--gradient-bg-cyan-card` | Achtergrond van kaarten op het dashboard |
-| `--gradient-bg-header` | Achtergrondgradiënt in de header |
+| `--gradient-bg-cyan` | Standaard pagina-achtergrond |
+| `--gradient-bg-pink/yellow/red/blue` | Per module-variant |
+| `--gradient-bg-cyan-card` | Kaarten op het dashboard |
+| `--gradient-bg-header` | Header-achtergrond |
 
-### Onboarding-kleuren
+### Onboarding & overig
 
 | Variabele | Omschrijving |
 |-----------|--------------|
 | `--onboarding-text` | Tekstkleur in de onboarding |
 | `--onboarding-label` | Kleur van labels in formulieren |
-| `--onboarding-text-dark` | Donkerdere tekstvariant |
 | `--onboarding-back-button` | Kleur van de terugknop |
 | `--error-login` | Rood voor foutmeldingen bij inloggen |
-| `--button-background` | Achtergrond van filterknopjes op het dashboard |
-
-### Simulator
-
-| Variabele | Omschrijving |
-|-----------|--------------|
-| `--simulator-background` | Overlay-achtergrond van de toegankelijkheidssimulator |
-| `--simulator-background-panel` | Achtergrond van het paneel zelf |
-| `--simulator-num` | Achtergrond van de stap-nummers in de paneelopties |
+| `--simulator-background` | Achtergrond van de toegankelijkheidssimulator |
+| `--simulator-background-panel` | Achtergrond van het simulatorpaneel |
 | `--select-dropdown` | Achtergrond van `<option>`-elementen in dropdowns |
 
 ### Fonts
 
-Alle fonts zijn lokaal geladen vanuit `public/fonts/`. Gebruik altijd de variabele, nooit de font-naam direct.
+Gebruik altijd de variabele, nooit de font-naam direct.
 
 | Variabele | Gewicht |
 |-----------|---------|
@@ -519,7 +731,7 @@ Alle fonts zijn lokaal geladen vanuit `public/fonts/`. Gebruik altijd de variabe
 
 Van elk gewicht bestaat ook een italic-variant, bijv. `--font-bold-italic`.
 
-### Groottes (type scale)
+### Type scale
 
 | Variabele | Waarde |
 |-----------|--------|
@@ -534,6 +746,26 @@ Van elk gewicht bestaat ook een italic-variant, bijv. `--font-bold-italic`.
 
 Grotere stappen lopen door t/m `--size-10xl` (10rem).
 
-### Dark mode
+### Dark mode toevoegen aan nieuwe variabelen
 
-Dark mode wordt geactiveerd door de class `dark-mode` op het `<html>`-element (opgeslagen in `localStorage`). De donkere varianten van de kleuren staan in het blok `html.dark-mode {}` in `global.css`. Als je een nieuwe variabele toevoegt, voeg dan ook een dark mode-waarde toe in dat blok.
+Als je een nieuwe CSS-variabele toevoegt, voeg dan ook een dark mode-waarde toe in het blok `html.dark-mode {}` in `global.css`. Anders blijft die variabele in dark mode de lichte waarde gebruiken.
+
+---
+
+## Deployment
+
+Het project draait als een Node.js server (`output: 'server'` in `astro.config.mjs`).
+
+```sh
+npm run build
+node ./dist/server/entry.mjs
+```
+
+Het project is geconfigureerd voor [Render](https://render.com):
+
+- **Build command:** `npm install && npm run build`
+- **Start command:** `node ./dist/server/entry.mjs`
+- Voeg de drie Supabase-omgevingsvariabelen toe onder **Environment**:
+  - `PUBLIC_SUPABASE_URL`
+  - `PUBLIC_SUPABASE_ANON_KEY`
+  - `SUPABASE_SERVICE_ROLE_KEY`
